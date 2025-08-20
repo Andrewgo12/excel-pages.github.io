@@ -963,8 +963,8 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="container mx-auto px-responsive py-responsive-lg">
+        <div className="flex flex-col lg:flex-row gap-responsive-lg">
           {/* Sidebar */}
           <div className="w-full lg:w-80 space-y-4">
             {/* Column Selector */}
