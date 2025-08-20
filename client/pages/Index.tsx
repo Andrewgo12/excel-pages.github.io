@@ -625,29 +625,44 @@ export default function Index() {
     setFilterGroups([]);
   };
 
-  const switchSheet = (sheetName: string) => {
+  const switchSheet = async (sheetName: string) => {
     if (!excelData?.sheetsData) return;
 
     const sheetData = excelData.sheetsData[sheetName];
     if (!sheetData) return;
 
-    const newData = {
-      ...excelData,
-      activeSheet: sheetName,
-      columns: sheetData.columns,
-      rows: sheetData.rows,
-    };
+    try {
+      // Optimize sheet data for display if it's large
+      const optimizedData = optimizeSheetForDisplay(sheetData, 5000);
 
-    setExcelData(newData);
-    setSelectedColumns(sheetData.columns.slice(0, 8).map((c) => c.key));
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: sheetData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
+      const newData = {
+        ...excelData,
+        activeSheet: sheetName,
+        columns: optimizedData.columns,
+        rows: optimizedData.rows,
+      };
+
+      setExcelData(newData);
+      setSelectedColumns(optimizedData.columns.slice(0, 8).map((c) => c.key));
+      setPagination((prev) => ({
+        ...prev,
+        totalRows: optimizedData.rows.length,
+        page: 1,
+      }));
+
+      // Reset filters and search when switching sheets
+      setGlobalSearch("");
+      setColumnFilters({});
+      setFilterGroups([]);
+
+      // Close sheet navigator if it's open
+      if (activePanel === "sheetNavigator") {
+        setActivePanel(null);
+      }
+
+    } catch (error) {
+      console.error("Error switching sheet:", error);
+    }
   };
 
   const getCurrentConfiguration = () => ({
