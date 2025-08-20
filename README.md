@@ -2,6 +2,8 @@
 
 [![Deploy to GitHub Pages](https://github.com/Andrewgo12/excel-pages.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/Andrewgo12/excel-pages.github.io/actions/workflows/deploy.yml)
 
+**Autor:** Kevin Andrés González Dinas
+
 A powerful, web-based Excel data processing and visualization tool built with React, TypeScript, and modern web technologies. Process, analyze, and visualize Excel files directly in your browser with advanced filtering, statistical analysis, and export capabilities.
 
 🌐 **Live Demo**: [https://andrewgo12.github.io/](https://andrewgo12.github.io/)
@@ -143,4 +145,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+**Desarrollado por Kevin Andrés González Dinas**
 **Made with ❤️ for better data processing**

@@ -1,5 +1,6 @@
 {
   "name": "fusion-starter",
+  "author": "Kevin Andrés González Dinas",
   "private": true,
   "type": "module",
   "pkg": {
