@@ -29,7 +29,7 @@ const OPERATORS = [
   { value: 'less', label: 'Menor que' },
   { value: 'less_equal', label: 'Menor o igual que' },
   { value: 'between', label: 'Entre' },
-  { value: 'is_empty', label: 'Está vac��o' },
+  { value: 'is_empty', label: 'Está vacío' },
   { value: 'is_not_empty', label: 'No está vacío' },
   { value: 'date_today', label: 'Es hoy' },
   { value: 'date_yesterday', label: 'Es ayer' },
@@ -799,6 +799,116 @@ export default function Index() {
                       ))}
                     </div>
                   </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Statistics Panel */}
+            {isStatsOpen && currentStats && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Análisis Estadístico
+                    <Button variant="ghost" size="sm" onClick={() => setIsStatsOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {/* Dataset Overview */}
+                  <div className="mb-6">
+                    <h4 className="font-medium mb-3">Resumen del Dataset</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Total filas:</span>
+                        <div className="font-medium">{currentStats.totalRows.toLocaleString('es-ES')}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Total columnas:</span>
+                        <div className="font-medium">{currentStats.totalColumns}</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Completitud:</span>
+                        <div className="font-medium">{currentStats.completenessScore}%</div>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Filas duplicadas:</span>
+                        <div className="font-medium">{currentStats.duplicateRows}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Column Statistics */}
+                  <div>
+                    <h4 className="font-medium mb-3">Estadísticas por Columna</h4>
+                    <ScrollArea className="h-96">
+                      <div className="space-y-4">
+                        {currentStats.columnStats
+                          .filter(stat => selectedColumns.includes(stat.column))
+                          .map(stat => (
+                          <div key={stat.column} className="border rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <h5 className="font-medium text-sm">{stat.column}</h5>
+                              <Badge variant="secondary" className="text-xs">
+                                {stat.type}
+                              </Badge>
+                            </div>
+
+                            <div className="text-xs text-muted-foreground mb-3">
+                              {generateColumnSummary(stat)}
+                            </div>
+
+                            {/* Type-specific stats */}
+                            {stat.type === 'number' && (
+                              <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                  <span className="text-muted-foreground">Min:</span> {formatStatValue(stat.min, 'number')}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">Max:</span> {formatStatValue(stat.max, 'number')}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">Media:</span> {formatStatValue(stat.mean, 'number')}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">Mediana:</span> {formatStatValue(stat.median, 'number')}
+                                </div>
+                              </div>
+                            )}
+
+                            {stat.type === 'date' && stat.minDate && stat.maxDate && (
+                              <div className="grid grid-cols-1 gap-1 text-xs">
+                                <div>
+                                  <span className="text-muted-foreground">Desde:</span> {formatStatValue(stat.minDate, 'date')}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">Hasta:</span> {formatStatValue(stat.maxDate, 'date')}
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground">Rango:</span> {stat.dateRange} días
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Top values */}
+                            {stat.topValues.length > 0 && (
+                              <div className="mt-3">
+                                <div className="text-xs text-muted-foreground mb-1">Valores más frecuentes:</div>
+                                <div className="space-y-1">
+                                  {stat.topValues.slice(0, 3).map((item, index) => (
+                                    <div key={index} className="flex justify-between text-xs">
+                                      <span className="truncate">{String(item.value)}</span>
+                                      <span className="text-muted-foreground">{item.count} ({item.percentage}%)</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </div>
                 </CardContent>
               </Card>
             )}
