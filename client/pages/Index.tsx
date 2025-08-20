@@ -190,6 +190,7 @@ export default function Index() {
   const isMachineLearningOpen = activePanel === "machineLearning";
   const isDataCleaningOpen = activePanel === "dataCleaning";
   const isFontSettingsOpen = activePanel === "fontSettings";
+  const isSheetNavigatorOpen = activePanel === "sheetNavigator";
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
