@@ -15,6 +15,7 @@ import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRig
 import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig } from '@shared/excel-types';
 import { generateSampleData } from '@/utils/sampleDataGenerator';
 import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
+import { calculateDatasetStats, calculateColumnStats, formatStatValue, generateColumnSummary, DatasetStats, ColumnStats } from '@/utils/statisticalAnalysis';
 
 const OPERATORS = [
   { value: 'equals', label: 'Igual a' },
