@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
@@ -1032,7 +1033,7 @@ export default function Index() {
                   onClick={exportFilteredData}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar Rápido</span>
+                  <span className="hidden sm:inline">Exportar R��pido</span>
                 </Button>
                 <Button
                   variant="outline"
