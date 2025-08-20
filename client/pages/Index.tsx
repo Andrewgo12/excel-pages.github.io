@@ -633,8 +633,8 @@ export default function Index() {
                     </ScrollArea>
 
                     {/* Pagination */}
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4">
+                      <div className="text-xs sm:text-sm text-muted-foreground">
                         Mostrando {((pagination.page - 1) * pagination.pageSize) + 1} a{' '}
                         {Math.min(pagination.page * pagination.pageSize, filteredAndSortedData.length)} de{' '}
                         {filteredAndSortedData.length.toLocaleString()} filas
