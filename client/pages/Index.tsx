@@ -918,6 +918,28 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Data Visualization Panel */}
+            {isVisualizationOpen && currentStats && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Visualización de Datos
+                    <Button variant="ghost" size="sm" onClick={() => setIsVisualizationOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DataVisualization
+                    data={filteredAndSortedData}
+                    columns={excelData.columns}
+                    stats={currentStats.columnStats}
+                    selectedColumns={selectedColumns}
+                  />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Main Content */}
