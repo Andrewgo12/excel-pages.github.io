@@ -1,15 +1,36 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ExcelColumn } from '@shared/excel-types';
-import { aggregateData, createPivotTable, getAggregationFunctionLabel, formatAggregatedValue, getColumnAggregations, AggregationRule, AggregationSummary } from '@/utils/dataAggregation';
-import { Plus, X, Calculator, Table2 } from 'lucide-react';
+import React, { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ExcelColumn } from "@shared/excel-types";
+import {
+  aggregateData,
+  createPivotTable,
+  getAggregationFunctionLabel,
+  formatAggregatedValue,
+  getColumnAggregations,
+  AggregationRule,
+  AggregationSummary,
+} from "@/utils/dataAggregation";
+import { Plus, X, Calculator, Table2 } from "lucide-react";
 
 interface DataAggregationProps {
   data: Record<string, any>[];
@@ -20,51 +41,72 @@ interface DataAggregationProps {
 export const DataAggregation: React.FC<DataAggregationProps> = ({
   data,
   columns,
-  selectedColumns
+  selectedColumns,
 }) => {
-  const [activeTab, setActiveTab] = useState<'quick' | 'custom' | 'pivot'>('quick');
-  const [aggregationRules, setAggregationRules] = useState<AggregationRule[]>([]);
+  const [activeTab, setActiveTab] = useState<"quick" | "custom" | "pivot">(
+    "quick",
+  );
+  const [aggregationRules, setAggregationRules] = useState<AggregationRule[]>(
+    [],
+  );
   const [newRule, setNewRule] = useState<Partial<AggregationRule>>({});
-  
-  // Pivot table state
-  const [pivotRow, setPivotRow] = useState<string>('');
-  const [pivotColumn, setPivotColumn] = useState<string>('');
-  const [pivotValue, setPivotValue] = useState<string>('');
-  const [pivotFunction, setPivotFunction] = useState<'sum' | 'avg' | 'count' | 'min' | 'max'>('sum');
 
-  const textColumns = columns.filter(col => col.type === 'text' && selectedColumns.includes(col.key));
-  const numericColumns = columns.filter(col => col.type === 'number' && selectedColumns.includes(col.key));
-  const allSelectedColumns = columns.filter(col => selectedColumns.includes(col.key));
+  // Pivot table state
+  const [pivotRow, setPivotRow] = useState<string>("");
+  const [pivotColumn, setPivotColumn] = useState<string>("");
+  const [pivotValue, setPivotValue] = useState<string>("");
+  const [pivotFunction, setPivotFunction] = useState<
+    "sum" | "avg" | "count" | "min" | "max"
+  >("sum");
+
+  const textColumns = columns.filter(
+    (col) => col.type === "text" && selectedColumns.includes(col.key),
+  );
+  const numericColumns = columns.filter(
+    (col) => col.type === "number" && selectedColumns.includes(col.key),
+  );
+  const allSelectedColumns = columns.filter((col) =>
+    selectedColumns.includes(col.key),
+  );
 
   // Quick aggregations for each numeric column
   const quickAggregations = useMemo(() => {
-    return numericColumns.map(column => ({
+    return numericColumns.map((column) => ({
       column: column.key,
       label: column.label,
-      aggregations: getColumnAggregations(data, column.key, column.type)
+      aggregations: getColumnAggregations(data, column.key, column.type),
     }));
   }, [data, numericColumns]);
 
   // Custom aggregation results
   const customAggregations = useMemo(() => {
-    return aggregationRules.map(rule => aggregateData(data, rule));
+    return aggregationRules.map((rule) => aggregateData(data, rule));
   }, [data, aggregationRules]);
 
   // Pivot table data
   const pivotData = useMemo(() => {
     if (!pivotRow || !pivotColumn || !pivotValue) return [];
-    return createPivotTable(data, pivotRow, pivotColumn, pivotValue, pivotFunction);
+    return createPivotTable(
+      data,
+      pivotRow,
+      pivotColumn,
+      pivotValue,
+      pivotFunction,
+    );
   }, [data, pivotRow, pivotColumn, pivotValue, pivotFunction]);
 
   const addAggregationRule = () => {
-    if (!newRule.groupByColumn || !newRule.aggregateColumn || !newRule.function) return;
+    if (!newRule.groupByColumn || !newRule.aggregateColumn || !newRule.function)
+      return;
 
     const rule: AggregationRule = {
       id: Date.now().toString(),
       groupByColumn: newRule.groupByColumn,
       aggregateColumn: newRule.aggregateColumn,
       function: newRule.function,
-      label: newRule.label || `${getAggregationFunctionLabel(newRule.function)} de ${newRule.aggregateColumn} por ${newRule.groupByColumn}`
+      label:
+        newRule.label ||
+        `${getAggregationFunctionLabel(newRule.function)} de ${newRule.aggregateColumn} por ${newRule.groupByColumn}`,
     };
 
     setAggregationRules([...aggregationRules, rule]);
@@ -72,13 +114,15 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
   };
 
   const removeAggregationRule = (id: string) => {
-    setAggregationRules(rules => rules.filter(r => r.id !== id));
+    setAggregationRules((rules) => rules.filter((r) => r.id !== id));
   };
 
   const renderQuickAggregations = () => (
     <div className="space-y-4">
       <div>
-        <h4 className="font-medium mb-3">Resumen Rápido de Columnas Numéricas</h4>
+        <h4 className="font-medium mb-3">
+          Resumen Rápido de Columnas Numéricas
+        </h4>
         <div className="grid gap-4">
           {quickAggregations.map(({ column, label, aggregations }) => (
             <Card key={column}>
@@ -89,8 +133,12 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-sm">
                   {Object.entries(aggregations).map(([func, value]) => (
                     <div key={func} className="text-center">
-                      <div className="text-muted-foreground capitalize">{getAggregationFunctionLabel(func)}</div>
-                      <div className="font-medium text-lg">{formatAggregatedValue(value, func)}</div>
+                      <div className="text-muted-foreground capitalize">
+                        {getAggregationFunctionLabel(func)}
+                      </div>
+                      <div className="font-medium text-lg">
+                        {formatAggregatedValue(value, func)}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -102,7 +150,8 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
       {numericColumns.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          No hay columnas numéricas seleccionadas para mostrar agregaciones rápidas
+          No hay columnas numéricas seleccionadas para mostrar agregaciones
+          rápidas
         </div>
       )}
     </div>
@@ -119,12 +168,17 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <Label className="text-sm">Agrupar por</Label>
-              <Select value={newRule.groupByColumn || ''} onValueChange={(value) => setNewRule({...newRule, groupByColumn: value})}>
+              <Select
+                value={newRule.groupByColumn || ""}
+                onValueChange={(value) =>
+                  setNewRule({ ...newRule, groupByColumn: value })
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar columna" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allSelectedColumns.map(col => (
+                  {allSelectedColumns.map((col) => (
                     <SelectItem key={col.key} value={col.key}>
                       {col.label} ({col.type})
                     </SelectItem>
@@ -135,12 +189,17 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
             <div>
               <Label className="text-sm">Columna a agregar</Label>
-              <Select value={newRule.aggregateColumn || ''} onValueChange={(value) => setNewRule({...newRule, aggregateColumn: value})}>
+              <Select
+                value={newRule.aggregateColumn || ""}
+                onValueChange={(value) =>
+                  setNewRule({ ...newRule, aggregateColumn: value })
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar columna" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allSelectedColumns.map(col => (
+                  {allSelectedColumns.map((col) => (
                     <SelectItem key={col.key} value={col.key}>
                       {col.label} ({col.type})
                     </SelectItem>
@@ -151,7 +210,12 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
             <div>
               <Label className="text-sm">Función</Label>
-              <Select value={newRule.function || ''} onValueChange={(value: any) => setNewRule({...newRule, function: value})}>
+              <Select
+                value={newRule.function || ""}
+                onValueChange={(value: any) =>
+                  setNewRule({ ...newRule, function: value })
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Función" />
                 </SelectTrigger>
@@ -169,7 +233,14 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
             </div>
 
             <div className="flex items-end">
-              <Button onClick={addAggregationRule} disabled={!newRule.groupByColumn || !newRule.aggregateColumn || !newRule.function}>
+              <Button
+                onClick={addAggregationRule}
+                disabled={
+                  !newRule.groupByColumn ||
+                  !newRule.aggregateColumn ||
+                  !newRule.function
+                }
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Agregar
               </Button>
@@ -182,29 +253,45 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
       {customAggregations.map((aggregation, index) => (
         <Card key={aggregation.rule.id}>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">{aggregation.rule.label}</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => removeAggregationRule(aggregation.rule.id)}>
+            <CardTitle className="text-base">
+              {aggregation.rule.label}
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => removeAggregationRule(aggregation.rule.id)}
+            >
               <X className="h-4 w-4" />
             </Button>
           </CardHeader>
           <CardContent>
             <div className="mb-4 text-sm text-muted-foreground">
-              {aggregation.totalGroups} grupos • {aggregation.totalRows} filas totales
+              {aggregation.totalGroups} grupos • {aggregation.totalRows} filas
+              totales
             </div>
             <ScrollArea className="h-64">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>{aggregation.rule.groupByColumn}</TableHead>
-                    <TableHead>{getAggregationFunctionLabel(aggregation.rule.function)}</TableHead>
+                    <TableHead>
+                      {getAggregationFunctionLabel(aggregation.rule.function)}
+                    </TableHead>
                     <TableHead>Filas</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {aggregation.results.map((result, idx) => (
                     <TableRow key={idx}>
-                      <TableCell className="font-medium">{result.group}</TableCell>
-                      <TableCell>{formatAggregatedValue(result.value, aggregation.rule.function)}</TableCell>
+                      <TableCell className="font-medium">
+                        {result.group}
+                      </TableCell>
+                      <TableCell>
+                        {formatAggregatedValue(
+                          result.value,
+                          aggregation.rule.function,
+                        )}
+                      </TableCell>
                       <TableCell>{result.count}</TableCell>
                     </TableRow>
                   ))}
@@ -217,21 +304,27 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
       {customAggregations.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          No hay agregaciones personalizadas. Agrega una nueva agregación arriba.
+          No hay agregaciones personalizadas. Agrega una nueva agregación
+          arriba.
         </div>
       )}
     </div>
   );
 
   const renderPivotTable = () => {
-    const pivotColumns = pivotData.length > 0 ? Object.keys(pivotData[0]).filter(key => key !== pivotRow) : [];
+    const pivotColumns =
+      pivotData.length > 0
+        ? Object.keys(pivotData[0]).filter((key) => key !== pivotRow)
+        : [];
 
     return (
       <div className="space-y-4">
         {/* Pivot table configuration */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Configuración de Tabla Dinámica</CardTitle>
+            <CardTitle className="text-base">
+              Configuración de Tabla Dinámica
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -242,7 +335,7 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                     <SelectValue placeholder="Seleccionar columna" />
                   </SelectTrigger>
                   <SelectContent>
-                    {allSelectedColumns.map(col => (
+                    {allSelectedColumns.map((col) => (
                       <SelectItem key={col.key} value={col.key}>
                         {col.label} ({col.type})
                       </SelectItem>
@@ -258,7 +351,7 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                     <SelectValue placeholder="Seleccionar columna" />
                   </SelectTrigger>
                   <SelectContent>
-                    {allSelectedColumns.map(col => (
+                    {allSelectedColumns.map((col) => (
                       <SelectItem key={col.key} value={col.key}>
                         {col.label} ({col.type})
                       </SelectItem>
@@ -274,7 +367,7 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                     <SelectValue placeholder="Seleccionar columna" />
                   </SelectTrigger>
                   <SelectContent>
-                    {allSelectedColumns.map(col => (
+                    {allSelectedColumns.map((col) => (
                       <SelectItem key={col.key} value={col.key}>
                         {col.label} ({col.type})
                       </SelectItem>
@@ -285,7 +378,10 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
               <div>
                 <Label className="text-sm">Función</Label>
-                <Select value={pivotFunction} onValueChange={(value: any) => setPivotFunction(value)}>
+                <Select
+                  value={pivotFunction}
+                  onValueChange={(value: any) => setPivotFunction(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -313,8 +409,10 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="sticky left-0 bg-background">{pivotRow}</TableHead>
-                      {pivotColumns.map(col => (
+                      <TableHead className="sticky left-0 bg-background">
+                        {pivotRow}
+                      </TableHead>
+                      {pivotColumns.map((col) => (
                         <TableHead key={col}>{col}</TableHead>
                       ))}
                     </TableRow>
@@ -325,7 +423,7 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
                         <TableCell className="sticky left-0 bg-background font-medium">
                           {row[pivotRow]}
                         </TableCell>
-                        {pivotColumns.map(col => (
+                        {pivotColumns.map((col) => (
                           <TableCell key={col}>
                             {formatAggregatedValue(row[col], pivotFunction)}
                           </TableCell>
@@ -341,7 +439,8 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
 
         {(!pivotRow || !pivotColumn || !pivotValue) && (
           <div className="text-center py-8 text-muted-foreground">
-            Configura las filas, columnas y valores para generar la tabla dinámica
+            Configura las filas, columnas y valores para generar la tabla
+            dinámica
           </div>
         )}
       </div>
@@ -353,25 +452,25 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
       {/* Tab Navigation */}
       <div className="flex gap-2">
         <Button
-          variant={activeTab === 'quick' ? 'default' : 'outline'}
+          variant={activeTab === "quick" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('quick')}
+          onClick={() => setActiveTab("quick")}
         >
           <Calculator className="h-4 w-4 mr-2" />
           Resumen Rápido
         </Button>
         <Button
-          variant={activeTab === 'custom' ? 'default' : 'outline'}
+          variant={activeTab === "custom" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('custom')}
+          onClick={() => setActiveTab("custom")}
         >
           <Plus className="h-4 w-4 mr-2" />
           Agregaciones
         </Button>
         <Button
-          variant={activeTab === 'pivot' ? 'default' : 'outline'}
+          variant={activeTab === "pivot" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('pivot')}
+          onClick={() => setActiveTab("pivot")}
         >
           <Table2 className="h-4 w-4 mr-2" />
           Tabla Dinámica
@@ -379,9 +478,9 @@ export const DataAggregation: React.FC<DataAggregationProps> = ({
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'quick' && renderQuickAggregations()}
-      {activeTab === 'custom' && renderCustomAggregations()}
-      {activeTab === 'pivot' && renderPivotTable()}
+      {activeTab === "quick" && renderQuickAggregations()}
+      {activeTab === "custom" && renderCustomAggregations()}
+      {activeTab === "pivot" && renderPivotTable()}
     </div>
   );
 };

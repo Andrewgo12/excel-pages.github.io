@@ -1,7 +1,7 @@
 export interface ExcelColumn {
   key: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'boolean';
+  type: "text" | "number" | "date" | "boolean";
 }
 
 export interface SheetData {
@@ -20,14 +20,22 @@ export interface ExcelData {
 export interface FilterCondition {
   id: string;
   column: string;
-  operator: 'equals' | 'contains' | 'greater' | 'less' | 'between' | 'not_equals' | 'starts_with' | 'ends_with';
+  operator:
+    | "equals"
+    | "contains"
+    | "greater"
+    | "less"
+    | "between"
+    | "not_equals"
+    | "starts_with"
+    | "ends_with";
   value: string | number | Date;
   secondValue?: string | number | Date; // For 'between' operator
 }
 
 export interface FilterGroup {
   id: string;
-  logic: 'AND' | 'OR';
+  logic: "AND" | "OR";
   conditions: FilterCondition[];
 }
 

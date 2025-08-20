@@ -1,9 +1,16 @@
-import { ExcelColumn } from '@shared/excel-types';
+import { ExcelColumn } from "@shared/excel-types";
 
 export interface TransformationRule {
   id: string;
   name: string;
-  type: 'replace' | 'calculate' | 'format' | 'split' | 'merge' | 'duplicate' | 'remove';
+  type:
+    | "replace"
+    | "calculate"
+    | "format"
+    | "split"
+    | "merge"
+    | "duplicate"
+    | "remove";
   sourceColumns: string[];
   targetColumn: string;
   parameters: Record<string, any>;
@@ -13,7 +20,7 @@ export interface TransformationRule {
 export interface BulkOperation {
   id: string;
   name: string;
-  type: 'delete' | 'update' | 'duplicate' | 'export';
+  type: "delete" | "update" | "duplicate" | "export";
   filters: any[];
   parameters: Record<string, any>;
 }
@@ -21,26 +28,29 @@ export interface BulkOperation {
 // Text transformations
 export const applyTextTransformation = (
   value: any,
-  operation: 'uppercase' | 'lowercase' | 'capitalize' | 'trim' | 'replace',
-  parameters?: Record<string, any>
+  operation: "uppercase" | "lowercase" | "capitalize" | "trim" | "replace",
+  parameters?: Record<string, any>,
 ): string => {
-  const text = String(value || '');
-  
+  const text = String(value || "");
+
   switch (operation) {
-    case 'uppercase':
+    case "uppercase":
       return text.toUpperCase();
-    case 'lowercase':
+    case "lowercase":
       return text.toLowerCase();
-    case 'capitalize':
+    case "capitalize":
       return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-    case 'trim':
+    case "trim":
       return text.trim();
-    case 'replace':
+    case "replace":
       if (!parameters?.search) return text;
-      const regex = parameters.useRegex 
-        ? new RegExp(parameters.search, parameters.flags || 'g')
-        : new RegExp(parameters.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-      return text.replace(regex, parameters.replace || '');
+      const regex = parameters.useRegex
+        ? new RegExp(parameters.search, parameters.flags || "g")
+        : new RegExp(
+            parameters.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+            "g",
+          );
+      return text.replace(regex, parameters.replace || "");
     default:
       return text;
   }
@@ -49,28 +59,36 @@ export const applyTextTransformation = (
 // Number transformations
 export const applyNumberTransformation = (
   value: any,
-  operation: 'round' | 'ceil' | 'floor' | 'abs' | 'multiply' | 'add' | 'subtract' | 'divide',
-  parameters?: Record<string, any>
+  operation:
+    | "round"
+    | "ceil"
+    | "floor"
+    | "abs"
+    | "multiply"
+    | "add"
+    | "subtract"
+    | "divide",
+  parameters?: Record<string, any>,
 ): number => {
   const num = Number(value) || 0;
-  
+
   switch (operation) {
-    case 'round':
+    case "round":
       const decimals = parameters?.decimals || 0;
       return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
-    case 'ceil':
+    case "ceil":
       return Math.ceil(num);
-    case 'floor':
+    case "floor":
       return Math.floor(num);
-    case 'abs':
+    case "abs":
       return Math.abs(num);
-    case 'multiply':
+    case "multiply":
       return num * (parameters?.value || 1);
-    case 'add':
+    case "add":
       return num + (parameters?.value || 0);
-    case 'subtract':
+    case "subtract":
       return num - (parameters?.value || 0);
-    case 'divide':
+    case "divide":
       const divisor = parameters?.value || 1;
       return divisor !== 0 ? num / divisor : num;
     default:
@@ -81,33 +99,40 @@ export const applyNumberTransformation = (
 // Date transformations
 export const applyDateTransformation = (
   value: any,
-  operation: 'format' | 'addDays' | 'addMonths' | 'addYears' | 'extractYear' | 'extractMonth' | 'extractDay',
-  parameters?: Record<string, any>
+  operation:
+    | "format"
+    | "addDays"
+    | "addMonths"
+    | "addYears"
+    | "extractYear"
+    | "extractMonth"
+    | "extractDay",
+  parameters?: Record<string, any>,
 ): string | number => {
   const date = new Date(value);
   if (isNaN(date.getTime())) return value;
-  
+
   switch (operation) {
-    case 'format':
-      const format = parameters?.format || 'es-ES';
+    case "format":
+      const format = parameters?.format || "es-ES";
       return date.toLocaleDateString(format);
-    case 'addDays':
+    case "addDays":
       const newDate = new Date(date);
       newDate.setDate(date.getDate() + (parameters?.days || 0));
-      return newDate.toLocaleDateString('es-ES');
-    case 'addMonths':
+      return newDate.toLocaleDateString("es-ES");
+    case "addMonths":
       const newDateM = new Date(date);
       newDateM.setMonth(date.getMonth() + (parameters?.months || 0));
-      return newDateM.toLocaleDateString('es-ES');
-    case 'addYears':
+      return newDateM.toLocaleDateString("es-ES");
+    case "addYears":
       const newDateY = new Date(date);
       newDateY.setFullYear(date.getFullYear() + (parameters?.years || 0));
-      return newDateY.toLocaleDateString('es-ES');
-    case 'extractYear':
+      return newDateY.toLocaleDateString("es-ES");
+    case "extractYear":
       return date.getFullYear();
-    case 'extractMonth':
+    case "extractMonth":
       return date.getMonth() + 1;
-    case 'extractDay':
+    case "extractDay":
       return date.getDate();
     default:
       return value;
@@ -118,117 +143,118 @@ export const applyDateTransformation = (
 export const applyTransformationRule = (
   data: Record<string, any>[],
   rule: TransformationRule,
-  columns: ExcelColumn[]
+  columns: ExcelColumn[],
 ): Record<string, any>[] => {
-  return data.map(row => {
+  return data.map((row) => {
     const newRow = { ...row };
-    
+
     switch (rule.type) {
-      case 'replace':
+      case "replace":
         if (rule.sourceColumns.length > 0) {
           const sourceCol = rule.sourceColumns[0];
-          const column = columns.find(c => c.key === sourceCol);
-          
-          if (column?.type === 'text') {
+          const column = columns.find((c) => c.key === sourceCol);
+
+          if (column?.type === "text") {
             newRow[rule.targetColumn] = applyTextTransformation(
               row[sourceCol],
               rule.parameters.operation,
-              rule.parameters
+              rule.parameters,
             );
-          } else if (column?.type === 'number') {
+          } else if (column?.type === "number") {
             newRow[rule.targetColumn] = applyNumberTransformation(
               row[sourceCol],
               rule.parameters.operation,
-              rule.parameters
+              rule.parameters,
             );
-          } else if (column?.type === 'date') {
+          } else if (column?.type === "date") {
             newRow[rule.targetColumn] = applyDateTransformation(
               row[sourceCol],
               rule.parameters.operation,
-              rule.parameters
+              rule.parameters,
             );
           }
         }
         break;
-        
-      case 'calculate':
+
+      case "calculate":
         if (rule.sourceColumns.length >= 2) {
           const val1 = Number(row[rule.sourceColumns[0]]) || 0;
           const val2 = Number(row[rule.sourceColumns[1]]) || 0;
-          
+
           switch (rule.parameters.operation) {
-            case 'add':
+            case "add":
               newRow[rule.targetColumn] = val1 + val2;
               break;
-            case 'subtract':
+            case "subtract":
               newRow[rule.targetColumn] = val1 - val2;
               break;
-            case 'multiply':
+            case "multiply":
               newRow[rule.targetColumn] = val1 * val2;
               break;
-            case 'divide':
+            case "divide":
               newRow[rule.targetColumn] = val2 !== 0 ? val1 / val2 : 0;
               break;
-            case 'percentage':
-              newRow[rule.targetColumn] = val2 !== 0 ? Math.round((val1 / val2) * 100 * 100) / 100 : 0;
+            case "percentage":
+              newRow[rule.targetColumn] =
+                val2 !== 0 ? Math.round((val1 / val2) * 100 * 100) / 100 : 0;
               break;
           }
         }
         break;
-        
-      case 'split':
+
+      case "split":
         if (rule.sourceColumns.length > 0) {
-          const sourceValue = String(row[rule.sourceColumns[0]] || '');
-          const delimiter = rule.parameters.delimiter || ' ';
+          const sourceValue = String(row[rule.sourceColumns[0]] || "");
+          const delimiter = rule.parameters.delimiter || " ";
           const parts = sourceValue.split(delimiter);
           const partIndex = rule.parameters.partIndex || 0;
-          
+
           if (parts.length > partIndex) {
             newRow[rule.targetColumn] = parts[partIndex].trim();
           }
         }
         break;
-        
-      case 'merge':
+
+      case "merge":
         if (rule.sourceColumns.length > 0) {
-          const separator = rule.parameters.separator || ' ';
+          const separator = rule.parameters.separator || " ";
           const mergedValue = rule.sourceColumns
-            .map(col => String(row[col] || ''))
-            .filter(val => val.trim() !== '')
+            .map((col) => String(row[col] || ""))
+            .filter((val) => val.trim() !== "")
             .join(separator);
           newRow[rule.targetColumn] = mergedValue;
         }
         break;
-        
-      case 'format':
+
+      case "format":
         if (rule.sourceColumns.length > 0) {
           const sourceValue = row[rule.sourceColumns[0]];
-          const column = columns.find(c => c.key === rule.sourceColumns[0]);
-          
-          if (column?.type === 'number') {
+          const column = columns.find((c) => c.key === rule.sourceColumns[0]);
+
+          if (column?.type === "number") {
             const num = Number(sourceValue);
             if (!isNaN(num)) {
               newRow[rule.targetColumn] = num.toLocaleString(
-                rule.parameters.locale || 'es-ES',
+                rule.parameters.locale || "es-ES",
                 {
                   minimumFractionDigits: rule.parameters.decimals || 0,
-                  maximumFractionDigits: rule.parameters.decimals || 2
-                }
+                  maximumFractionDigits: rule.parameters.decimals || 2,
+                },
               );
             }
-          } else if (column?.type === 'date') {
+          } else if (column?.type === "date") {
             const date = new Date(sourceValue);
             if (!isNaN(date.getTime())) {
               newRow[rule.targetColumn] = date.toLocaleDateString(
-                rule.parameters.locale || 'es-ES',
-                rule.parameters.dateOptions || {}
+                rule.parameters.locale || "es-ES",
+                rule.parameters.dateOptions || {},
               );
             }
           }
         }
         break;
     }
-    
+
     return newRow;
   });
 };
@@ -236,57 +262,57 @@ export const applyTransformationRule = (
 // Bulk operations
 export const applyBulkDelete = (
   data: Record<string, any>[],
-  condition: (row: Record<string, any>) => boolean
+  condition: (row: Record<string, any>) => boolean,
 ): { data: Record<string, any>[]; deletedCount: number } => {
-  const filtered = data.filter(row => !condition(row));
+  const filtered = data.filter((row) => !condition(row));
   return {
     data: filtered,
-    deletedCount: data.length - filtered.length
+    deletedCount: data.length - filtered.length,
   };
 };
 
 export const applyBulkUpdate = (
   data: Record<string, any>[],
   condition: (row: Record<string, any>) => boolean,
-  updates: Record<string, any>
+  updates: Record<string, any>,
 ): { data: Record<string, any>[]; updatedCount: number } => {
   let updatedCount = 0;
-  
-  const updatedData = data.map(row => {
+
+  const updatedData = data.map((row) => {
     if (condition(row)) {
       updatedCount++;
       return { ...row, ...updates };
     }
     return row;
   });
-  
+
   return {
     data: updatedData,
-    updatedCount
+    updatedCount,
   };
 };
 
 export const applyBulkDuplicate = (
   data: Record<string, any>[],
   condition: (row: Record<string, any>) => boolean,
-  modifications?: Record<string, any>
+  modifications?: Record<string, any>,
 ): { data: Record<string, any>[]; duplicatedCount: number } => {
   const duplicatedRows: Record<string, any>[] = [];
-  
-  data.forEach(row => {
+
+  data.forEach((row) => {
     if (condition(row)) {
       const duplicatedRow = {
         ...row,
         _id: Date.now() + Math.random(), // New unique ID
-        ...modifications
+        ...modifications,
       };
       duplicatedRows.push(duplicatedRow);
     }
   });
-  
+
   return {
     data: [...data, ...duplicatedRows],
-    duplicatedCount: duplicatedRows.length
+    duplicatedCount: duplicatedRows.length,
   };
 };
 
@@ -298,22 +324,30 @@ export const cleanData = (
     removeEmptyRows?: boolean;
     trimWhitespace?: boolean;
     fillEmptyValues?: { column: string; value: any }[];
-  }
-): { data: Record<string, any>[]; cleaned: { duplicates: number; emptyRows: number; trimmed: number; filled: number } } => {
+  },
+): {
+  data: Record<string, any>[];
+  cleaned: {
+    duplicates: number;
+    emptyRows: number;
+    trimmed: number;
+    filled: number;
+  };
+} => {
   let result = [...data];
   const cleaned = { duplicates: 0, emptyRows: 0, trimmed: 0, filled: 0 };
-  
+
   // Remove duplicates
   if (operations.removeDuplicates) {
     const seen = new Set();
     const originalLength = result.length;
-    result = result.filter(row => {
+    result = result.filter((row) => {
       const key = Object.entries(row)
-        .filter(([k]) => k !== '_id')
+        .filter(([k]) => k !== "_id")
         .map(([k, v]) => `${k}:${v}`)
         .sort()
-        .join('|');
-      
+        .join("|");
+
       if (seen.has(key)) {
         return false;
       }
@@ -322,25 +356,25 @@ export const cleanData = (
     });
     cleaned.duplicates = originalLength - result.length;
   }
-  
+
   // Remove empty rows
   if (operations.removeEmptyRows) {
     const originalLength = result.length;
-    result = result.filter(row => {
+    result = result.filter((row) => {
       const values = Object.entries(row)
-        .filter(([k]) => k !== '_id')
+        .filter(([k]) => k !== "_id")
         .map(([k, v]) => v);
-      return values.some(v => v !== null && v !== undefined && v !== '');
+      return values.some((v) => v !== null && v !== undefined && v !== "");
     });
     cleaned.emptyRows = originalLength - result.length;
   }
-  
+
   // Trim whitespace
   if (operations.trimWhitespace) {
-    result = result.map(row => {
+    result = result.map((row) => {
       const trimmedRow = { ...row };
-      Object.keys(trimmedRow).forEach(key => {
-        if (typeof trimmedRow[key] === 'string') {
+      Object.keys(trimmedRow).forEach((key) => {
+        if (typeof trimmedRow[key] === "string") {
           const original = trimmedRow[key];
           trimmedRow[key] = original.trim();
           if (original !== trimmedRow[key]) {
@@ -351,13 +385,17 @@ export const cleanData = (
       return trimmedRow;
     });
   }
-  
+
   // Fill empty values
   if (operations.fillEmptyValues) {
-    result = result.map(row => {
+    result = result.map((row) => {
       const filledRow = { ...row };
       operations.fillEmptyValues!.forEach(({ column, value }) => {
-        if (filledRow[column] === null || filledRow[column] === undefined || filledRow[column] === '') {
+        if (
+          filledRow[column] === null ||
+          filledRow[column] === undefined ||
+          filledRow[column] === ""
+        ) {
           filledRow[column] = value;
           cleaned.filled++;
         }
@@ -365,7 +403,7 @@ export const cleanData = (
       return filledRow;
     });
   }
-  
+
   return { data: result, cleaned };
 };
 
@@ -374,19 +412,19 @@ export const generateTransformationPreview = (
   data: Record<string, any>[],
   rule: TransformationRule,
   columns: ExcelColumn[],
-  sampleSize: number = 5
+  sampleSize: number = 5,
 ): { before: any[]; after: any[] } => {
   const sample = data.slice(0, sampleSize);
   const transformed = applyTransformationRule(sample, rule, columns);
-  
+
   return {
-    before: sample.map(row => ({
-      original: rule.sourceColumns.map(col => row[col]),
-      target: row[rule.targetColumn]
+    before: sample.map((row) => ({
+      original: rule.sourceColumns.map((col) => row[col]),
+      target: row[rule.targetColumn],
     })),
-    after: transformed.map(row => ({
-      original: rule.sourceColumns.map(col => row[col]),
-      target: row[rule.targetColumn]
-    }))
+    after: transformed.map((row) => ({
+      original: rule.sourceColumns.map((col) => row[col]),
+      target: row[rule.targetColumn],
+    })),
   };
 };

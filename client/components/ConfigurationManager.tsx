@@ -1,23 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Switch } from '@/components/ui/switch';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Save, Settings, Download, Upload, Trash2, Eye, Clock, X } from 'lucide-react';
-import { 
-  SavedConfiguration, 
-  UserPreferences, 
-  saveConfiguration, 
-  getSavedConfigurations, 
-  deleteConfiguration, 
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Save,
+  Settings,
+  Download,
+  Upload,
+  Trash2,
+  Eye,
+  Clock,
+  X,
+} from "lucide-react";
+import {
+  SavedConfiguration,
+  UserPreferences,
+  saveConfiguration,
+  getSavedConfigurations,
+  deleteConfiguration,
   getConfigurationById,
   getUserPreferences,
   saveUserPreferences,
@@ -26,19 +54,19 @@ import {
   formatConfigurationDate,
   generateConfigurationName,
   getRecentConfigurations,
-  addToRecentConfigurations
-} from '@/utils/configurationManager';
-import { FilterGroup } from '@shared/excel-types';
+  addToRecentConfigurations,
+} from "@/utils/configurationManager";
+import { FilterGroup } from "@shared/excel-types";
 
 interface ConfigurationManagerProps {
   currentConfig: {
     selectedColumns: string[];
     filterGroups: FilterGroup[];
     globalSearch: string;
-    searchMode: 'normal' | 'regex' | 'pattern';
+    searchMode: "normal" | "regex" | "pattern";
     columnFilters: Record<string, string>;
     sortColumn: string | null;
-    sortDirection: 'asc' | 'desc';
+    sortDirection: "asc" | "desc";
     pagination: any;
   };
   onLoadConfiguration: (config: SavedConfiguration) => void;
@@ -48,20 +76,25 @@ interface ConfigurationManagerProps {
 export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
   currentConfig,
   onLoadConfiguration,
-  onPreferencesChange
+  onPreferencesChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<'save' | 'load' | 'preferences'>('save');
-  const [configurations, setConfigurations] = useState<SavedConfiguration[]>([]);
-  const [preferences, setPreferences] = useState<UserPreferences>(getUserPreferences());
+  const [activeTab, setActiveTab] = useState<"save" | "load" | "preferences">(
+    "save",
+  );
+  const [configurations, setConfigurations] = useState<SavedConfiguration[]>(
+    [],
+  );
+  const [preferences, setPreferences] =
+    useState<UserPreferences>(getUserPreferences());
   const [recentConfigs, setRecentConfigs] = useState<string[]>([]);
-  
+
   // Save dialog state
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [saveName, setSaveName] = useState('');
-  const [saveDescription, setSaveDescription] = useState('');
-  
+  const [saveName, setSaveName] = useState("");
+  const [saveDescription, setSaveDescription] = useState("");
+
   // Import/Export state
-  const [importData, setImportData] = useState('');
+  const [importData, setImportData] = useState("");
   const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -75,17 +108,17 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
 
   const handleSaveConfiguration = () => {
     if (!saveName.trim()) return;
-    
+
     const saved = saveConfiguration({
       name: saveName.trim(),
       description: saveDescription.trim(),
-      config: currentConfig
+      config: currentConfig,
     });
-    
+
     loadConfigurations();
     setSaveDialogOpen(false);
-    setSaveName('');
-    setSaveDescription('');
+    setSaveName("");
+    setSaveDescription("");
   };
 
   const handleLoadConfiguration = (config: SavedConfiguration) => {
@@ -108,11 +141,11 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
 
   const handleExportConfigurations = () => {
     const exportData = exportConfigurations();
-    const blob = new Blob([exportData], { type: 'application/json' });
+    const blob = new Blob([exportData], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `excel-explorer-config-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `excel-explorer-config-${new Date().toISOString().split("T")[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -121,12 +154,12 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
 
   const handleImportConfigurations = () => {
     if (!importData.trim()) return;
-    
+
     const result = importConfigurations(importData);
     if (result.success) {
       loadConfigurations();
       setImportDialogOpen(false);
-      setImportData('');
+      setImportData("");
       alert(result.message);
     } else {
       alert(result.message);
@@ -141,7 +174,9 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Guardar Configuración Actual</CardTitle>
+          <CardTitle className="text-base">
+            Guardar Configuración Actual
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -158,7 +193,7 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                 </Button>
               </div>
             </div>
-            
+
             <div>
               <Label>Descripción (opcional)</Label>
               <Textarea
@@ -172,16 +207,22 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
             <div className="text-sm text-muted-foreground">
               <div>Configuración actual:</div>
               <ul className="mt-2 space-y-1">
-                <li>• {currentConfig.selectedColumns.length} columnas seleccionadas</li>
+                <li>
+                  • {currentConfig.selectedColumns.length} columnas
+                  seleccionadas
+                </li>
                 <li>• {currentConfig.filterGroups.length} grupos de filtros</li>
-                <li>• {Object.keys(currentConfig.columnFilters).length} filtros de columna</li>
-                <li>• Búsqueda: {currentConfig.globalSearch || 'ninguna'}</li>
-                <li>• Ordenamiento: {currentConfig.sortColumn || 'ninguno'}</li>
+                <li>
+                  • {Object.keys(currentConfig.columnFilters).length} filtros de
+                  columna
+                </li>
+                <li>• Búsqueda: {currentConfig.globalSearch || "ninguna"}</li>
+                <li>• Ordenamiento: {currentConfig.sortColumn || "ninguno"}</li>
               </ul>
             </div>
 
-            <Button 
-              onClick={handleSaveConfiguration} 
+            <Button
+              onClick={handleSaveConfiguration}
               disabled={!saveName.trim()}
               className="w-full"
             >
@@ -196,7 +237,7 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
 
   const renderLoadTab = () => {
     const recentConfigObjects = recentConfigs
-      .map(id => configurations.find(c => c.id === id))
+      .map((id) => configurations.find((c) => c.id === id))
       .filter(Boolean) as SavedConfiguration[];
 
     return (
@@ -212,15 +253,21 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                {recentConfigObjects.slice(0, 5).map(config => (
-                  <div key={config.id} className="flex items-center justify-between p-2 border rounded">
+                {recentConfigObjects.slice(0, 5).map((config) => (
+                  <div
+                    key={config.id}
+                    className="flex items-center justify-between p-2 border rounded"
+                  >
                     <div>
                       <div className="font-medium">{config.name}</div>
                       <div className="text-xs text-muted-foreground">
                         {formatConfigurationDate(config.updated)}
                       </div>
                     </div>
-                    <Button size="sm" onClick={() => handleLoadConfiguration(config)}>
+                    <Button
+                      size="sm"
+                      onClick={() => handleLoadConfiguration(config)}
+                    >
                       <Eye className="h-4 w-4 mr-1" />
                       Cargar
                     </Button>
@@ -234,7 +281,9 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
         {/* All Configurations */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Todas las Configuraciones</CardTitle>
+            <CardTitle className="text-base">
+              Todas las Configuraciones
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {configurations.length === 0 ? (
@@ -252,7 +301,7 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {configurations.map(config => (
+                    {configurations.map((config) => (
                       <TableRow key={config.id}>
                         <TableCell>
                           <div>
@@ -277,17 +326,19 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-1">
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
                               onClick={() => handleLoadConfiguration(config)}
                             >
                               <Eye className="h-3 w-3" />
                             </Button>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               variant="outline"
-                              onClick={() => handleDeleteConfiguration(config.id)}
+                              onClick={() =>
+                                handleDeleteConfiguration(config.id)
+                              }
                             >
                               <Trash2 className="h-3 w-3" />
                             </Button>
@@ -313,7 +364,10 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                 <Download className="h-4 w-4 mr-2" />
                 Exportar Todas
               </Button>
-              <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+              <Dialog
+                open={importDialogOpen}
+                onOpenChange={setImportDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button variant="outline">
                     <Upload className="h-4 w-4 mr-2" />
@@ -332,10 +386,16 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                       rows={10}
                     />
                     <div className="flex gap-2">
-                      <Button onClick={handleImportConfigurations} disabled={!importData.trim()}>
+                      <Button
+                        onClick={handleImportConfigurations}
+                        disabled={!importData.trim()}
+                      >
                         Importar
                       </Button>
-                      <Button variant="outline" onClick={() => setImportDialogOpen(false)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setImportDialogOpen(false)}
+                      >
                         Cancelar
                       </Button>
                     </div>
@@ -363,9 +423,11 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
               <div className="space-y-4">
                 <div>
                   <Label>Tamaño de página predeterminado</Label>
-                  <Select 
-                    value={preferences.defaultPageSize.toString()} 
-                    onValueChange={(value) => handlePreferenceChange('defaultPageSize', parseInt(value))}
+                  <Select
+                    value={preferences.defaultPageSize.toString()}
+                    onValueChange={(value) =>
+                      handlePreferenceChange("defaultPageSize", parseInt(value))
+                    }
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -383,7 +445,9 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                   <Checkbox
                     id="compactMode"
                     checked={preferences.compactMode}
-                    onCheckedChange={(checked) => handlePreferenceChange('compactMode', checked)}
+                    onCheckedChange={(checked) =>
+                      handlePreferenceChange("compactMode", checked)
+                    }
                   />
                   <Label htmlFor="compactMode">Modo compacto</Label>
                 </div>
@@ -392,18 +456,26 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                   <Checkbox
                     id="showStatsOnLoad"
                     checked={preferences.showStatsOnLoad}
-                    onCheckedChange={(checked) => handlePreferenceChange('showStatsOnLoad', checked)}
+                    onCheckedChange={(checked) =>
+                      handlePreferenceChange("showStatsOnLoad", checked)
+                    }
                   />
-                  <Label htmlFor="showStatsOnLoad">Mostrar estadísticas al cargar datos</Label>
+                  <Label htmlFor="showStatsOnLoad">
+                    Mostrar estadísticas al cargar datos
+                  </Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="showVisualizationOnLoad"
                     checked={preferences.showVisualizationOnLoad}
-                    onCheckedChange={(checked) => handlePreferenceChange('showVisualizationOnLoad', checked)}
+                    onCheckedChange={(checked) =>
+                      handlePreferenceChange("showVisualizationOnLoad", checked)
+                    }
                   />
-                  <Label htmlFor="showVisualizationOnLoad">Mostrar gráficos al cargar datos</Label>
+                  <Label htmlFor="showVisualizationOnLoad">
+                    Mostrar gráficos al cargar datos
+                  </Label>
                 </div>
               </div>
             </div>
@@ -414,9 +486,11 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
               <div className="space-y-4">
                 <div>
                   <Label>Modo de búsqueda predeterminado</Label>
-                  <Select 
-                    value={preferences.defaultSearchMode} 
-                    onValueChange={(value: any) => handlePreferenceChange('defaultSearchMode', value)}
+                  <Select
+                    value={preferences.defaultSearchMode}
+                    onValueChange={(value: any) =>
+                      handlePreferenceChange("defaultSearchMode", value)
+                    }
                   >
                     <SelectTrigger className="w-40">
                       <SelectValue />
@@ -439,16 +513,25 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
                   <Checkbox
                     id="autoSave"
                     checked={preferences.autoSaveConfigurations}
-                    onCheckedChange={(checked) => handlePreferenceChange('autoSaveConfigurations', checked)}
+                    onCheckedChange={(checked) =>
+                      handlePreferenceChange("autoSaveConfigurations", checked)
+                    }
                   />
-                  <Label htmlFor="autoSave">Guardar configuraciones automáticamente</Label>
+                  <Label htmlFor="autoSave">
+                    Guardar configuraciones automáticamente
+                  </Label>
                 </div>
 
                 <div>
                   <Label>Máximo configuraciones recientes</Label>
-                  <Select 
-                    value={preferences.maxRecentConfigurations.toString()} 
-                    onValueChange={(value) => handlePreferenceChange('maxRecentConfigurations', parseInt(value))}
+                  <Select
+                    value={preferences.maxRecentConfigurations.toString()}
+                    onValueChange={(value) =>
+                      handlePreferenceChange(
+                        "maxRecentConfigurations",
+                        parseInt(value),
+                      )
+                    }
                   >
                     <SelectTrigger className="w-24">
                       <SelectValue />
@@ -470,9 +553,11 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
               <div className="space-y-4">
                 <div>
                   <Label>Formato de fecha</Label>
-                  <Select 
-                    value={preferences.dateFormat} 
-                    onValueChange={(value: any) => handlePreferenceChange('dateFormat', value)}
+                  <Select
+                    value={preferences.dateFormat}
+                    onValueChange={(value: any) =>
+                      handlePreferenceChange("dateFormat", value)
+                    }
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -487,9 +572,11 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
 
                 <div>
                   <Label>Formato de números</Label>
-                  <Select 
-                    value={preferences.numberFormat} 
-                    onValueChange={(value: any) => handlePreferenceChange('numberFormat', value)}
+                  <Select
+                    value={preferences.numberFormat}
+                    onValueChange={(value: any) =>
+                      handlePreferenceChange("numberFormat", value)
+                    }
                   >
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -513,25 +600,25 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
       {/* Tab Navigation */}
       <div className="flex gap-2">
         <Button
-          variant={activeTab === 'save' ? 'default' : 'outline'}
+          variant={activeTab === "save" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('save')}
+          onClick={() => setActiveTab("save")}
         >
           <Save className="h-4 w-4 mr-2" />
           Guardar
         </Button>
         <Button
-          variant={activeTab === 'load' ? 'default' : 'outline'}
+          variant={activeTab === "load" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('load')}
+          onClick={() => setActiveTab("load")}
         >
           <Eye className="h-4 w-4 mr-2" />
           Cargar
         </Button>
         <Button
-          variant={activeTab === 'preferences' ? 'default' : 'outline'}
+          variant={activeTab === "preferences" ? "default" : "outline"}
           size="sm"
-          onClick={() => setActiveTab('preferences')}
+          onClick={() => setActiveTab("preferences")}
         >
           <Settings className="h-4 w-4 mr-2" />
           Preferencias
@@ -539,9 +626,9 @@ export const ConfigurationManager: React.FC<ConfigurationManagerProps> = ({
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'save' && renderSaveTab()}
-      {activeTab === 'load' && renderLoadTab()}
-      {activeTab === 'preferences' && renderPreferencesTab()}
+      {activeTab === "save" && renderSaveTab()}
+      {activeTab === "load" && renderLoadTab()}
+      {activeTab === "preferences" && renderPreferencesTab()}
     </div>
   );
 };
