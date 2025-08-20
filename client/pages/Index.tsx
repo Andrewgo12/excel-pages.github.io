@@ -820,10 +820,10 @@ export default function Index() {
                 </div>
               )}
             </div>
-            <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+            <div className="flex flex-col lg:flex-row gap-responsive lg:items-center">
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-responsive-input w-responsive-input text-muted-foreground" />
                   <Input
                     placeholder={
                       searchMode === "regex"
@@ -834,7 +834,7 @@ export default function Index() {
                     }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className={`h-8 pl-8 pr-6 text-sm ${regexError ? "border-destructive" : ""}`}
+                    className={`control-responsive pl-8 pr-6 ${regexError ? "border-destructive" : ""}`}
                   />
                   {globalSearch && (
                     <Button
@@ -843,7 +843,7 @@ export default function Index() {
                       onClick={() => setGlobalSearch("")}
                       className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-responsive-input w-responsive-input" />
                     </Button>
                   )}
                 </div>
