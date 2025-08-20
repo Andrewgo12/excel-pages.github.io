@@ -223,41 +223,37 @@ export default function Index() {
   const [tableCustomization, setTableCustomization] =
     useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
+  const handleDataLoaded = useCallback((data: ExcelData, metadata?: any) => {
+    setExcelData(data);
 
-    try {
-      // Show loading state
-      setIsFileLoading(true);
-
-      // Use advanced multi-sheet loader
-      const { data, analysis } = await loadCompleteExcelFile(file);
-
-      setExcelData(data);
-      setMultiSheetAnalysis(analysis);
-      setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns by default
-      setPagination((prev) => ({
-        ...prev,
-        totalRows: data.rows.length,
-        page: 1,
-      }));
-
-      // Reset filters and search when new file is loaded
-      setGlobalSearch("");
-      setColumnFilters({});
-      setFilterGroups([]);
-
-      // Clear any previous errors
-      setFileError(null);
-    } catch (error) {
-      console.error("Error reading Excel file:", error);
-      setFileError(
-        "Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.",
-      );
-    } finally {
-      setIsFileLoading(false);
+    // Set multi-sheet analysis if available (from Excel files)
+    if (metadata?.analysis) {
+      setMultiSheetAnalysis(metadata.analysis);
+    } else {
+      setMultiSheetAnalysis(null);
     }
+
+    // Show first 8 columns by default
+    setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key));
+    setPagination((prev) => ({
+      ...prev,
+      totalRows: data.rows.length,
+      page: 1,
+    }));
+
+    // Reset filters and search when new file is loaded
+    setGlobalSearch("");
+    setColumnFilters({});
+    setFilterGroups([]);
+
+    // Clear any previous errors
+    setFileError(null);
+    setIsFileLoading(false);
+  }, []);
+
+  const handleFileError = useCallback((error: string) => {
+    setFileError(error);
+    setIsFileLoading(false);
   }, []);
 
   const inferColumnType = (
