@@ -132,12 +132,6 @@ export default function Index() {
     multiple: false
   });
 
-  // Calculate statistics when data changes
-  const currentStats = useMemo(() => {
-    if (!excelData) return null;
-    return calculateDatasetStats(filteredAndSortedData, excelData.columns);
-  }, [excelData, filteredAndSortedData]);
-
   const filteredAndSortedData = useMemo(() => {
     if (!excelData) return [];
 
