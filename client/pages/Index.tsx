@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
@@ -39,6 +40,7 @@ import {
   Database,
   BarChart3,
   TrendingUp,
+  Grid,
 } from "lucide-react";
 import {
   ExcelData,
@@ -57,6 +59,11 @@ import {
   DatasetStats,
   ColumnStats,
 } from "@/utils/statisticalAnalysis";
+import {
+  loadCompleteExcelFile,
+  MultiSheetAnalysis,
+  optimizeSheetForDisplay,
+} from "@/utils/multiSheetExcel";
 // Lazy loaded components for performance optimization
 const DataVisualization = lazy(() =>
   import("@/components/DataVisualization").then((m) => ({
@@ -98,8 +105,34 @@ const RealTimeAnalytics = lazy(() =>
     default: m.RealTimeAnalytics,
   })),
 );
+const AdvancedAnalytics = lazy(() =>
+  import("@/components/AdvancedAnalytics").then((m) => ({
+    default: m.AdvancedAnalytics,
+  })),
+);
+const MachineLearning = lazy(() =>
+  import("@/components/MachineLearning").then((m) => ({
+    default: m.MachineLearning,
+  })),
+);
+const DataCleaning = lazy(() =>
+  import("@/components/DataCleaning").then((m) => ({
+    default: m.DataCleaning,
+  })),
+);
+const FontSettings = lazy(() =>
+  import("@/components/FontSettings").then((m) => ({
+    default: m.FontSettings,
+  })),
+);
+const SheetNavigator = lazy(() =>
+  import("@/components/SheetNavigator").then((m) => ({
+    default: m.SheetNavigator,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
+import { FontScaleControl } from "@/components/FontScaleControl";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
@@ -155,6 +188,11 @@ export default function Index() {
   const isAdvancedSearchOpen = activePanel === "advancedSearch";
   const isDataFormOpen = activePanel === "dataForm";
   const isRealTimeAnalyticsOpen = activePanel === "realTimeAnalytics";
+  const isAdvancedAnalyticsOpen = activePanel === "advancedAnalytics";
+  const isMachineLearningOpen = activePanel === "machineLearning";
+  const isDataCleaningOpen = activePanel === "dataCleaning";
+  const isFontSettingsOpen = activePanel === "fontSettings";
+  const isSheetNavigatorOpen = activePanel === "sheetNavigator";
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
@@ -166,52 +204,48 @@ export default function Index() {
   const [regexError, setRegexError] = useState<string | null>(null);
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  // Multi-sheet management
+  const [multiSheetAnalysis, setMultiSheetAnalysis] =
+    useState<MultiSheetAnalysis | null>(null);
+  const [isFileLoading, setIsFileLoading] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [sheetNavigatorOpen, setSheetNavigatorOpen] = useState(false);
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const fileData = e.target?.result;
-        const workbook = XLSX.read(fileData, { type: "binary" });
-        const sheetNames = workbook.SheetNames;
-        const activeSheet = sheetNames[0];
-        const worksheet = workbook.Sheets[activeSheet];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    try {
+      // Show loading state
+      setIsFileLoading(true);
 
-        if (jsonData.length === 0) return;
+      // Use advanced multi-sheet loader
+      const { data, analysis } = await loadCompleteExcelFile(file);
 
-        const headers = jsonData[0] as string[];
-        const rows = jsonData.slice(1).map((row: any[], index) => {
-          const rowData: Record<string, any> = { _id: index };
-          headers.forEach((header, colIndex) => {
-            rowData[header] = row[colIndex] || "";
-          });
-          return rowData;
-        });
+      setExcelData(data);
+      setMultiSheetAnalysis(analysis);
+      setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns by default
+      setPagination((prev) => ({
+        ...prev,
+        totalRows: data.rows.length,
+        page: 1,
+      }));
 
-        const columns: ExcelColumn[] = headers.map((header) => ({
-          key: header,
-          label: header,
-          type: inferColumnType(rows, header),
-        }));
+      // Reset filters and search when new file is loaded
+      setGlobalSearch("");
+      setColumnFilters({});
+      setFilterGroups([]);
 
-        const data: ExcelData = {
-          columns,
-          rows,
-          sheetNames,
-          activeSheet,
-        };
-
-        setExcelData(data);
-        setSelectedColumns(headers.slice(0, 8)); // Show first 8 columns by default
-        setPagination((prev) => ({ ...prev, totalRows: rows.length, page: 1 }));
-      } catch (error) {
-        console.error("Error reading Excel file:", error);
-      }
-    };
-    reader.readAsBinaryString(file);
+      // Clear any previous errors
+      setFileError(null);
+    } catch (error) {
+      console.error("Error reading Excel file:", error);
+      setFileError(
+        "Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.",
+      );
+    } finally {
+      setIsFileLoading(false);
+    }
   }, []);
 
   const inferColumnType = (
@@ -602,29 +636,43 @@ export default function Index() {
     setFilterGroups([]);
   };
 
-  const switchSheet = (sheetName: string) => {
+  const switchSheet = async (sheetName: string) => {
     if (!excelData?.sheetsData) return;
 
     const sheetData = excelData.sheetsData[sheetName];
     if (!sheetData) return;
 
-    const newData = {
-      ...excelData,
-      activeSheet: sheetName,
-      columns: sheetData.columns,
-      rows: sheetData.rows,
-    };
+    try {
+      // Optimize sheet data for display if it's large
+      const optimizedData = optimizeSheetForDisplay(sheetData, 5000);
 
-    setExcelData(newData);
-    setSelectedColumns(sheetData.columns.slice(0, 8).map((c) => c.key));
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: sheetData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
+      const newData = {
+        ...excelData,
+        activeSheet: sheetName,
+        columns: optimizedData.columns,
+        rows: optimizedData.rows,
+      };
+
+      setExcelData(newData);
+      setSelectedColumns(optimizedData.columns.slice(0, 8).map((c) => c.key));
+      setPagination((prev) => ({
+        ...prev,
+        totalRows: optimizedData.rows.length,
+        page: 1,
+      }));
+
+      // Reset filters and search when switching sheets
+      setGlobalSearch("");
+      setColumnFilters({});
+      setFilterGroups([]);
+
+      // Close sheet navigator if it's open
+      if (activePanel === "sheetNavigator") {
+        setActivePanel(null);
+      }
+    } catch (error) {
+      console.error("Error switching sheet:", error);
+    }
   };
 
   const getCurrentConfiguration = () => ({
@@ -724,11 +772,21 @@ export default function Index() {
                       isDragActive
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
-                    }`}
+                    } ${isFileLoading ? "pointer-events-none opacity-50" : ""}`}
                 >
-                  <input {...getInputProps()} />
+                  <input {...getInputProps()} disabled={isFileLoading} />
                   <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  {isDragActive ? (
+                  {isFileLoading ? (
+                    <div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-primary font-medium mb-2">
+                        Procesando archivo Excel...
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Analizando hojas y detectando relaciones
+                      </p>
+                    </div>
+                  ) : isDragActive ? (
                     <p className="text-primary font-medium">
                       Suelta el archivo aquí...
                     </p>
@@ -738,11 +796,19 @@ export default function Index() {
                         Haz clic para seleccionar o arrastra el archivo
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Soporta archivos .xlsx y .xls
+                        Soporta archivos .xlsx y .xls (incluye archivos
+                        complejos con múltiples hojas)
                       </p>
                     </div>
                   )}
                 </div>
+
+                {fileError && (
+                  <Alert variant="destructive" className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{fileError}</AlertDescription>
+                  </Alert>
+                )}
 
                 <div className="mt-6 text-center">
                   <div className="text-sm text-muted-foreground mb-3">
@@ -779,50 +845,166 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-3 py-3">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="container mx-auto px-responsive py-responsive">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-responsive">
             <div>
-              <h1 className="text-lg lg:text-xl font-bold text-foreground flex items-center gap-2">
-                <FileSpreadsheet className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
+              <h1 className="text-responsive-2xl font-bold text-foreground flex items-center gap-responsive-sm">
+                <FileSpreadsheet className="h-responsive-input w-responsive-input text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-xs lg:text-sm text-muted-foreground mt-1">
-                {excelData.rows.length.toLocaleString()} filas •{" "}
-                {excelData.columns.length} columnas • Hoja:{" "}
-                {excelData.activeSheet}
-              </p>
-
-              {/* Sheet Tabs */}
-              {excelData.sheetsData && excelData.sheetNames.length > 1 && (
-                <div className="flex gap-1 mt-3">
-                  {excelData.sheetNames.map((sheetName) => (
-                    <Button
-                      key={sheetName}
-                      variant={
-                        excelData.activeSheet === sheetName
-                          ? "default"
-                          : "outline"
-                      }
-                      size="sm"
-                      onClick={() => switchSheet(sheetName)}
-                      className="h-7 text-xs"
-                    >
-                      {sheetName}
-                      {excelData.sheetsData &&
-                        excelData.sheetsData[sheetName] && (
-                          <Badge variant="secondary" className="ml-2 text-xs">
-                            {excelData.sheetsData[sheetName].rows.length}
-                          </Badge>
+              <div className="flex flex-col gap-2 mt-1">
+                <div className="flex items-center gap-responsive-sm">
+                  <p className="text-responsive-sm text-muted-foreground">
+                    {excelData.rows.length.toLocaleString()} filas •{" "}
+                    {excelData.columns.length} columnas
+                  </p>
+                  {multiSheetAnalysis && (
+                    <>
+                      <Separator orientation="vertical" className="h-4" />
+                      <Badge
+                        variant="outline"
+                        className={`text-responsive-xs ${
+                          multiSheetAnalysis.estimatedComplexity === "simple"
+                            ? "border-green-500 text-green-700"
+                            : multiSheetAnalysis.estimatedComplexity ===
+                                "moderate"
+                              ? "border-blue-500 text-blue-700"
+                              : multiSheetAnalysis.estimatedComplexity ===
+                                  "complex"
+                                ? "border-orange-500 text-orange-700"
+                                : "border-red-500 text-red-700"
+                        }`}
+                      >
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
                         )}
+                      </Badge>
+                      {multiSheetAnalysis.relationships.length > 0 && (
+                        <Badge
+                          variant="outline"
+                          className="text-responsive-xs border-blue-500 text-blue-700"
+                        >
+                          {multiSheetAnalysis.relationships.length} relaciones
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {multiSheetAnalysis && (
+                  <div className="flex items-center gap-responsive-sm">
+                    <SheetNavigator
+                      excelData={excelData}
+                      analysis={multiSheetAnalysis}
+                      currentSheet={excelData.activeSheet}
+                      onSheetChange={switchSheet}
+                      onClose={() => {}}
+                      compact={true}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => togglePanel("sheetNavigator")}
+                      className="button-responsive text-responsive-xs gap-1"
+                    >
+                      <Grid className="h-responsive-input w-responsive-input" />
+                      Explorar Hojas
                     </Button>
-                  ))}
+                    <div className="text-responsive-xs text-muted-foreground">
+                      Procesado en {multiSheetAnalysis.processingTime}ms
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sheet Tabs - Enhanced */}
+              {excelData.sheetsData && excelData.sheetNames.length > 1 && (
+                <div className="mt-responsive">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-responsive-xs text-muted-foreground">
+                      Hojas del archivo ({excelData.sheetNames.length})
+                    </Label>
+                    {multiSheetAnalysis && (
+                      <Badge variant="outline" className="text-responsive-xs">
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
+                        )}
+                      </Badge>
+                    )}
+                  </div>
+                  <ScrollArea className="w-full">
+                    <div className="flex gap-responsive-sm pb-2">
+                      {excelData.sheetNames.map((sheetName) => {
+                        const sheetAnalysis =
+                          multiSheetAnalysis?.sheetAnalyses.find(
+                            (s) => s.name === sheetName,
+                          );
+                        const hasRelationships =
+                          multiSheetAnalysis?.relationships.some(
+                            (rel) =>
+                              rel.sourceSheet === sheetName ||
+                              rel.targetSheet === sheetName,
+                          );
+                        const isRecommended =
+                          sheetName ===
+                          multiSheetAnalysis?.recommendedStartSheet;
+
+                        return (
+                          <Button
+                            key={sheetName}
+                            variant={
+                              excelData.activeSheet === sheetName
+                                ? "default"
+                                : "outline"
+                            }
+                            size="sm"
+                            onClick={() => switchSheet(sheetName)}
+                            className="button-responsive text-responsive-xs whitespace-nowrap relative"
+                          >
+                            <div className="flex items-center gap-1">
+                              {isRecommended && (
+                                <span className="text-yellow-500">★</span>
+                              )}
+                              <span className="truncate max-w-24">
+                                {sheetName}
+                              </span>
+                              {sheetAnalysis && !sheetAnalysis.isEmpty && (
+                                <Badge
+                                  variant="secondary"
+                                  className="text-responsive-xs ml-1"
+                                >
+                                  {sheetAnalysis.rowCount.toLocaleString()}
+                                </Badge>
+                              )}
+                              {hasRelationships && (
+                                <div
+                                  className="w-2 h-2 bg-blue-500 rounded-full ml-1"
+                                  title="Tiene relaciones con otras hojas"
+                                />
+                              )}
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+
+                  {multiSheetAnalysis &&
+                    multiSheetAnalysis.relationships.length > 0 && (
+                      <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                        <span>Indica hojas con relaciones detectadas</span>
+                      </div>
+                    )}
                 </div>
               )}
             </div>
-            <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+            <div className="flex flex-col lg:flex-row gap-responsive lg:items-center">
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-responsive-input w-responsive-input text-muted-foreground" />
                   <Input
                     placeholder={
                       searchMode === "regex"
@@ -833,7 +1015,7 @@ export default function Index() {
                     }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className={`h-8 pl-8 pr-6 text-sm ${regexError ? "border-destructive" : ""}`}
+                    className={`control-responsive pl-8 pr-6 ${regexError ? "border-destructive" : ""}`}
                   />
                   {globalSearch && (
                     <Button
@@ -842,7 +1024,7 @@ export default function Index() {
                       onClick={() => setGlobalSearch("")}
                       className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                     >
-                      <X className="h-3 w-3" />
+                      <X className="h-responsive-input w-responsive-input" />
                     </Button>
                   )}
                 </div>
@@ -894,13 +1076,15 @@ export default function Index() {
                   Avanzado
                 </Button>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-responsive-sm">
+                <FontScaleControl />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => togglePanel("columnSelector")}
+                  className="button-responsive"
                 >
-                  <Columns className="h-4 w-4 mr-2" />
+                  <Columns className="h-responsive-input w-responsive-input mr-2" />
                   <span className="hidden sm:inline">Columnas</span> (
                   {selectedColumns.length})
                 </Button>
@@ -908,8 +1092,9 @@ export default function Index() {
                   variant="outline"
                   size="sm"
                   onClick={() => togglePanel("filter")}
+                  className="button-responsive"
                 >
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="h-responsive-input w-responsive-input mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
                   {filterGroups.reduce(
                     (sum, group) => sum + group.conditions.length,
@@ -930,12 +1115,17 @@ export default function Index() {
                     togglePanel("realTimeAnalytics")
                   }
                   onAdvancedSearchOpen={() => togglePanel("advancedSearch")}
-                  onDataCleaningOpen={() => togglePanel("bulkOperations")}
+                  onDataCleaningOpen={() => togglePanel("dataCleaning")}
                   onPerformanceOpen={() => togglePanel("stats")}
                   onCollaborationOpen={() => togglePanel("configuration")}
                   onSecurityOpen={() => togglePanel("dataValidation")}
                   onCloudSyncOpen={() => togglePanel("enhancedExport")}
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
+                  onAdvancedAnalyticsOpen={() =>
+                    togglePanel("advancedAnalytics")
+                  }
+                  onMachineLearningOpen={() => togglePanel("machineLearning")}
+                  onFontSettingsOpen={() => togglePanel("fontSettings")}
                 />
                 <Button
                   variant="outline"
@@ -959,27 +1149,28 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="container mx-auto px-responsive py-responsive-lg">
+        <div className="flex flex-col lg:flex-row gap-responsive-lg">
           {/* Sidebar */}
-          <div className="w-full lg:w-80 space-y-4">
+          <div className="w-full lg:w-80 space-y-responsive">
             {/* Column Selector */}
             {isColumnSelectorOpen && (
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                <CardHeader className="p-responsive">
+                  <CardTitle className="text-responsive-lg flex items-center justify-between">
                     Seleccionar Columnas
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setActivePanel(null)}
+                      className="button-responsive"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-responsive-input w-responsive-input" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2 mb-4">
+                <CardContent className="p-responsive">
+                  <div className="flex gap-responsive-sm mb-responsive">
                     <Button
                       variant="outline"
                       size="sm"
@@ -1826,6 +2017,113 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Advanced Analytics Panel */}
+            {isAdvancedAnalyticsOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando análisis avanzado...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <AdvancedAnalytics
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
+
+            {/* Machine Learning Panel */}
+            {isMachineLearningOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando Machine Learning...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <MachineLearning
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
+
+            {/* Data Cleaning Panel */}
+            {isDataCleaningOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando herramientas de limpieza...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <DataCleaning
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                  onApplyCleanedData={handleDataChange}
+                />
+              </Suspense>
+            )}
+
+            {/* Font Settings Panel */}
+            {isFontSettingsOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando configuración de fuentes...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <FontSettings onClose={() => setActivePanel(null)} />
+              </Suspense>
+            )}
+
+            {/* Sheet Navigator Panel */}
+            {isSheetNavigatorOpen && multiSheetAnalysis && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando navegador de hojas...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <SheetNavigator
+                  excelData={excelData!}
+                  analysis={multiSheetAnalysis}
+                  currentSheet={excelData!.activeSheet}
+                  onSheetChange={switchSheet}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
@@ -1883,8 +2181,8 @@ export default function Index() {
                 ) : (
                   <>
                     <div className="relative">
-                      <div className="w-full overflow-x-auto overflow-y-visible">
-                        <Table>
+                      <div className="w-full overflow-x-auto overflow-y-visible table-responsive">
+                        <Table className="table-responsive">
                           <TableHeader>
                             <TableRow>
                               {selectedColumns.map((columnKey) => {
@@ -1894,25 +2192,24 @@ export default function Index() {
                                 return (
                                   <TableHead
                                     key={columnKey}
-                                    className="p-0"
-                                    style={{ minWidth: "200px" }}
+                                    className="p-0 min-w-[12em]"
                                   >
-                                    <div className="p-3">
+                                    <div className="p-responsive-sm">
                                       <div
-                                        className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                        className="flex items-center gap-responsive-sm cursor-pointer hover:text-primary"
                                         onClick={() => handleSort(columnKey)}
                                       >
-                                        <span className="font-medium">
+                                        <span className="font-medium text-responsive-sm">
                                           {column?.label}
                                         </span>
                                         <Badge
                                           variant="secondary"
-                                          className="text-xs"
+                                          className="text-responsive-xs"
                                         >
                                           {column?.type}
                                         </Badge>
                                         {sortColumn === columnKey && (
-                                          <span className="text-xs text-primary">
+                                          <span className="text-responsive-xs text-primary">
                                             {sortDirection === "asc"
                                               ? "↑"
                                               : "↓"}
@@ -1922,6 +2219,7 @@ export default function Index() {
                                       <Input
                                         placeholder={`Filtrar ${column?.label}...`}
                                         value={columnFilters[columnKey] || ""}
+                                        className="control-responsive mt-responsive-sm"
                                         onChange={(e) => {
                                           e.stopPropagation();
                                           setColumnFilters((prev) => ({
@@ -1953,20 +2251,20 @@ export default function Index() {
                                   return (
                                     <TableCell
                                       key={columnKey}
-                                      className="max-w-48"
-                                      style={{ minWidth: "200px" }}
+                                      className="max-w-48 min-w-[12em]"
                                     >
-                                      <div className="truncate">
+                                      <div className="truncate text-responsive-sm">
                                         {column?.type === "boolean" ? (
                                           <Badge
                                             variant={
                                               value ? "default" : "secondary"
                                             }
+                                            className="text-responsive-xs"
                                           >
                                             {value ? "Sí" : "No"}
                                           </Badge>
                                         ) : column?.type === "number" ? (
-                                          <span className="font-mono">
+                                          <span className="font-mono text-responsive-sm">
                                             {typeof value === "number"
                                               ? value.toLocaleString("es-ES")
                                               : value}
