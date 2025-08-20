@@ -1494,7 +1494,7 @@ export default function Index() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
-                    Visualizaci��n de Datos
+                    Visualización de Datos
                     <Button
                       variant="ghost"
                       size="sm"
@@ -1698,26 +1698,42 @@ export default function Index() {
                 ) : (
                   <>
                     <div className="relative">
-                      <div className="bg-muted/30 p-3 mb-2 rounded-md text-sm text-muted-foreground">
-                        💡 <strong>Navegación horizontal:</strong> Desliza hacia la derecha o izquierda para ver más columnas
+                      {/* Fixed scroll indicator */}
+                      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b p-2 mb-3">
+                        <div className="bg-primary/10 p-2 rounded-md text-sm text-primary flex items-center justify-between">
+                          <span>📊 <strong>Tabla interactiva</strong> - Desliza horizontalmente para ver todas las columnas</span>
+                          <div className="text-xs opacity-70">← → Scroll horizontal</div>
+                        </div>
                       </div>
-                      <ScrollArea className="w-full whitespace-nowrap rounded-md border bg-card">
-                        <div className="min-w-full">
-                          <Table>
-                            <TableHeader>
+
+                      {/* Table with native horizontal scroll */}
+                      <div className="w-full overflow-x-auto overflow-y-visible border rounded-md bg-card shadow-sm">
+                        <div
+                          className="min-w-full"
+                          style={{
+                            minWidth: `${selectedColumns.length * 250}px`,
+                            width: 'max-content'
+                          }}
+                        >
+                          <Table className="table-fixed">
+                            <TableHeader className="sticky top-0 bg-card/95 backdrop-blur-sm border-b-2">
                               <TableRow>
                                 {selectedColumns.map((columnKey) => {
                                   const column = excelData.columns.find(
                                     (c) => c.key === columnKey,
                                   );
                                   return (
-                                    <TableHead key={columnKey} className="p-0 min-w-[200px]">
+                                    <TableHead
+                                      key={columnKey}
+                                      className="p-0 border-r border-border/50"
+                                      style={{ width: '250px', minWidth: '250px' }}
+                                    >
                                       <div className="p-3">
                                         <div
-                                          className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                          className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors"
                                           onClick={() => handleSort(columnKey)}
                                         >
-                                          <span className="font-medium">
+                                          <span className="font-medium text-sm">
                                             {column?.label}
                                           </span>
                                           <Badge
@@ -1757,7 +1773,7 @@ export default function Index() {
                               {paginatedData.map((row, index) => (
                                 <TableRow
                                   key={row._id || index}
-                                  className="hover:bg-muted/50"
+                                  className="hover:bg-muted/50 transition-colors"
                                 >
                                   {selectedColumns.map((columnKey) => {
                                     const column = excelData.columns.find(
@@ -1768,7 +1784,8 @@ export default function Index() {
                                     return (
                                       <TableCell
                                         key={columnKey}
-                                        className="min-w-[200px] max-w-xs"
+                                        className="border-r border-border/30 p-3"
+                                        style={{ width: '250px', minWidth: '250px' }}
                                       >
                                         <div className="truncate">
                                           {column?.type === "boolean" ? (
@@ -1801,10 +1818,7 @@ export default function Index() {
                             </TableBody>
                           </Table>
                         </div>
-                        <div className="flex h-4 items-center justify-center bg-gradient-to-r from-muted/50 to-muted/20">
-                          <span className="text-xs text-muted-foreground">← Desliza para ver más columnas →</span>
-                        </div>
-                      </ScrollArea>
+                      </div>
                     </div>
 
                     {/* Pagination */}
