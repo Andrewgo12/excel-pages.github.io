@@ -63,6 +63,9 @@ export default function Index() {
   const [isVisualizationOpen, setIsVisualizationOpen] = useState(false);
   const [isAggregationOpen, setIsAggregationOpen] = useState(false);
   const [isConfigurationOpen, setIsConfigurationOpen] = useState(false);
+  const [isBulkOperationsOpen, setIsBulkOperationsOpen] = useState(false);
+  const [isEnhancedExportOpen, setIsEnhancedExportOpen] = useState(false);
+  const [isDataValidationOpen, setIsDataValidationOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
