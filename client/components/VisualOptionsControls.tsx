@@ -25,7 +25,7 @@ import {
   Palette,
   MousePointer,
   Grid,
-  Shadow,
+  Box as Shadow,
   Contrast,
   Accessibility,
   RotateCcw,

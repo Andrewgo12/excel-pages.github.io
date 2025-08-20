@@ -17,11 +17,11 @@ import {
 import { BorderSettings, SpacingSettings } from "@shared/table-customization";
 import {
   Square,
-  RoundedCorner,
+  CornerDownRight as RoundedCorner,
   Minus,
   MoreHorizontal,
   Grid,
-  Separator as SeparatorIcon,
+  Minus as SeparatorIcon,
   Settings,
   Eye,
   RotateCcw,

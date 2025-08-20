@@ -4,7 +4,7 @@
 
 A powerful, web-based Excel data processing and visualization tool built with React, TypeScript, and modern web technologies. Process, analyze, and visualize Excel files directly in your browser with advanced filtering, statistical analysis, and export capabilities.
 
-🌐 **Live Demo**: [https://andrewgo12.github.io/excel-pages.github.io/](https://andrewgo12.github.io/excel-pages.github.io/)
+🌐 **Live Demo**: [https://excel-pages.github.io/](https://excel-pages.github.io/)
 
 ## ✨ Features
 
