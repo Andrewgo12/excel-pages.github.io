@@ -22,7 +22,7 @@ const FONT_SCALE_VALUES = {
 };
 
 export function FontScaleProvider({ children }: { children: React.ReactNode }) {
-  const [fontScale, setFontScaleState] = useState<FontScale>("base");
+  const [fontScale, setFontScaleState] = useState<FontScale>("font-scale-base");
 
   const applyScale = (element?: HTMLElement) => {
     const target = element || document.documentElement;
