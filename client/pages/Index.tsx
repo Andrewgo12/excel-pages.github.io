@@ -811,34 +811,6 @@ export default function Index() {
                   )}
                 </div>
 
-                <div className="flex gap-2 mt-2">
-                  <Select
-                    value={searchMode}
-                    onValueChange={(value: "normal" | "regex" | "pattern") =>
-                      setSearchMode(value)
-                    }
-                  >
-                    <SelectTrigger className="w-32 h-7 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="pattern">Patrones</SelectItem>
-                      <SelectItem value="regex">Regex</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => togglePanel('advancedSearch')}
-                    className="h-7 text-xs"
-                  >
-                    <Settings className="h-3 w-3 mr-1" />
-                    Avanzado
-                  </Button>
-                </div>
-
                 {regexError && (
                   <div className="text-xs text-destructive mt-1">
                     {regexError}
@@ -858,6 +830,33 @@ export default function Index() {
                     Limpiar filtros de columnas
                   </Button>
                 )}
+              </div>
+              <div className="flex gap-2 mt-2">
+                <Select
+                  value={searchMode}
+                  onValueChange={(value: "normal" | "regex" | "pattern") =>
+                    setSearchMode(value)
+                  }
+                >
+                  <SelectTrigger className="w-32 h-7 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="pattern">Patrones</SelectItem>
+                    <SelectItem value="regex">Regex</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => togglePanel('advancedSearch')}
+                  className="h-7 text-xs"
+                >
+                  <Settings className="h-3 w-3 mr-1" />
+                  Avanzado
+                </Button>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button
