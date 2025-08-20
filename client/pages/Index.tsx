@@ -50,6 +50,8 @@ export default function Index() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState('');
+  const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
