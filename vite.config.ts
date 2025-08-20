@@ -5,8 +5,8 @@ import { createServer } from "./server";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // GitHub Pages configuration
-  base: mode === 'production' ? './' : '/',
+  // GitHub Pages configuration - User site (andrewgo12.github.io)
+  base: mode === 'production' ? '/' : '/',
   server: {
     host: "::",
     port: 8080,
@@ -22,16 +22,20 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: undefined,
-        // Ensure assets have proper relative paths
+        // Ensure assets have proper paths for GitHub Pages
         assetFileNames: 'assets/[name]-[hash][extname]',
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
       },
     },
-    // Generate source maps for debugging
-    sourcemap: false,
     // Optimize for production
+    sourcemap: false,
     minify: 'esbuild',
+    // Ensure compatibility with GitHub Pages
+    target: 'es2015',
+    cssCodeSplit: true,
+    // Optimize chunk size for better loading
+    chunkSizeWarningLimit: 1000,
   },
   plugins: [react(), ...(mode === 'development' ? [expressPlugin()] : [])],
   resolve: {
@@ -39,6 +43,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./client"),
       "@shared": path.resolve(__dirname, "./shared"),
     },
+  },
+  // Ensure proper MIME types for GitHub Pages
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
   },
 }));
 
