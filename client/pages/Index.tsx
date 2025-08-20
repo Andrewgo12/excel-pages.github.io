@@ -231,6 +231,9 @@ export default function Index() {
       setColumnFilters({});
       setFilterGroups([]);
 
+      // Clear any previous errors
+      setFileError(null);
+
     } catch (error) {
       console.error("Error reading Excel file:", error);
       setFileError("Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.");
