@@ -743,7 +743,7 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-3 py-3">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <h1 className="text-lg lg:text-xl font-bold text-foreground flex items-center gap-2">
