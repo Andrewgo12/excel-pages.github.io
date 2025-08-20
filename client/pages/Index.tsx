@@ -363,7 +363,7 @@ export default function Index() {
             {isColumnSelectorOpen && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Seleccionar Columnas
                     <Button variant="ghost" size="sm" onClick={() => setIsColumnSelectorOpen(false)}>
                       <X className="h-4 w-4" />
