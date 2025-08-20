@@ -1957,20 +1957,20 @@ export default function Index() {
                                   return (
                                     <TableCell
                                       key={columnKey}
-                                      className="max-w-48"
-                                      style={{ minWidth: "200px" }}
+                                      className="max-w-48 min-w-[12em]"
                                     >
-                                      <div className="truncate">
+                                      <div className="truncate text-responsive-sm">
                                         {column?.type === "boolean" ? (
                                           <Badge
                                             variant={
                                               value ? "default" : "secondary"
                                             }
+                                            className="text-responsive-xs"
                                           >
                                             {value ? "Sí" : "No"}
                                           </Badge>
                                         ) : column?.type === "number" ? (
-                                          <span className="font-mono">
+                                          <span className="font-mono text-responsive-sm">
                                             {typeof value === "number"
                                               ? value.toLocaleString("es-ES")
                                               : value}
