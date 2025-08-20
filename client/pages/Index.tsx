@@ -876,30 +876,68 @@ export default function Index() {
                 )}
               </div>
 
-              {/* Sheet Tabs */}
+              {/* Sheet Tabs - Enhanced */}
               {excelData.sheetsData && excelData.sheetNames.length > 1 && (
-                <div className="flex gap-responsive-sm mt-responsive">
-                  {excelData.sheetNames.map((sheetName) => (
-                    <Button
-                      key={sheetName}
-                      variant={
-                        excelData.activeSheet === sheetName
-                          ? "default"
-                          : "outline"
-                      }
-                      size="sm"
-                      onClick={() => switchSheet(sheetName)}
-                      className="button-responsive text-responsive-xs"
-                    >
-                      {sheetName}
-                      {excelData.sheetsData &&
-                        excelData.sheetsData[sheetName] && (
-                          <Badge variant="secondary" className="ml-2 text-responsive-xs">
-                            {excelData.sheetsData[sheetName].rows.length}
-                          </Badge>
-                        )}
-                    </Button>
-                  ))}
+                <div className="mt-responsive">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-responsive-xs text-muted-foreground">
+                      Hojas del archivo ({excelData.sheetNames.length})
+                    </Label>
+                    {multiSheetAnalysis && (
+                      <Badge variant="outline" className="text-responsive-xs">
+                        {multiSheetAnalysis.estimatedComplexity.replace('_', ' ')}
+                      </Badge>
+                    )}
+                  </div>
+                  <ScrollArea className="w-full">
+                    <div className="flex gap-responsive-sm pb-2">
+                      {excelData.sheetNames.map((sheetName) => {
+                        const sheetAnalysis = multiSheetAnalysis?.sheetAnalyses.find(
+                          s => s.name === sheetName
+                        );
+                        const hasRelationships = multiSheetAnalysis?.relationships.some(rel =>
+                          rel.sourceSheet === sheetName || rel.targetSheet === sheetName
+                        );
+                        const isRecommended = sheetName === multiSheetAnalysis?.recommendedStartSheet;
+
+                        return (
+                          <Button
+                            key={sheetName}
+                            variant={
+                              excelData.activeSheet === sheetName
+                                ? "default"
+                                : "outline"
+                            }
+                            size="sm"
+                            onClick={() => switchSheet(sheetName)}
+                            className="button-responsive text-responsive-xs whitespace-nowrap relative"
+                          >
+                            <div className="flex items-center gap-1">
+                              {isRecommended && (
+                                <span className="text-yellow-500">★</span>
+                              )}
+                              <span className="truncate max-w-24">{sheetName}</span>
+                              {sheetAnalysis && !sheetAnalysis.isEmpty && (
+                                <Badge variant="secondary" className="text-responsive-xs ml-1">
+                                  {sheetAnalysis.rowCount.toLocaleString()}
+                                </Badge>
+                              )}
+                              {hasRelationships && (
+                                <div className="w-2 h-2 bg-blue-500 rounded-full ml-1" title="Tiene relaciones con otras hojas" />
+                              )}
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
+
+                  {multiSheetAnalysis && multiSheetAnalysis.relationships.length > 0 && (
+                    <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                      <span>Indica hojas con relaciones detectadas</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -1033,7 +1071,7 @@ export default function Index() {
                   onClick={exportFilteredData}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar R��pido</span>
+                  <span className="hidden sm:inline">Exportar Rápido</span>
                 </Button>
                 <Button
                   variant="outline"
