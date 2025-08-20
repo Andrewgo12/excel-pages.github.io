@@ -133,7 +133,28 @@ export default function Index() {
 
     let filtered = excelData.rows;
 
-    // Apply filters
+    // Apply global search
+    if (globalSearch.trim()) {
+      const searchTerm = globalSearch.toLowerCase();
+      filtered = filtered.filter(row =>
+        Object.values(row).some(value =>
+          String(value || '').toLowerCase().includes(searchTerm)
+        )
+      );
+    }
+
+    // Apply column-specific filters
+    if (Object.keys(columnFilters).length > 0) {
+      filtered = filtered.filter(row =>
+        Object.entries(columnFilters).every(([column, filterValue]) => {
+          if (!filterValue.trim()) return true;
+          const value = String(row[column] || '').toLowerCase();
+          return value.includes(filterValue.toLowerCase());
+        })
+      );
+    }
+
+    // Apply advanced filters
     if (filterGroups.length > 0) {
       filtered = filtered.filter(row => {
         return filterGroups.every(group => {
