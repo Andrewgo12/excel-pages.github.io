@@ -132,7 +132,8 @@ export const BUILT_IN_PRESETS = [
   {
     id: "business-professional",
     name: "Business Professional",
-    description: "Clean, corporate style with subtle borders and professional typography",
+    description:
+      "Clean, corporate style with subtle borders and professional typography",
     category: "business",
     tags: ["professional", "corporate", "clean"],
     customization: {
@@ -192,7 +193,8 @@ export const BUILT_IN_PRESETS = [
   {
     id: "minimal-clean",
     name: "Minimal Clean",
-    description: "Ultra-clean design with minimal borders and excellent readability",
+    description:
+      "Ultra-clean design with minimal borders and excellent readability",
     category: "minimal",
     tags: ["minimal", "clean", "simple"],
     customization: {

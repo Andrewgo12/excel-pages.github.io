@@ -502,7 +502,9 @@ export default function Index() {
           ? {
               ...group,
               conditions: group.conditions.map((condition) =>
-                condition.id === conditionId ? { ...condition, ...updates } : condition,
+                condition.id === conditionId
+                  ? { ...condition, ...updates }
+                  : condition,
               ),
             }
           : group,
@@ -695,7 +697,9 @@ export default function Index() {
                 <Card>
                   <CardContent className="p-8 text-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                    <p className="text-muted-foreground">Cargando interfaz...</p>
+                    <p className="text-muted-foreground">
+                      Cargando interfaz...
+                    </p>
                   </CardContent>
                 </Card>
               }
@@ -741,15 +745,18 @@ export default function Index() {
                           multiSheetAnalysis.estimatedComplexity === "simple"
                             ? "border-green-500 text-green-700"
                             : multiSheetAnalysis.estimatedComplexity ===
-                              "moderate"
+                                "moderate"
                               ? "border-blue-500 text-blue-700"
                               : multiSheetAnalysis.estimatedComplexity ===
-                                "complex"
+                                  "complex"
                                 ? "border-orange-500 text-orange-700"
                                 : "border-red-500 text-red-700"
                         }`}
                       >
-                        {multiSheetAnalysis.estimatedComplexity.replace("_", " ")}
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
+                        )}
                       </Badge>
                       {multiSheetAnalysis.relationships.length > 0 && (
                         <Badge
@@ -798,7 +805,10 @@ export default function Index() {
                     </Label>
                     {multiSheetAnalysis && (
                       <Badge variant="outline" className="text-responsive-xs">
-                        {multiSheetAnalysis.estimatedComplexity.replace("_", " ")}
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
+                        )}
                       </Badge>
                     )}
                   </div>
@@ -806,28 +816,43 @@ export default function Index() {
                     <div className="flex gap-responsive-sm pb-2">
                       {excelData.sheetNames.map((sheetName) => {
                         const sheetAnalysis =
-                          multiSheetAnalysis?.sheetAnalyses.find((s) => s.name === sheetName);
-                        const hasRelationships = multiSheetAnalysis?.relationships.some(
-                          (rel) => rel.sourceSheet === sheetName || rel.targetSheet === sheetName,
-                        );
+                          multiSheetAnalysis?.sheetAnalyses.find(
+                            (s) => s.name === sheetName,
+                          );
+                        const hasRelationships =
+                          multiSheetAnalysis?.relationships.some(
+                            (rel) =>
+                              rel.sourceSheet === sheetName ||
+                              rel.targetSheet === sheetName,
+                          );
                         const isRecommended =
-                          sheetName === multiSheetAnalysis?.recommendedStartSheet;
+                          sheetName ===
+                          multiSheetAnalysis?.recommendedStartSheet;
 
                         return (
                           <Button
                             key={sheetName}
                             variant={
-                              excelData.activeSheet === sheetName ? "default" : "outline"
+                              excelData.activeSheet === sheetName
+                                ? "default"
+                                : "outline"
                             }
                             size="sm"
                             onClick={() => switchSheet(sheetName)}
                             className="button-responsive text-responsive-xs whitespace-nowrap relative"
                           >
                             <div className="flex items-center gap-1">
-                              {isRecommended && <span className="text-yellow-500">★</span>}
-                              <span className="truncate max-w-24">{sheetName}</span>
+                              {isRecommended && (
+                                <span className="text-yellow-500">★</span>
+                              )}
+                              <span className="truncate max-w-24">
+                                {sheetName}
+                              </span>
                               {sheetAnalysis && !sheetAnalysis.isEmpty && (
-                                <Badge variant="secondary" className="text-responsive-xs ml-1">
+                                <Badge
+                                  variant="secondary"
+                                  className="text-responsive-xs ml-1"
+                                >
                                   {sheetAnalysis.rowCount.toLocaleString()}
                                 </Badge>
                               )}
@@ -844,12 +869,13 @@ export default function Index() {
                     </div>
                   </ScrollArea>
 
-                  {multiSheetAnalysis && multiSheetAnalysis.relationships.length > 0 && (
-                    <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                      <span>Indica hojas con relaciones detectadas</span>
-                    </div>
-                  )}
+                  {multiSheetAnalysis &&
+                    multiSheetAnalysis.relationships.length > 0 && (
+                      <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                        <span>Indica hojas con relaciones detectadas</span>
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -881,9 +907,15 @@ export default function Index() {
                   )}
                 </div>
 
-                {regexError && <div className="text-xs text-destructive mt-1">{regexError}</div>}
+                {regexError && (
+                  <div className="text-xs text-destructive mt-1">
+                    {regexError}
+                  </div>
+                )}
 
-                {Object.keys(columnFilters).some((key) => columnFilters[key]) && (
+                {Object.keys(columnFilters).some(
+                  (key) => columnFilters[key],
+                ) && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -941,8 +973,13 @@ export default function Index() {
                   onColumnToggle={(columnKey, visible) => {
                     if (visible && !selectedColumns.includes(columnKey)) {
                       setSelectedColumns([...selectedColumns, columnKey]);
-                    } else if (!visible && selectedColumns.includes(columnKey)) {
-                      setSelectedColumns(selectedColumns.filter((col) => col !== columnKey));
+                    } else if (
+                      !visible &&
+                      selectedColumns.includes(columnKey)
+                    ) {
+                      setSelectedColumns(
+                        selectedColumns.filter((col) => col !== columnKey),
+                      );
                     }
                   }}
                 />
@@ -953,7 +990,8 @@ export default function Index() {
                   className="button-responsive"
                 >
                   <Columns className="h-responsive-input w-responsive-input mr-2" />
-                  <span className="hidden sm:inline">Columnas</span> ({selectedColumns.length})
+                  <span className="hidden sm:inline">Columnas</span> (
+                  {selectedColumns.length})
                 </Button>
                 <Button
                   variant="outline"
@@ -963,7 +1001,10 @@ export default function Index() {
                 >
                   <Filter className="h-responsive-input w-responsive-input mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
-                  {filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)}
+                  {filterGroups.reduce(
+                    (sum, group) => sum + group.conditions.length,
+                    0,
+                  )}
                   )
                 </Button>
                 <ActionsMenu
@@ -975,7 +1016,9 @@ export default function Index() {
                   onStatsOpen={() => togglePanel("stats")}
                   onVisualizationOpen={() => togglePanel("visualization")}
                   onDataFormOpen={() => togglePanel("dataForm")}
-                  onRealTimeAnalyticsOpen={() => togglePanel("realTimeAnalytics")}
+                  onRealTimeAnalyticsOpen={() =>
+                    togglePanel("realTimeAnalytics")
+                  }
                   onAdvancedSearchOpen={() => togglePanel("advancedSearch")}
                   onDataCleaningOpen={() => togglePanel("dataCleaning")}
                   onPerformanceOpen={() => togglePanel("stats")}
@@ -983,16 +1026,28 @@ export default function Index() {
                   onSecurityOpen={() => togglePanel("dataValidation")}
                   onCloudSyncOpen={() => togglePanel("enhancedExport")}
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
-                  onAdvancedAnalyticsOpen={() => togglePanel("advancedAnalytics")}
+                  onAdvancedAnalyticsOpen={() =>
+                    togglePanel("advancedAnalytics")
+                  }
                   onMachineLearningOpen={() => togglePanel("machineLearning")}
                   onFontSettingsOpen={() => togglePanel("fontSettings")}
-                  onTableCustomizationOpen={() => togglePanel("tableCustomization")}
+                  onTableCustomizationOpen={() =>
+                    togglePanel("tableCustomization")
+                  }
                 />
-                <Button variant="outline" size="sm" onClick={exportFilteredData}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportFilteredData}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Exportar Rápido</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setExcelData(null)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setExcelData(null)}
+                >
                   <span className="hidden sm:inline">Nuevo Archivo</span>
                   <span className="sm:hidden">Nuevo</span>
                 </Button>
@@ -1027,30 +1082,49 @@ export default function Index() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setSelectedColumns(excelData.columns.map((c) => c.key))}
+                      onClick={() =>
+                        setSelectedColumns(excelData.columns.map((c) => c.key))
+                      }
                     >
                       Todas
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => setSelectedColumns([])}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedColumns([])}
+                    >
                       Ninguna
                     </Button>
                   </div>
                   <ScrollArea className="h-64">
                     <div className="space-y-2">
                       {excelData.columns.map((column) => (
-                        <div key={column.key} className="flex items-center space-x-2">
+                        <div
+                          key={column.key}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={column.key}
                             checked={selectedColumns.includes(column.key)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setSelectedColumns([...selectedColumns, column.key]);
+                                setSelectedColumns([
+                                  ...selectedColumns,
+                                  column.key,
+                                ]);
                               } else {
-                                setSelectedColumns(selectedColumns.filter((c) => c !== column.key));
+                                setSelectedColumns(
+                                  selectedColumns.filter(
+                                    (c) => c !== column.key,
+                                  ),
+                                );
                               }
                             }}
                           />
-                          <Label htmlFor={column.key} className="text-sm flex-1 cursor-pointer">
+                          <Label
+                            htmlFor={column.key}
+                            className="text-sm flex-1 cursor-pointer"
+                          >
                             {column.label}
                           </Label>
                           <Badge variant="secondary" className="text-xs">
@@ -1070,7 +1144,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Constructor de Filtros
-                    <Button variant="ghost" size="sm" onClick={() => setActivePanel(null)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1082,7 +1160,11 @@ export default function Index() {
                       Agregar Grupo
                     </Button>
                     {filterGroups.length > 0 && (
-                      <Button variant="outline" onClick={() => setFilterGroups([])} className="flex-1">
+                      <Button
+                        variant="outline"
+                        onClick={() => setFilterGroups([])}
+                        className="flex-1"
+                      >
                         <X className="h-4 w-4 mr-2" />
                         Limpiar Todo
                       </Button>
@@ -1098,7 +1180,11 @@ export default function Index() {
                               value={group.logic}
                               onValueChange={(value) => {
                                 setFilterGroups((groups) =>
-                                  groups.map((g) => (g.id === group.id ? { ...g, logic: value } : g)),
+                                  groups.map((g) =>
+                                    g.id === group.id
+                                      ? { ...g, logic: value }
+                                      : g,
+                                  ),
                                 );
                               }}
                             >
@@ -1110,19 +1196,30 @@ export default function Index() {
                                 <SelectItem value="OR">O</SelectItem>
                               </SelectContent>
                             </Select>
-                            <Button variant="ghost" size="sm" onClick={() => removeFilterGroup(group.id)}>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeFilterGroup(group.id)}
+                            >
                               <X className="h-4 w-4" />
                             </Button>
                           </div>
 
                           <div className="space-y-2">
                             {group.conditions.map((condition) => (
-                              <div key={condition.id} className="space-y-2 border-l-2 border-muted pl-3">
+                              <div
+                                key={condition.id}
+                                className="space-y-2 border-l-2 border-muted pl-3"
+                              >
                                 <div className="flex gap-2">
                                   <Select
                                     value={condition.column}
                                     onValueChange={(value) =>
-                                      updateFilterCondition(group.id, condition.id, { column: value })
+                                      updateFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                        { column: value },
+                                      )
                                     }
                                   >
                                     <SelectTrigger className="flex-1">
@@ -1130,7 +1227,10 @@ export default function Index() {
                                     </SelectTrigger>
                                     <SelectContent>
                                       {excelData.columns.map((col) => (
-                                        <SelectItem key={col.key} value={col.key}>
+                                        <SelectItem
+                                          key={col.key}
+                                          value={col.key}
+                                        >
                                           {col.label}
                                         </SelectItem>
                                       ))}
@@ -1139,7 +1239,12 @@ export default function Index() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => removeFilterCondition(group.id, condition.id)}
+                                    onClick={() =>
+                                      removeFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                      )
+                                    }
                                   >
                                     <X className="h-4 w-4" />
                                   </Button>
@@ -1148,7 +1253,11 @@ export default function Index() {
                                 <Select
                                   value={condition.operator}
                                   onValueChange={(value) =>
-                                    updateFilterCondition(group.id, condition.id, { operator: value })
+                                    updateFilterCondition(
+                                      group.id,
+                                      condition.id,
+                                      { operator: value },
+                                    )
                                   }
                                 >
                                   <SelectTrigger>
@@ -1156,7 +1265,10 @@ export default function Index() {
                                   </SelectTrigger>
                                   <SelectContent>
                                     {OPERATORS.map((op) => (
-                                      <SelectItem key={op.value} value={op.value}>
+                                      <SelectItem
+                                        key={op.value}
+                                        value={op.value}
+                                      >
                                         {op.label}
                                       </SelectItem>
                                     ))}
@@ -1167,7 +1279,11 @@ export default function Index() {
                                   placeholder="Valor"
                                   value={String(condition.value)}
                                   onChange={(e) =>
-                                    updateFilterCondition(group.id, condition.id, { value: e.target.value })
+                                    updateFilterCondition(
+                                      group.id,
+                                      condition.id,
+                                      { value: e.target.value },
+                                    )
                                   }
                                 />
 
@@ -1176,7 +1292,11 @@ export default function Index() {
                                     placeholder="Segundo valor"
                                     value={String(condition.secondValue || "")}
                                     onChange={(e) =>
-                                      updateFilterCondition(group.id, condition.id, { secondValue: e.target.value })
+                                      updateFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                        { secondValue: e.target.value },
+                                      )
                                     }
                                   />
                                 )}
@@ -1207,7 +1327,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Análisis Estadístico
-                    <Button variant="ghost" size="sm" onClick={() => setActivePanel(null)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1218,35 +1342,60 @@ export default function Index() {
                     <h4 className="font-medium mb-3">Resumen del Dataset</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-muted-foreground">Total filas:</span>
-                        <div className="font-medium">{currentStats.totalRows.toLocaleString("es-ES")}</div>
+                        <span className="text-muted-foreground">
+                          Total filas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.totalRows.toLocaleString("es-ES")}
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Total columnas:</span>
-                        <div className="font-medium">{currentStats.totalColumns}</div>
+                        <span className="text-muted-foreground">
+                          Total columnas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.totalColumns}
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Completitud:</span>
-                        <div className="font-medium">{currentStats.completenessScore}%</div>
+                        <span className="text-muted-foreground">
+                          Completitud:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.completenessScore}%
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Filas duplicadas:</span>
-                        <div className="font-medium">{currentStats.duplicateRows}</div>
+                        <span className="text-muted-foreground">
+                          Filas duplicadas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.duplicateRows}
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Column Statistics */}
                   <div>
-                    <h4 className="font-medium mb-3">Estadísticas por Columna</h4>
+                    <h4 className="font-medium mb-3">
+                      Estadísticas por Columna
+                    </h4>
                     <ScrollArea className="h-96">
                       <div className="space-y-4">
                         {currentStats.columnStats
-                          .filter((stat) => selectedColumns.includes(stat.column))
+                          .filter((stat) =>
+                            selectedColumns.includes(stat.column),
+                          )
                           .map((stat) => (
-                            <div key={stat.column} className="border rounded-lg p-3">
+                            <div
+                              key={stat.column}
+                              className="border rounded-lg p-3"
+                            >
                               <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-medium text-sm">{stat.column}</h5>
+                                <h5 className="font-medium text-sm">
+                                  {stat.column}
+                                </h5>
                                 <Badge variant="secondary" className="text-xs">
                                   {stat.type}
                                 </Badge>
@@ -1260,54 +1409,79 @@ export default function Index() {
                               {stat.type === "number" && (
                                 <div className="grid grid-cols-2 gap-2 text-xs">
                                   <div>
-                                    <span className="text-muted-foreground">Min:</span>{" "}
+                                    <span className="text-muted-foreground">
+                                      Min:
+                                    </span>{" "}
                                     {formatStatValue(stat.min, "number")}
                                   </div>
                                   <div>
-                                    <span className="text-muted-foreground">Max:</span>{" "}
+                                    <span className="text-muted-foreground">
+                                      Max:
+                                    </span>{" "}
                                     {formatStatValue(stat.max, "number")}
                                   </div>
                                   <div>
-                                    <span className="text-muted-foreground">Media:</span>{" "}
+                                    <span className="text-muted-foreground">
+                                      Media:
+                                    </span>{" "}
                                     {formatStatValue(stat.mean, "number")}
                                   </div>
                                   <div>
-                                    <span className="text-muted-foreground">Mediana:</span>{" "}
+                                    <span className="text-muted-foreground">
+                                      Mediana:
+                                    </span>{" "}
                                     {formatStatValue(stat.median, "number")}
                                   </div>
                                 </div>
                               )}
 
-                              {stat.type === "date" && stat.minDate && stat.maxDate && (
-                                <div className="grid grid-cols-1 gap-1 text-xs">
-                                  <div>
-                                    <span className="text-muted-foreground">Desde:</span>{" "}
-                                    {formatStatValue(stat.minDate, "date")}
+                              {stat.type === "date" &&
+                                stat.minDate &&
+                                stat.maxDate && (
+                                  <div className="grid grid-cols-1 gap-1 text-xs">
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Desde:
+                                      </span>{" "}
+                                      {formatStatValue(stat.minDate, "date")}
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Hasta:
+                                      </span>{" "}
+                                      {formatStatValue(stat.maxDate, "date")}
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Rango:
+                                      </span>{" "}
+                                      {stat.dateRange} días
+                                    </div>
                                   </div>
-                                  <div>
-                                    <span className="text-muted-foreground">Hasta:</span>{" "}
-                                    {formatStatValue(stat.maxDate, "date")}
-                                  </div>
-                                  <div>
-                                    <span className="text-muted-foreground">Rango:</span>{" "}
-                                    {stat.dateRange} días
-                                  </div>
-                                </div>
-                              )}
+                                )}
 
                               {/* Top values */}
                               {stat.topValues.length > 0 && (
                                 <div className="mt-3">
-                                  <div className="text-xs text-muted-foreground mb-1">Valores más frecuentes:</div>
+                                  <div className="text-xs text-muted-foreground mb-1">
+                                    Valores más frecuentes:
+                                  </div>
                                   <div className="space-y-1">
-                                    {stat.topValues.slice(0, 3).map((item, index) => (
-                                      <div key={index} className="flex justify-between text-xs">
-                                        <span className="truncate">{String(item.value)}</span>
-                                        <span className="text-muted-foreground">
-                                          {item.count} ({item.percentage}%)
-                                        </span>
-                                      </div>
-                                    ))}
+                                    {stat.topValues
+                                      .slice(0, 3)
+                                      .map((item, index) => (
+                                        <div
+                                          key={index}
+                                          className="flex justify-between text-xs"
+                                        >
+                                          <span className="truncate">
+                                            {String(item.value)}
+                                          </span>
+                                          <span className="text-muted-foreground">
+                                            {item.count} ({item.percentage}%)
+                                          </span>
+                                        </div>
+                                      ))}
                                   </div>
                                 </div>
                               )}
@@ -1330,11 +1504,13 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>
-                      Datos ({filteredAndSortedData.length.toLocaleString()} filas)
+                      Datos ({filteredAndSortedData.length.toLocaleString()}{" "}
+                      filas)
                     </CardTitle>
                     {filteredAndSortedData.length !== excelData.rows.length && (
                       <p className="text-sm text-muted-foreground mt-1">
-                        Filtrado de {excelData.rows.length.toLocaleString()} filas totales
+                        Filtrado de {excelData.rows.length.toLocaleString()}{" "}
+                        filas totales
                       </p>
                     )}
                   </div>
@@ -1359,7 +1535,9 @@ export default function Index() {
                         <SelectItem value="100">100</SelectItem>
                       </SelectContent>
                     </Select>
-                    <span className="text-sm text-muted-foreground">filas por página</span>
+                    <span className="text-sm text-muted-foreground">
+                      filas por página
+                    </span>
                   </div>
                 </div>
               </CardHeader>
@@ -1367,7 +1545,9 @@ export default function Index() {
                 {selectedColumns.length === 0 ? (
                   <div className="text-center py-8">
                     <AlertCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">Selecciona al menos una columna para ver los datos</p>
+                    <p className="text-muted-foreground">
+                      Selecciona al menos una columna para ver los datos
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -1386,8 +1566,15 @@ export default function Index() {
                               className="flex items-center gap-responsive-sm cursor-pointer hover:text-primary"
                               onClick={() => handleSort(column.key)}
                             >
-                              <span className="font-medium text-responsive-sm">{column.label}</span>
-                              <Badge variant="secondary" className="text-responsive-xs">{column.type}</Badge>
+                              <span className="font-medium text-responsive-sm">
+                                {column.label}
+                              </span>
+                              <Badge
+                                variant="secondary"
+                                className="text-responsive-xs"
+                              >
+                                {column.type}
+                              </Badge>
                               {sortColumn === column.key && (
                                 <span className="text-responsive-xs text-primary">
                                   {sortDirection === "asc" ? "↑" : "↓"}
@@ -1400,7 +1587,10 @@ export default function Index() {
                               className="control-responsive mt-responsive-sm h-7 text-xs mt-2"
                               onChange={(e) => {
                                 e.stopPropagation();
-                                setColumnFilters((prev) => ({ ...prev, [column.key]: e.target.value }));
+                                setColumnFilters((prev) => ({
+                                  ...prev,
+                                  [column.key]: e.target.value,
+                                }));
                               }}
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -1409,12 +1599,17 @@ export default function Index() {
                         renderCell={(value, column) => (
                           <div className="truncate text-responsive-sm">
                             {column.type === "boolean" ? (
-                              <Badge variant={value ? "default" : "secondary"} className="text-responsive-xs">
+                              <Badge
+                                variant={value ? "default" : "secondary"}
+                                className="text-responsive-xs"
+                              >
                                 {value ? "Sí" : "No"}
                               </Badge>
                             ) : column.type === "number" ? (
                               <span className="font-mono text-responsive-sm">
-                                {typeof value === "number" ? value.toLocaleString("es-ES") : value}
+                                {typeof value === "number"
+                                  ? value.toLocaleString("es-ES")
+                                  : value}
                               </span>
                             ) : column.type === "date" ? (
                               <span className="text-sm">{value || ""}</span>
@@ -1430,15 +1625,24 @@ export default function Index() {
                     {/* Pagination */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4">
                       <div className="text-xs sm:text-sm text-muted-foreground">
-                        Mostrando {(pagination.page - 1) * pagination.pageSize + 1} a{" "}
-                        {Math.min(pagination.page * pagination.pageSize, filteredAndSortedData.length)} de{" "}
-                        {filteredAndSortedData.length.toLocaleString()} filas
+                        Mostrando{" "}
+                        {(pagination.page - 1) * pagination.pageSize + 1} a{" "}
+                        {Math.min(
+                          pagination.page * pagination.pageSize,
+                          filteredAndSortedData.length,
+                        )}{" "}
+                        de {filteredAndSortedData.length.toLocaleString()} filas
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
+                          onClick={() =>
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: prev.page - 1,
+                            }))
+                          }
                           disabled={pagination.page === 1}
                         >
                           <ChevronLeft className="h-4 w-4" />
@@ -1450,7 +1654,12 @@ export default function Index() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
+                          onClick={() =>
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: prev.page + 1,
+                            }))
+                          }
                           disabled={pagination.page === totalPages}
                         >
                           Siguiente

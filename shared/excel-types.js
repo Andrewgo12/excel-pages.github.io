@@ -49,7 +49,13 @@ export function createEmptySheetData(columns = [], rows = []) {
   };
 }
 
-export function createExcelData({ columns = [], rows = [], sheetNames = [], activeSheet = "", sheetsData = {} } = {}) {
+export function createExcelData({
+  columns = [],
+  rows = [],
+  sheetNames = [],
+  activeSheet = "",
+  sheetsData = {},
+} = {}) {
   return {
     columns,
     rows,
