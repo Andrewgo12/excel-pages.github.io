@@ -1,6 +1,4 @@
 import React, { useState, useCallback, useMemo, lazy, Suspense } from "react";
-import { useDropzone } from "react-dropzone";
-import * as XLSX from "xlsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,6 +128,11 @@ const SheetNavigator = lazy(() =>
     default: m.SheetNavigator,
   })),
 );
+const UnifiedFileUploader = lazy(() =>
+  import("@/components/UnifiedFileUploader").then((m) => ({
+    default: m.default,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { TableStylesControl } from "@/components/TableStylesControl";
@@ -220,82 +223,38 @@ export default function Index() {
   const [tableCustomization, setTableCustomization] =
     useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
+  const handleDataLoaded = useCallback((data: ExcelData, metadata?: any) => {
+    setExcelData(data);
 
-    try {
-      // Show loading state
-      setIsFileLoading(true);
-
-      // Use advanced multi-sheet loader
-      const { data, analysis } = await loadCompleteExcelFile(file);
-
-      setExcelData(data);
-      setMultiSheetAnalysis(analysis);
-      setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns by default
-      setPagination((prev) => ({
-        ...prev,
-        totalRows: data.rows.length,
-        page: 1,
-      }));
-
-      // Reset filters and search when new file is loaded
-      setGlobalSearch("");
-      setColumnFilters({});
-      setFilterGroups([]);
-
-      // Clear any previous errors
-      setFileError(null);
-    } catch (error) {
-      console.error("Error reading Excel file:", error);
-      setFileError(
-        "Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.",
-      );
-    } finally {
-      setIsFileLoading(false);
+    // Set multi-sheet analysis if available (from Excel files)
+    if (metadata?.analysis) {
+      setMultiSheetAnalysis(metadata.analysis);
+    } else {
+      setMultiSheetAnalysis(null);
     }
+
+    // Show first 8 columns by default
+    setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key));
+    setPagination((prev) => ({
+      ...prev,
+      totalRows: data.rows.length,
+      page: 1,
+    }));
+
+    // Reset filters and search when new file is loaded
+    setGlobalSearch("");
+    setColumnFilters({});
+    setFilterGroups([]);
+
+    // Clear any previous errors
+    setFileError(null);
+    setIsFileLoading(false);
   }, []);
 
-  const inferColumnType = (
-    rows: Record<string, any>[],
-    column: string,
-  ): "text" | "number" | "date" | "boolean" => {
-    const sample = rows
-      .slice(0, 10)
-      .map((row) => row[column])
-      .filter((val) => val !== null && val !== undefined && val !== "");
-
-    if (sample.length === 0) return "text";
-
-    // Check if all values are numbers
-    if (sample.every((val) => !isNaN(Number(val)))) return "number";
-
-    // Check if all values are dates
-    if (sample.every((val) => !isNaN(Date.parse(val)))) return "date";
-
-    // Check if all values are booleans
-    if (
-      sample.every(
-        (val) =>
-          val === true || val === false || val === "true" || val === "false",
-      )
-    )
-      return "boolean";
-
-    return "text";
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-        ".xlsx",
-      ],
-      "application/vnd.ms-excel": [".xls"],
-    },
-    multiple: false,
-  });
+  const handleFileError = useCallback((error: string) => {
+    setFileError(error);
+    setIsFileLoading(false);
+  }, []);
 
   const filteredAndSortedData = useMemo(() => {
     if (!excelData) return [];
@@ -611,38 +570,26 @@ export default function Index() {
       return exportRow;
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
-    XLSX.writeFile(workbook, "filtered_data.xlsx");
-  };
+    // Create CSV for quick export
+    const headers = selectedColumns.map(
+      (col) => excelData.columns.find((c) => c.key === col)?.label || col,
+    );
+    const csvContent = [
+      headers.join(","),
+      ...exportData.map((row) =>
+        selectedColumns.map((col) => `"${String(row[col] || "")}"`).join(","),
+      ),
+    ].join("\n");
 
-  const loadSampleData = () => {
-    const sampleData = generateSampleData();
-    setExcelData(sampleData);
-    setSelectedColumns(sampleData.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: sampleData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
-  };
-
-  const loadMultiSheetData = () => {
-    const multiData = generateMultiSheetData();
-    setExcelData(multiData);
-    setSelectedColumns(multiData.columns.slice(0, 8).map((c) => c.key));
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: multiData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "filtered_data.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const switchSheet = async (sheetName: string) => {
@@ -756,94 +703,29 @@ export default function Index() {
             </h1>
             <p className="text-muted-foreground mt-1">
               Herramienta interactiva para visualización y exploración de datos
-              Excel
             </p>
           </div>
         </div>
 
         <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl mb-2">
-                  Cargar Archivo Excel
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  Arrastra y suelta tu archivo Excel (.xlsx) aquí o haz clic
-                  para seleccionar
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
-                    ${
-                      isDragActive
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    } ${isFileLoading ? "pointer-events-none opacity-50" : ""}`}
-                >
-                  <input {...getInputProps()} disabled={isFileLoading} />
-                  <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  {isFileLoading ? (
-                    <div>
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-primary font-medium mb-2">
-                        Procesando archivo Excel...
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Analizando hojas y detectando relaciones
-                      </p>
-                    </div>
-                  ) : isDragActive ? (
-                    <p className="text-primary font-medium">
-                      Suelta el archivo aquí...
+          <div className="max-w-4xl mx-auto">
+            <Suspense
+              fallback={
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">
+                      Cargando interfaz...
                     </p>
-                  ) : (
-                    <div>
-                      <p className="font-medium mb-2">
-                        Haz clic para seleccionar o arrastra el archivo
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Soporta archivos .xlsx y .xls (incluye archivos
-                        complejos con múltiples hojas)
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {fileError && (
-                  <Alert variant="destructive" className="mt-4">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{fileError}</AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="mt-6 text-center">
-                  <div className="text-sm text-muted-foreground mb-3">
-                    ¿Quieres ver todas las funcionalidades?
-                  </div>
-                  <div className="flex gap-3 justify-center">
-                    <Button
-                      onClick={loadSampleData}
-                      variant="outline"
-                      className="gap-2"
-                    >
-                      <Database className="h-4 w-4" />
-                      Datos Básicos
-                    </Button>
-                    <Button onClick={loadMultiSheetData} className="gap-2">
-                      <Database className="h-4 w-4" />
-                      Demo Completo
-                    </Button>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-2">
-                    Básicos: 80 columnas • 500 filas | Completo: 4 hojas • Datos
-                    empresariales
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              }
+            >
+              <UnifiedFileUploader
+                onDataLoaded={handleDataLoaded}
+                onError={handleFileError}
+              />
+            </Suspense>
           </div>
         </div>
       </div>
