@@ -1,61 +1,671 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import React, { useState, useCallback, useMemo } from 'react';
+import { useDropzone } from 'react-dropzone';
+import * as XLSX from 'xlsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRight, Download, Columns, X, Plus } from 'lucide-react';
+import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig } from '@shared/excel-types';
+
+const OPERATORS = [
+  { value: 'equals', label: 'Igual a' },
+  { value: 'not_equals', label: 'No igual a' },
+  { value: 'contains', label: 'Contiene' },
+  { value: 'starts_with', label: 'Comienza con' },
+  { value: 'ends_with', label: 'Termina con' },
+  { value: 'greater', label: 'Mayor que' },
+  { value: 'less', label: 'Menor que' },
+  { value: 'between', label: 'Entre' },
+];
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
-  useEffect(() => {
-    fetchDemo();
+  const [excelData, setExcelData] = useState<ExcelData | null>(null);
+  const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
+  const [filterGroups, setFilterGroups] = useState<FilterGroup[]>([]);
+  const [pagination, setPagination] = useState<PaginationConfig>({
+    page: 1,
+    pageSize: 25,
+    totalRows: 0
+  });
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = e.target?.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheetNames = workbook.SheetNames;
+        const activeSheet = sheetNames[0];
+        const worksheet = workbook.Sheets[activeSheet];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        
+        if (jsonData.length === 0) return;
+
+        const headers = jsonData[0] as string[];
+        const rows = jsonData.slice(1).map((row: any[], index) => {
+          const rowData: Record<string, any> = { _id: index };
+          headers.forEach((header, colIndex) => {
+            rowData[header] = row[colIndex] || '';
+          });
+          return rowData;
+        });
+
+        const columns: ExcelColumn[] = headers.map(header => ({
+          key: header,
+          label: header,
+          type: inferColumnType(rows, header)
+        }));
+
+        const data: ExcelData = {
+          columns,
+          rows,
+          sheetNames,
+          activeSheet
+        };
+
+        setExcelData(data);
+        setSelectedColumns(headers.slice(0, 8)); // Show first 8 columns by default
+        setPagination(prev => ({ ...prev, totalRows: rows.length, page: 1 }));
+      } catch (error) {
+        console.error('Error reading Excel file:', error);
+      }
+    };
+    reader.readAsBinaryString(file);
   }, []);
 
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
+  const inferColumnType = (rows: Record<string, any>[], column: string): 'text' | 'number' | 'date' | 'boolean' => {
+    const sample = rows.slice(0, 10).map(row => row[column]).filter(val => val !== null && val !== undefined && val !== '');
+    
+    if (sample.length === 0) return 'text';
+    
+    // Check if all values are numbers
+    if (sample.every(val => !isNaN(Number(val)))) return 'number';
+    
+    // Check if all values are dates
+    if (sample.every(val => !isNaN(Date.parse(val)))) return 'date';
+    
+    // Check if all values are booleans
+    if (sample.every(val => val === true || val === false || val === 'true' || val === 'false')) return 'boolean';
+    
+    return 'text';
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'application/vnd.ms-excel': ['.xls']
+    },
+    multiple: false
+  });
+
+  const filteredAndSortedData = useMemo(() => {
+    if (!excelData) return [];
+
+    let filtered = excelData.rows;
+
+    // Apply filters
+    if (filterGroups.length > 0) {
+      filtered = filtered.filter(row => {
+        return filterGroups.every(group => {
+          if (group.conditions.length === 0) return true;
+          
+          const results = group.conditions.map(condition => {
+            const value = row[condition.column];
+            const filterValue = condition.value;
+            
+            switch (condition.operator) {
+              case 'equals':
+                return String(value).toLowerCase() === String(filterValue).toLowerCase();
+              case 'not_equals':
+                return String(value).toLowerCase() !== String(filterValue).toLowerCase();
+              case 'contains':
+                return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
+              case 'starts_with':
+                return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
+              case 'ends_with':
+                return String(value).toLowerCase().endsWith(String(filterValue).toLowerCase());
+              case 'greater':
+                return Number(value) > Number(filterValue);
+              case 'less':
+                return Number(value) < Number(filterValue);
+              case 'between':
+                return Number(value) >= Number(filterValue) && Number(value) <= Number(condition.secondValue || filterValue);
+              default:
+                return true;
+            }
+          });
+          
+          return group.logic === 'AND' ? results.every(r => r) : results.some(r => r);
+        });
+      });
+    }
+
+    // Apply sorting
+    if (sortColumn) {
+      filtered.sort((a, b) => {
+        let aVal = a[sortColumn];
+        let bVal = b[sortColumn];
+        
+        // Convert to numbers if possible
+        if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
+          aVal = Number(aVal);
+          bVal = Number(bVal);
+        }
+        
+        if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [excelData, filterGroups, sortColumn, sortDirection]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (pagination.page - 1) * pagination.pageSize;
+    return filteredAndSortedData.slice(startIndex, startIndex + pagination.pageSize);
+  }, [filteredAndSortedData, pagination]);
+
+  const totalPages = Math.ceil(filteredAndSortedData.length / pagination.pageSize);
+
+  const addFilterGroup = () => {
+    const newGroup: FilterGroup = {
+      id: Date.now().toString(),
+      logic: 'AND',
+      conditions: []
+    };
+    setFilterGroups([...filterGroups, newGroup]);
+  };
+
+  const addFilterCondition = (groupId: string) => {
+    const newCondition: FilterCondition = {
+      id: Date.now().toString(),
+      column: excelData?.columns[0]?.key || '',
+      operator: 'contains',
+      value: ''
+    };
+    
+    setFilterGroups(groups => 
+      groups.map(group => 
+        group.id === groupId 
+          ? { ...group, conditions: [...group.conditions, newCondition] }
+          : group
+      )
+    );
+  };
+
+  const updateFilterCondition = (groupId: string, conditionId: string, updates: Partial<FilterCondition>) => {
+    setFilterGroups(groups =>
+      groups.map(group =>
+        group.id === groupId
+          ? {
+              ...group,
+              conditions: group.conditions.map(condition =>
+                condition.id === conditionId ? { ...condition, ...updates } : condition
+              )
+            }
+          : group
+      )
+    );
+  };
+
+  const removeFilterCondition = (groupId: string, conditionId: string) => {
+    setFilterGroups(groups =>
+      groups.map(group =>
+        group.id === groupId
+          ? { ...group, conditions: group.conditions.filter(c => c.id !== conditionId) }
+          : group
+      )
+    );
+  };
+
+  const removeFilterGroup = (groupId: string) => {
+    setFilterGroups(groups => groups.filter(g => g.id !== groupId));
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
     }
   };
 
+  const exportFilteredData = () => {
+    if (!excelData || filteredAndSortedData.length === 0) return;
+    
+    const exportData = filteredAndSortedData.map(row => {
+      const exportRow: Record<string, any> = {};
+      selectedColumns.forEach(col => {
+        exportRow[col] = row[col];
+      });
+      return exportRow;
+    });
+    
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Filtered Data');
+    XLSX.writeFile(workbook, 'filtered_data.xlsx');
+  };
+
+  if (!excelData) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="border-b">
+          <div className="container mx-auto px-4 py-4">
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <FileSpreadsheet className="h-6 w-6 text-primary" />
+              Excel Data Explorer
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Herramienta interactiva para visualización y exploración de datos Excel
+            </p>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl mb-2">Cargar Archivo Excel</CardTitle>
+                <p className="text-muted-foreground">
+                  Arrastra y suelta tu archivo Excel (.xlsx) aquí o haz clic para seleccionar
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div
+                  {...getRootProps()}
+                  className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
+                    ${isDragActive 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border hover:border-primary/50'
+                    }`}
+                >
+                  <input {...getInputProps()} />
+                  <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  {isDragActive ? (
+                    <p className="text-primary font-medium">Suelta el archivo aquí...</p>
+                  ) : (
+                    <div>
+                      <p className="font-medium mb-2">Haz clic para seleccionar o arrastra el archivo</p>
+                      <p className="text-sm text-muted-foreground">
+                        Soporta archivos .xlsx y .xls
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+                <FileSpreadsheet className="h-6 w-6 text-primary" />
+                Excel Data Explorer
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                {excelData.rows.length.toLocaleString()} filas • {excelData.columns.length} columnas • Hoja: {excelData.activeSheet}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
+                <Columns className="h-4 w-4 mr-2" />
+                Columnas ({selectedColumns.length})
+              </Button>
+              <Button variant="outline" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                <Filter className="h-4 w-4 mr-2" />
+                Filtros ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
+              </Button>
+              <Button variant="outline" onClick={exportFilteredData}>
+                <Download className="h-4 w-4 mr-2" />
+                Exportar
+              </Button>
+              <Button variant="outline" onClick={() => setExcelData(null)}>
+                Nuevo Archivo
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          <div className="w-80 space-y-4">
+            {/* Column Selector */}
+            {isColumnSelectorOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    Seleccionar Columnas
+                    <Button variant="ghost" size="sm" onClick={() => setIsColumnSelectorOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2 mb-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedColumns(excelData.columns.map(c => c.key))}
+                    >
+                      Todas
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setSelectedColumns([])}
+                    >
+                      Ninguna
+                    </Button>
+                  </div>
+                  <ScrollArea className="h-64">
+                    <div className="space-y-2">
+                      {excelData.columns.map(column => (
+                        <div key={column.key} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={column.key}
+                            checked={selectedColumns.includes(column.key)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedColumns([...selectedColumns, column.key]);
+                              } else {
+                                setSelectedColumns(selectedColumns.filter(c => c !== column.key));
+                              }
+                            }}
+                          />
+                          <Label htmlFor={column.key} className="text-sm flex-1 cursor-pointer">
+                            {column.label}
+                          </Label>
+                          <Badge variant="secondary" className="text-xs">
+                            {column.type}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Filter Builder */}
+            {isFilterOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    Constructor de Filtros
+                    <Button variant="ghost" size="sm" onClick={() => setIsFilterOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button onClick={addFilterGroup} className="w-full mb-4">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Agregar Grupo de Filtros
+                  </Button>
+                  
+                  <ScrollArea className="h-96">
+                    <div className="space-y-4">
+                      {filterGroups.map((group, groupIndex) => (
+                        <div key={group.id} className="border rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-3">
+                            <Select
+                              value={group.logic}
+                              onValueChange={(value: 'AND' | 'OR') => {
+                                setFilterGroups(groups =>
+                                  groups.map(g =>
+                                    g.id === group.id ? { ...g, logic: value } : g
+                                  )
+                                );
+                              }}
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="AND">Y</SelectItem>
+                                <SelectItem value="OR">O</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeFilterGroup(group.id)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+
+                          <div className="space-y-2">
+                            {group.conditions.map(condition => (
+                              <div key={condition.id} className="space-y-2 border-l-2 border-muted pl-3">
+                                <div className="flex gap-2">
+                                  <Select
+                                    value={condition.column}
+                                    onValueChange={(value) =>
+                                      updateFilterCondition(group.id, condition.id, { column: value })
+                                    }
+                                  >
+                                    <SelectTrigger className="flex-1">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {excelData.columns.map(col => (
+                                        <SelectItem key={col.key} value={col.key}>
+                                          {col.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => removeFilterCondition(group.id, condition.id)}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+
+                                <Select
+                                  value={condition.operator}
+                                  onValueChange={(value: any) =>
+                                    updateFilterCondition(group.id, condition.id, { operator: value })
+                                  }
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {OPERATORS.map(op => (
+                                      <SelectItem key={op.value} value={op.value}>
+                                        {op.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Input
+                                  placeholder="Valor"
+                                  value={String(condition.value)}
+                                  onChange={(e) =>
+                                    updateFilterCondition(group.id, condition.id, { value: e.target.value })
+                                  }
+                                />
+
+                                {condition.operator === 'between' && (
+                                  <Input
+                                    placeholder="Segundo valor"
+                                    value={String(condition.secondValue || '')}
+                                    onChange={(e) =>
+                                      updateFilterCondition(group.id, condition.id, { secondValue: e.target.value })
+                                    }
+                                  />
+                                )}
+                              </div>
+                            ))}
+                            
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addFilterCondition(group.id)}
+                              className="w-full"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              Agregar Condición
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>
+                    Datos ({filteredAndSortedData.length.toLocaleString()} filas)
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={pagination.pageSize.toString()}
+                      onValueChange={(value) =>
+                        setPagination(prev => ({ ...prev, pageSize: Number(value), page: 1 }))
+                      }
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="25">25</SelectItem>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <span className="text-sm text-muted-foreground">filas por página</span>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {selectedColumns.length === 0 ? (
+                  <div className="text-center py-8">
+                    <AlertCircle className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      Selecciona al menos una columna para ver los datos
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <ScrollArea className="w-full">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            {selectedColumns.map(columnKey => {
+                              const column = excelData.columns.find(c => c.key === columnKey);
+                              return (
+                                <TableHead
+                                  key={columnKey}
+                                  className="cursor-pointer hover:bg-muted/50"
+                                  onClick={() => handleSort(columnKey)}
+                                >
+                                  <div className="flex items-center gap-1">
+                                    {column?.label}
+                                    {sortColumn === columnKey && (
+                                      <span className="text-xs">
+                                        {sortDirection === 'asc' ? '↑' : '↓'}
+                                      </span>
+                                    )}
+                                  </div>
+                                </TableHead>
+                              );
+                            })}
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {paginatedData.map((row, index) => (
+                            <TableRow key={row._id || index}>
+                              {selectedColumns.map(columnKey => (
+                                <TableCell key={columnKey} className="max-w-48 truncate">
+                                  {String(row[columnKey] || '')}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+
+                    {/* Pagination */}
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="text-sm text-muted-foreground">
+                        Mostrando {((pagination.page - 1) * pagination.pageSize) + 1} a{' '}
+                        {Math.min(pagination.page * pagination.pageSize, filteredAndSortedData.length)} de{' '}
+                        {filteredAndSortedData.length.toLocaleString()} filas
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+                          disabled={pagination.page === 1}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          Anterior
+                        </Button>
+                        <span className="text-sm">
+                          Página {pagination.page} de {totalPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+                          disabled={pagination.page === totalPages}
+                        >
+                          Siguiente
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
