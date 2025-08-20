@@ -591,8 +591,9 @@ export default function Index() {
                   </div>
                 ) : (
                   <>
-                    <ScrollArea className="w-full">
-                      <Table>
+                    <ScrollArea className="w-full whitespace-nowrap">
+                      <div className="min-w-full">
+                        <Table>
                         <TableHeader>
                           <TableRow>
                             {selectedColumns.map(columnKey => {
@@ -627,7 +628,8 @@ export default function Index() {
                             </TableRow>
                           ))}
                         </TableBody>
-                      </Table>
+                        </Table>
+                      </div>
                     </ScrollArea>
 
                     {/* Pagination */}
