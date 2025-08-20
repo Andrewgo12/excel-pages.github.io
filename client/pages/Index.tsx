@@ -144,12 +144,47 @@ export default function Index() {
 
     // Apply global search
     if (globalSearch.trim()) {
-      const searchTerm = globalSearch.toLowerCase();
-      filtered = filtered.filter(row =>
-        Object.values(row).some(value =>
-          String(value || '').toLowerCase().includes(searchTerm)
-        )
-      );
+      try {
+        setRegexError(null);
+
+        if (searchMode === 'regex') {
+          const regex = new RegExp(globalSearch, 'i');
+          filtered = filtered.filter(row =>
+            Object.values(row).some(value =>
+              regex.test(String(value || ''))
+            )
+          );
+        } else if (searchMode === 'pattern') {
+          // Pattern matching with wildcards (* and ?)
+          const pattern = globalSearch
+            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special chars
+            .replace(/\\\*/g, '.*') // Convert * to .*
+            .replace(/\\\?/g, '.'); // Convert ? to .
+          const regex = new RegExp(pattern, 'i');
+          filtered = filtered.filter(row =>
+            Object.values(row).some(value =>
+              regex.test(String(value || ''))
+            )
+          );
+        } else {
+          // Normal search
+          const searchTerm = globalSearch.toLowerCase();
+          filtered = filtered.filter(row =>
+            Object.values(row).some(value =>
+              String(value || '').toLowerCase().includes(searchTerm)
+            )
+          );
+        }
+      } catch (error) {
+        setRegexError('Expresión regular inválida');
+        // Fall back to normal search
+        const searchTerm = globalSearch.toLowerCase();
+        filtered = filtered.filter(row =>
+          Object.values(row).some(value =>
+            String(value || '').toLowerCase().includes(searchTerm)
+          )
+        );
+      }
     }
 
     // Apply column-specific filters
