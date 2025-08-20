@@ -71,6 +71,7 @@ export function ActionsMenu({
   onSecurityOpen,
   onCloudSyncOpen,
   onAIInsightsOpen,
+  onAdvancedAnalyticsOpen,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu>
