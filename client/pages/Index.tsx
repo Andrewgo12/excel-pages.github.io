@@ -577,33 +577,6 @@ export default function Index() {
     XLSX.writeFile(workbook, "filtered_data.xlsx");
   };
 
-  const loadSampleData = () => {
-    const sampleData = generateSampleData();
-    setExcelData(sampleData);
-    setSelectedColumns(sampleData.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: sampleData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
-  };
-
-  const loadMultiSheetData = () => {
-    const multiData = generateMultiSheetData();
-    setExcelData(multiData);
-    setSelectedColumns(multiData.columns.slice(0, 8).map((c) => c.key));
-    setPagination((prev) => ({
-      ...prev,
-      totalRows: multiData.rows.length,
-      page: 1,
-    }));
-    setGlobalSearch("");
-    setColumnFilters({});
-    setFilterGroups([]);
-  };
 
   const switchSheet = async (sheetName: string) => {
     if (!excelData?.sheetsData) return;
