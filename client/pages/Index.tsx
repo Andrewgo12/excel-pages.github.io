@@ -1,49 +1,90 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { useDropzone } from 'react-dropzone';
-import * as XLSX from 'xlsx';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRight, Download, Columns, X, Plus, Search, Database, BarChart3, TrendingUp } from 'lucide-react';
-import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig } from '@shared/excel-types';
-import { generateSampleData } from '@/utils/sampleDataGenerator';
-import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
-import { calculateDatasetStats, calculateColumnStats, formatStatValue, generateColumnSummary, DatasetStats, ColumnStats } from '@/utils/statisticalAnalysis';
-import { DataVisualization } from '@/components/DataVisualization';
-import { DataAggregation } from '@/components/DataAggregation';
-import { ConfigurationManager } from '@/components/ConfigurationManager';
-import { BulkOperations } from '@/components/BulkOperations';
-import { EnhancedExport } from '@/components/EnhancedExport';
-import { DataValidation } from '@/components/DataValidation';
+import React, { useState, useCallback, useMemo } from "react";
+import { useDropzone } from "react-dropzone";
+import * as XLSX from "xlsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertCircle,
+  FileSpreadsheet,
+  Filter,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Columns,
+  X,
+  Plus,
+  Search,
+  Database,
+  BarChart3,
+  TrendingUp,
+} from "lucide-react";
+import {
+  ExcelData,
+  ExcelColumn,
+  FilterCondition,
+  FilterGroup,
+  PaginationConfig,
+} from "@shared/excel-types";
+import { generateSampleData } from "@/utils/sampleDataGenerator";
+import { generateMultiSheetData } from "@/utils/multiSheetGenerator";
+import {
+  calculateDatasetStats,
+  calculateColumnStats,
+  formatStatValue,
+  generateColumnSummary,
+  DatasetStats,
+  ColumnStats,
+} from "@/utils/statisticalAnalysis";
+import { DataVisualization } from "@/components/DataVisualization";
+import { DataAggregation } from "@/components/DataAggregation";
+import { ConfigurationManager } from "@/components/ConfigurationManager";
+import { BulkOperations } from "@/components/BulkOperations";
+import { EnhancedExport } from "@/components/EnhancedExport";
+import { DataValidation } from "@/components/DataValidation";
 
 const OPERATORS = [
-  { value: 'equals', label: 'Igual a' },
-  { value: 'not_equals', label: 'No igual a' },
-  { value: 'contains', label: 'Contiene' },
-  { value: 'not_contains', label: 'No contiene' },
-  { value: 'starts_with', label: 'Comienza con' },
-  { value: 'ends_with', label: 'Termina con' },
-  { value: 'greater', label: 'Mayor que' },
-  { value: 'greater_equal', label: 'Mayor o igual que' },
-  { value: 'less', label: 'Menor que' },
-  { value: 'less_equal', label: 'Menor o igual que' },
-  { value: 'between', label: 'Entre' },
-  { value: 'is_empty', label: 'Está vacío' },
-  { value: 'is_not_empty', label: 'No está vacío' },
-  { value: 'date_today', label: 'Es hoy' },
-  { value: 'date_yesterday', label: 'Es ayer' },
-  { value: 'date_this_week', label: 'Esta semana' },
-  { value: 'date_this_month', label: 'Este mes' },
-  { value: 'date_this_year', label: 'Este año' },
-  { value: 'date_last_7_days', label: 'Últimos 7 días' },
-  { value: 'date_last_30_days', label: 'Últimos 30 días' },
+  { value: "equals", label: "Igual a" },
+  { value: "not_equals", label: "No igual a" },
+  { value: "contains", label: "Contiene" },
+  { value: "not_contains", label: "No contiene" },
+  { value: "starts_with", label: "Comienza con" },
+  { value: "ends_with", label: "Termina con" },
+  { value: "greater", label: "Mayor que" },
+  { value: "greater_equal", label: "Mayor o igual que" },
+  { value: "less", label: "Menor que" },
+  { value: "less_equal", label: "Menor o igual que" },
+  { value: "between", label: "Entre" },
+  { value: "is_empty", label: "Está vacío" },
+  { value: "is_not_empty", label: "No está vacío" },
+  { value: "date_today", label: "Es hoy" },
+  { value: "date_yesterday", label: "Es ayer" },
+  { value: "date_this_week", label: "Esta semana" },
+  { value: "date_this_month", label: "Este mes" },
+  { value: "date_this_year", label: "Este año" },
+  { value: "date_last_7_days", label: "Últimos 7 días" },
+  { value: "date_last_30_days", label: "Últimos 30 días" },
 ];
 
 export default function Index() {
@@ -53,10 +94,10 @@ export default function Index() {
   const [pagination, setPagination] = useState<PaginationConfig>({
     page: 1,
     pageSize: 25,
-    totalRows: 0
+    totalRows: 0,
   });
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
@@ -66,10 +107,14 @@ export default function Index() {
   const [isBulkOperationsOpen, setIsBulkOperationsOpen] = useState(false);
   const [isEnhancedExportOpen, setIsEnhancedExportOpen] = useState(false);
   const [isDataValidationOpen, setIsDataValidationOpen] = useState(false);
-  const [globalSearch, setGlobalSearch] = useState('');
-  const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
+    {},
+  );
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
-  const [searchMode, setSearchMode] = useState<'normal' | 'regex' | 'pattern'>('normal');
+  const [searchMode, setSearchMode] = useState<"normal" | "regex" | "pattern">(
+    "normal",
+  );
   const [regexError, setRegexError] = useState<string | null>(null);
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
@@ -81,70 +126,84 @@ export default function Index() {
     reader.onload = (e) => {
       try {
         const fileData = e.target?.result;
-        const workbook = XLSX.read(fileData, { type: 'binary' });
+        const workbook = XLSX.read(fileData, { type: "binary" });
         const sheetNames = workbook.SheetNames;
         const activeSheet = sheetNames[0];
         const worksheet = workbook.Sheets[activeSheet];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-        
+
         if (jsonData.length === 0) return;
 
         const headers = jsonData[0] as string[];
         const rows = jsonData.slice(1).map((row: any[], index) => {
           const rowData: Record<string, any> = { _id: index };
           headers.forEach((header, colIndex) => {
-            rowData[header] = row[colIndex] || '';
+            rowData[header] = row[colIndex] || "";
           });
           return rowData;
         });
 
-        const columns: ExcelColumn[] = headers.map(header => ({
+        const columns: ExcelColumn[] = headers.map((header) => ({
           key: header,
           label: header,
-          type: inferColumnType(rows, header)
+          type: inferColumnType(rows, header),
         }));
 
         const data: ExcelData = {
           columns,
           rows,
           sheetNames,
-          activeSheet
+          activeSheet,
         };
 
         setExcelData(data);
         setSelectedColumns(headers.slice(0, 8)); // Show first 8 columns by default
-        setPagination(prev => ({ ...prev, totalRows: rows.length, page: 1 }));
+        setPagination((prev) => ({ ...prev, totalRows: rows.length, page: 1 }));
       } catch (error) {
-        console.error('Error reading Excel file:', error);
+        console.error("Error reading Excel file:", error);
       }
     };
     reader.readAsBinaryString(file);
   }, []);
 
-  const inferColumnType = (rows: Record<string, any>[], column: string): 'text' | 'number' | 'date' | 'boolean' => {
-    const sample = rows.slice(0, 10).map(row => row[column]).filter(val => val !== null && val !== undefined && val !== '');
-    
-    if (sample.length === 0) return 'text';
-    
+  const inferColumnType = (
+    rows: Record<string, any>[],
+    column: string,
+  ): "text" | "number" | "date" | "boolean" => {
+    const sample = rows
+      .slice(0, 10)
+      .map((row) => row[column])
+      .filter((val) => val !== null && val !== undefined && val !== "");
+
+    if (sample.length === 0) return "text";
+
     // Check if all values are numbers
-    if (sample.every(val => !isNaN(Number(val)))) return 'number';
-    
+    if (sample.every((val) => !isNaN(Number(val)))) return "number";
+
     // Check if all values are dates
-    if (sample.every(val => !isNaN(Date.parse(val)))) return 'date';
-    
+    if (sample.every((val) => !isNaN(Date.parse(val)))) return "date";
+
     // Check if all values are booleans
-    if (sample.every(val => val === true || val === false || val === 'true' || val === 'false')) return 'boolean';
-    
-    return 'text';
+    if (
+      sample.every(
+        (val) =>
+          val === true || val === false || val === "true" || val === "false",
+      )
+    )
+      return "boolean";
+
+    return "text";
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-      'application/vnd.ms-excel': ['.xls']
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
+      "application/vnd.ms-excel": [".xls"],
     },
-    multiple: false
+    multiple: false,
   });
 
   const filteredAndSortedData = useMemo(() => {
@@ -157,68 +216,68 @@ export default function Index() {
       try {
         setRegexError(null);
 
-        if (searchMode === 'regex') {
-          const regex = new RegExp(globalSearch, 'i');
-          filtered = filtered.filter(row =>
-            Object.values(row).some(value =>
-              regex.test(String(value || ''))
-            )
+        if (searchMode === "regex") {
+          const regex = new RegExp(globalSearch, "i");
+          filtered = filtered.filter((row) =>
+            Object.values(row).some((value) => regex.test(String(value || ""))),
           );
-        } else if (searchMode === 'pattern') {
+        } else if (searchMode === "pattern") {
           // Pattern matching with wildcards (* and ?)
           const pattern = globalSearch
-            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special chars
-            .replace(/\\\*/g, '.*') // Convert * to .*
-            .replace(/\\\?/g, '.'); // Convert ? to .
-          const regex = new RegExp(pattern, 'i');
-          filtered = filtered.filter(row =>
-            Object.values(row).some(value =>
-              regex.test(String(value || ''))
-            )
+            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&") // Escape special chars
+            .replace(/\\\*/g, ".*") // Convert * to .*
+            .replace(/\\\?/g, "."); // Convert ? to .
+          const regex = new RegExp(pattern, "i");
+          filtered = filtered.filter((row) =>
+            Object.values(row).some((value) => regex.test(String(value || ""))),
           );
         } else {
           // Normal search
           const searchTerm = globalSearch.toLowerCase();
-          filtered = filtered.filter(row =>
-            Object.values(row).some(value =>
-              String(value || '').toLowerCase().includes(searchTerm)
-            )
+          filtered = filtered.filter((row) =>
+            Object.values(row).some((value) =>
+              String(value || "")
+                .toLowerCase()
+                .includes(searchTerm),
+            ),
           );
         }
       } catch (error) {
-        setRegexError('Expresión regular inválida');
+        setRegexError("Expresión regular inválida");
         // Fall back to normal search
         const searchTerm = globalSearch.toLowerCase();
-        filtered = filtered.filter(row =>
-          Object.values(row).some(value =>
-            String(value || '').toLowerCase().includes(searchTerm)
-          )
+        filtered = filtered.filter((row) =>
+          Object.values(row).some((value) =>
+            String(value || "")
+              .toLowerCase()
+              .includes(searchTerm),
+          ),
         );
       }
     }
 
     // Apply column-specific filters
     if (Object.keys(columnFilters).length > 0) {
-      filtered = filtered.filter(row =>
+      filtered = filtered.filter((row) =>
         Object.entries(columnFilters).every(([column, filterValue]) => {
           if (!filterValue.trim()) return true;
-          const value = String(row[column] || '').toLowerCase();
+          const value = String(row[column] || "").toLowerCase();
           return value.includes(filterValue.toLowerCase());
-        })
+        }),
       );
     }
 
     // Apply advanced filters
     if (filterGroups.length > 0) {
-      filtered = filtered.filter(row => {
-        return filterGroups.every(group => {
+      filtered = filtered.filter((row) => {
+        return filterGroups.every((group) => {
           if (group.conditions.length === 0) return true;
-          
-          const results = group.conditions.map(condition => {
+
+          const results = group.conditions.map((condition) => {
             const value = row[condition.column];
             const filterValue = condition.value;
-            const valueStr = String(value || '').toLowerCase();
-            const filterStr = String(filterValue || '').toLowerCase();
+            const valueStr = String(value || "").toLowerCase();
+            const filterStr = String(filterValue || "").toLowerCase();
 
             // Date parsing helper
             const parseDate = (dateStr: string): Date | null => {
@@ -227,12 +286,16 @@ export default function Index() {
               const formats = [
                 () => new Date(dateStr),
                 () => {
-                  const parts = dateStr.split('/');
+                  const parts = dateStr.split("/");
                   if (parts.length === 3) {
-                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                    return new Date(
+                      parseInt(parts[2]),
+                      parseInt(parts[1]) - 1,
+                      parseInt(parts[0]),
+                    );
                   }
                   return null;
-                }
+                },
               ];
 
               for (const format of formats) {
@@ -251,60 +314,66 @@ export default function Index() {
             const filterDate = parseDate(filterStr);
 
             switch (condition.operator) {
-              case 'equals':
+              case "equals":
                 return valueStr === filterStr;
-              case 'not_equals':
+              case "not_equals":
                 return valueStr !== filterStr;
-              case 'contains':
+              case "contains":
                 return valueStr.includes(filterStr);
-              case 'not_contains':
+              case "not_contains":
                 return !valueStr.includes(filterStr);
-              case 'starts_with':
+              case "starts_with":
                 return valueStr.startsWith(filterStr);
-              case 'ends_with':
+              case "ends_with":
                 return valueStr.endsWith(filterStr);
-              case 'greater':
+              case "greater":
                 return Number(value) > Number(filterValue);
-              case 'greater_equal':
+              case "greater_equal":
                 return Number(value) >= Number(filterValue);
-              case 'less':
+              case "less":
                 return Number(value) < Number(filterValue);
-              case 'less_equal':
+              case "less_equal":
                 return Number(value) <= Number(filterValue);
-              case 'between':
-                return Number(value) >= Number(filterValue) && Number(value) <= Number(condition.secondValue || filterValue);
-              case 'is_empty':
-                return !value || valueStr === '';
-              case 'is_not_empty':
-                return value && valueStr !== '';
+              case "between":
+                return (
+                  Number(value) >= Number(filterValue) &&
+                  Number(value) <= Number(condition.secondValue || filterValue)
+                );
+              case "is_empty":
+                return !value || valueStr === "";
+              case "is_not_empty":
+                return value && valueStr !== "";
 
               // Date-specific filters
-              case 'date_today':
+              case "date_today":
                 if (!valueDate) return false;
                 return valueDate.toDateString() === now.toDateString();
-              case 'date_yesterday':
+              case "date_yesterday":
                 if (!valueDate) return false;
                 const yesterday = new Date(now);
                 yesterday.setDate(yesterday.getDate() - 1);
                 return valueDate.toDateString() === yesterday.toDateString();
-              case 'date_this_week':
+              case "date_this_week":
                 if (!valueDate) return false;
                 const weekStart = new Date(now);
                 weekStart.setDate(now.getDate() - now.getDay());
                 weekStart.setHours(0, 0, 0, 0);
                 return valueDate >= weekStart && valueDate <= now;
-              case 'date_this_month':
+              case "date_this_month":
                 if (!valueDate) return false;
-                return valueDate.getMonth() === now.getMonth() && valueDate.getFullYear() === now.getFullYear();
-              case 'date_this_year':
+                return (
+                  valueDate.getMonth() === now.getMonth() &&
+                  valueDate.getFullYear() === now.getFullYear()
+                );
+              case "date_this_year":
                 if (!valueDate) return false;
                 return valueDate.getFullYear() === now.getFullYear();
-              case 'date_last_7_days':
+              case "date_last_7_days":
                 if (!valueDate) return false;
                 const sevenDaysAgo = new Date(now);
                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
                 return valueDate >= sevenDaysAgo && valueDate <= now;
-              case 'date_last_30_days':
+              case "date_last_30_days":
                 if (!valueDate) return false;
                 const thirtyDaysAgo = new Date(now);
                 thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -313,8 +382,10 @@ export default function Index() {
                 return true;
             }
           });
-          
-          return group.logic === 'AND' ? results.every(r => r) : results.some(r => r);
+
+          return group.logic === "AND"
+            ? results.every((r) => r)
+            : results.some((r) => r);
         });
       });
     }
@@ -324,21 +395,28 @@ export default function Index() {
       filtered.sort((a, b) => {
         let aVal = a[sortColumn];
         let bVal = b[sortColumn];
-        
+
         // Convert to numbers if possible
         if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
           aVal = Number(aVal);
           bVal = Number(bVal);
         }
-        
-        if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+
+        if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+        if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
         return 0;
       });
     }
 
     return filtered;
-  }, [excelData, filterGroups, sortColumn, sortDirection, globalSearch, columnFilters]);
+  }, [
+    excelData,
+    filterGroups,
+    sortColumn,
+    sortDirection,
+    globalSearch,
+    columnFilters,
+  ]);
 
   // Calculate statistics for current filtered data
   const currentStats = useMemo(() => {
@@ -348,16 +426,21 @@ export default function Index() {
 
   const paginatedData = useMemo(() => {
     const startIndex = (pagination.page - 1) * pagination.pageSize;
-    return filteredAndSortedData.slice(startIndex, startIndex + pagination.pageSize);
+    return filteredAndSortedData.slice(
+      startIndex,
+      startIndex + pagination.pageSize,
+    );
   }, [filteredAndSortedData, pagination]);
 
-  const totalPages = Math.ceil(filteredAndSortedData.length / pagination.pageSize);
+  const totalPages = Math.ceil(
+    filteredAndSortedData.length / pagination.pageSize,
+  );
 
   const addFilterGroup = () => {
     const newGroup: FilterGroup = {
       id: Date.now().toString(),
-      logic: 'AND',
-      conditions: []
+      logic: "AND",
+      conditions: [],
     };
     setFilterGroups([...filterGroups, newGroup]);
   };
@@ -365,64 +448,73 @@ export default function Index() {
   const addFilterCondition = (groupId: string) => {
     const newCondition: FilterCondition = {
       id: Date.now().toString(),
-      column: excelData?.columns[0]?.key || '',
-      operator: 'contains',
-      value: ''
+      column: excelData?.columns[0]?.key || "",
+      operator: "contains",
+      value: "",
     };
-    
-    setFilterGroups(groups => 
-      groups.map(group => 
-        group.id === groupId 
+
+    setFilterGroups((groups) =>
+      groups.map((group) =>
+        group.id === groupId
           ? { ...group, conditions: [...group.conditions, newCondition] }
-          : group
-      )
+          : group,
+      ),
     );
   };
 
-  const updateFilterCondition = (groupId: string, conditionId: string, updates: Partial<FilterCondition>) => {
-    setFilterGroups(groups =>
-      groups.map(group =>
+  const updateFilterCondition = (
+    groupId: string,
+    conditionId: string,
+    updates: Partial<FilterCondition>,
+  ) => {
+    setFilterGroups((groups) =>
+      groups.map((group) =>
         group.id === groupId
           ? {
               ...group,
-              conditions: group.conditions.map(condition =>
-                condition.id === conditionId ? { ...condition, ...updates } : condition
-              )
+              conditions: group.conditions.map((condition) =>
+                condition.id === conditionId
+                  ? { ...condition, ...updates }
+                  : condition,
+              ),
             }
-          : group
-      )
+          : group,
+      ),
     );
   };
 
   const removeFilterCondition = (groupId: string, conditionId: string) => {
-    setFilterGroups(groups =>
-      groups.map(group =>
+    setFilterGroups((groups) =>
+      groups.map((group) =>
         group.id === groupId
-          ? { ...group, conditions: group.conditions.filter(c => c.id !== conditionId) }
-          : group
-      )
+          ? {
+              ...group,
+              conditions: group.conditions.filter((c) => c.id !== conditionId),
+            }
+          : group,
+      ),
     );
   };
 
   const removeFilterGroup = (groupId: string) => {
-    setFilterGroups(groups => groups.filter(g => g.id !== groupId));
+    setFilterGroups((groups) => groups.filter((g) => g.id !== groupId));
   };
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortColumn(column);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
   const exportFilteredData = () => {
     if (!excelData || filteredAndSortedData.length === 0) return;
 
-    const exportData = filteredAndSortedData.map(row => {
+    const exportData = filteredAndSortedData.map((row) => {
       const exportRow: Record<string, any> = {};
-      selectedColumns.forEach(col => {
+      selectedColumns.forEach((col) => {
         exportRow[col] = row[col];
       });
       return exportRow;
@@ -430,16 +522,20 @@ export default function Index() {
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Filtered Data');
-    XLSX.writeFile(workbook, 'filtered_data.xlsx');
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
+    XLSX.writeFile(workbook, "filtered_data.xlsx");
   };
 
   const loadSampleData = () => {
     const sampleData = generateSampleData();
     setExcelData(sampleData);
-    setSelectedColumns(sampleData.columns.slice(0, 8).map(c => c.key)); // Show first 8 columns
-    setPagination(prev => ({ ...prev, totalRows: sampleData.rows.length, page: 1 }));
-    setGlobalSearch('');
+    setSelectedColumns(sampleData.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns
+    setPagination((prev) => ({
+      ...prev,
+      totalRows: sampleData.rows.length,
+      page: 1,
+    }));
+    setGlobalSearch("");
     setColumnFilters({});
     setFilterGroups([]);
   };
@@ -447,9 +543,13 @@ export default function Index() {
   const loadMultiSheetData = () => {
     const multiData = generateMultiSheetData();
     setExcelData(multiData);
-    setSelectedColumns(multiData.columns.slice(0, 8).map(c => c.key));
-    setPagination(prev => ({ ...prev, totalRows: multiData.rows.length, page: 1 }));
-    setGlobalSearch('');
+    setSelectedColumns(multiData.columns.slice(0, 8).map((c) => c.key));
+    setPagination((prev) => ({
+      ...prev,
+      totalRows: multiData.rows.length,
+      page: 1,
+    }));
+    setGlobalSearch("");
     setColumnFilters({});
     setFilterGroups([]);
   };
@@ -464,13 +564,17 @@ export default function Index() {
       ...excelData,
       activeSheet: sheetName,
       columns: sheetData.columns,
-      rows: sheetData.rows
+      rows: sheetData.rows,
     };
 
     setExcelData(newData);
-    setSelectedColumns(sheetData.columns.slice(0, 8).map(c => c.key));
-    setPagination(prev => ({ ...prev, totalRows: sheetData.rows.length, page: 1 }));
-    setGlobalSearch('');
+    setSelectedColumns(sheetData.columns.slice(0, 8).map((c) => c.key));
+    setPagination((prev) => ({
+      ...prev,
+      totalRows: sheetData.rows.length,
+      page: 1,
+    }));
+    setGlobalSearch("");
     setColumnFilters({});
     setFilterGroups([]);
   };
@@ -483,24 +587,28 @@ export default function Index() {
     columnFilters,
     sortColumn,
     sortDirection,
-    pagination
+    pagination,
   });
 
   const loadConfiguration = (config: any) => {
     setSelectedColumns(config.config.selectedColumns || []);
     setFilterGroups(config.config.filterGroups || []);
-    setGlobalSearch(config.config.globalSearch || '');
-    setSearchMode(config.config.searchMode || 'normal');
+    setGlobalSearch(config.config.globalSearch || "");
+    setSearchMode(config.config.searchMode || "normal");
     setColumnFilters(config.config.columnFilters || {});
     setSortColumn(config.config.sortColumn || null);
-    setSortDirection(config.config.sortDirection || 'asc');
-    setPagination(prev => ({ ...prev, ...config.config.pagination }));
+    setSortDirection(config.config.sortDirection || "asc");
+    setPagination((prev) => ({ ...prev, ...config.config.pagination }));
   };
 
   const handlePreferencesChange = (preferences: any) => {
     // Apply preferences to current state
     if (preferences.defaultPageSize !== pagination.pageSize) {
-      setPagination(prev => ({ ...prev, pageSize: preferences.defaultPageSize, page: 1 }));
+      setPagination((prev) => ({
+        ...prev,
+        pageSize: preferences.defaultPageSize,
+        page: 1,
+      }));
     }
 
     if (preferences.defaultSearchMode !== searchMode) {
@@ -514,7 +622,7 @@ export default function Index() {
     // Update the current sheet data
     const updatedData = {
       ...excelData,
-      rows: newData
+      rows: newData,
     };
 
     // If we have multiple sheets, update the active sheet's data
@@ -523,13 +631,13 @@ export default function Index() {
         ...excelData.sheetsData,
         [excelData.activeSheet]: {
           columns: excelData.columns,
-          rows: newData
-        }
+          rows: newData,
+        },
       };
     }
 
     setExcelData(updatedData);
-    setPagination(prev => ({ ...prev, totalRows: newData.length, page: 1 }));
+    setPagination((prev) => ({ ...prev, totalRows: newData.length, page: 1 }));
   };
 
   if (!excelData) {
@@ -542,7 +650,8 @@ export default function Index() {
               Excel Data Explorer
             </h1>
             <p className="text-muted-foreground mt-1">
-              Herramienta interactiva para visualización y exploración de datos Excel
+              Herramienta interactiva para visualización y exploración de datos
+              Excel
             </p>
           </div>
         </div>
@@ -551,27 +660,35 @@ export default function Index() {
           <div className="max-w-2xl mx-auto">
             <Card>
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl mb-2">Cargar Archivo Excel</CardTitle>
+                <CardTitle className="text-2xl mb-2">
+                  Cargar Archivo Excel
+                </CardTitle>
                 <p className="text-muted-foreground">
-                  Arrastra y suelta tu archivo Excel (.xlsx) aquí o haz clic para seleccionar
+                  Arrastra y suelta tu archivo Excel (.xlsx) aquí o haz clic
+                  para seleccionar
                 </p>
               </CardHeader>
               <CardContent>
                 <div
                   {...getRootProps()}
                   className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
-                    ${isDragActive 
-                      ? 'border-primary bg-primary/5' 
-                      : 'border-border hover:border-primary/50'
+                    ${
+                      isDragActive
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/50"
                     }`}
                 >
                   <input {...getInputProps()} />
                   <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                   {isDragActive ? (
-                    <p className="text-primary font-medium">Suelta el archivo aquí...</p>
+                    <p className="text-primary font-medium">
+                      Suelta el archivo aquí...
+                    </p>
                   ) : (
                     <div>
-                      <p className="font-medium mb-2">Haz clic para seleccionar o arrastra el archivo</p>
+                      <p className="font-medium mb-2">
+                        Haz clic para seleccionar o arrastra el archivo
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         Soporta archivos .xlsx y .xls
                       </p>
@@ -584,7 +701,11 @@ export default function Index() {
                     ¿Quieres ver todas las funcionalidades?
                   </div>
                   <div className="flex gap-3 justify-center">
-                    <Button onClick={loadSampleData} variant="outline" className="gap-2">
+                    <Button
+                      onClick={loadSampleData}
+                      variant="outline"
+                      className="gap-2"
+                    >
                       <Database className="h-4 w-4" />
                       Datos Básicos
                     </Button>
@@ -594,7 +715,8 @@ export default function Index() {
                     </Button>
                   </div>
                   <div className="text-xs text-muted-foreground mt-2">
-                    Básicos: 80 columnas • 500 filas | Completo: 4 hojas • Datos empresariales
+                    Básicos: 80 columnas • 500 filas | Completo: 4 hojas • Datos
+                    empresariales
                   </div>
                 </div>
               </CardContent>
@@ -617,26 +739,33 @@ export default function Index() {
                 Excel Data Explorer
               </h1>
               <p className="text-sm lg:text-base text-muted-foreground mt-1">
-                {excelData.rows.length.toLocaleString()} filas • {excelData.columns.length} columnas • Hoja: {excelData.activeSheet}
+                {excelData.rows.length.toLocaleString()} filas •{" "}
+                {excelData.columns.length} columnas • Hoja:{" "}
+                {excelData.activeSheet}
               </p>
 
               {/* Sheet Tabs */}
               {excelData.sheetsData && excelData.sheetNames.length > 1 && (
                 <div className="flex gap-1 mt-3">
-                  {excelData.sheetNames.map(sheetName => (
+                  {excelData.sheetNames.map((sheetName) => (
                     <Button
                       key={sheetName}
-                      variant={excelData.activeSheet === sheetName ? "default" : "outline"}
+                      variant={
+                        excelData.activeSheet === sheetName
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       onClick={() => switchSheet(sheetName)}
                       className="h-7 text-xs"
                     >
                       {sheetName}
-                      {excelData.sheetsData && excelData.sheetsData[sheetName] && (
-                        <Badge variant="secondary" className="ml-2 text-xs">
-                          {excelData.sheetsData[sheetName].rows.length}
-                        </Badge>
-                      )}
+                      {excelData.sheetsData &&
+                        excelData.sheetsData[sheetName] && (
+                          <Badge variant="secondary" className="ml-2 text-xs">
+                            {excelData.sheetsData[sheetName].rows.length}
+                          </Badge>
+                        )}
                     </Button>
                   ))}
                 </div>
@@ -648,19 +777,21 @@ export default function Index() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder={
-                      searchMode === 'regex' ? 'Buscar con regex...' :
-                      searchMode === 'pattern' ? 'Buscar con patrones (* ?)...' :
-                      'Buscar en todos los datos...'
+                      searchMode === "regex"
+                        ? "Buscar con regex..."
+                        : searchMode === "pattern"
+                          ? "Buscar con patrones (* ?)..."
+                          : "Buscar en todos los datos..."
                     }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className={`pl-10 pr-8 ${regexError ? 'border-destructive' : ''}`}
+                    className={`pl-10 pr-8 ${regexError ? "border-destructive" : ""}`}
                   />
                   {globalSearch && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setGlobalSearch('')}
+                      onClick={() => setGlobalSearch("")}
                       className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
                     >
                       <X className="h-3 w-3" />
@@ -669,7 +800,12 @@ export default function Index() {
                 </div>
 
                 <div className="flex gap-2 mt-2">
-                  <Select value={searchMode} onValueChange={(value: 'normal' | 'regex' | 'pattern') => setSearchMode(value)}>
+                  <Select
+                    value={searchMode}
+                    onValueChange={(value: "normal" | "regex" | "pattern") =>
+                      setSearchMode(value)
+                    }
+                  >
                     <SelectTrigger className="w-32 h-7 text-xs">
                       <SelectValue />
                     </SelectTrigger>
@@ -683,7 +819,9 @@ export default function Index() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setIsAdvancedSearchOpen(!isAdvancedSearchOpen)}
+                    onClick={() =>
+                      setIsAdvancedSearchOpen(!isAdvancedSearchOpen)
+                    }
                     className="h-7 text-xs"
                   >
                     <Settings className="h-3 w-3 mr-1" />
@@ -692,10 +830,14 @@ export default function Index() {
                 </div>
 
                 {regexError && (
-                  <div className="text-xs text-destructive mt-1">{regexError}</div>
+                  <div className="text-xs text-destructive mt-1">
+                    {regexError}
+                  </div>
                 )}
 
-                {Object.keys(columnFilters).some(key => columnFilters[key]) && (
+                {Object.keys(columnFilters).some(
+                  (key) => columnFilters[key],
+                ) && (
                   <Button
                     variant="ghost"
                     size="sm"
@@ -708,47 +850,97 @@ export default function Index() {
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" size="sm" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}
+                >
                   <Columns className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Columnas</span> ({selectedColumns.length})
+                  <span className="hidden sm:inline">Columnas</span> (
+                  {selectedColumns.length})
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                >
                   <Filter className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Filtros</span> ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
+                  <span className="hidden sm:inline">Filtros</span> (
+                  {filterGroups.reduce(
+                    (sum, group) => sum + group.conditions.length,
+                    0,
+                  )}
+                  )
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsStatsOpen(!isStatsOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsStatsOpen(!isStatsOpen)}
+                >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Estadísticas</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsVisualizationOpen(!isVisualizationOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsVisualizationOpen(!isVisualizationOpen)}
+                >
                   <TrendingUp className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Gráficos</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsAggregationOpen(!isAggregationOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAggregationOpen(!isAggregationOpen)}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Agregaciones</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Operaciones</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Exportar</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsDataValidationOpen(!isDataValidationOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsDataValidationOpen(!isDataValidationOpen)}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Validación</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setIsConfigurationOpen(!isConfigurationOpen)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsConfigurationOpen(!isConfigurationOpen)}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Configuración</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={exportFilteredData}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportFilteredData}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Exportar</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setExcelData(null)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setExcelData(null)}
+                >
                   <span className="hidden sm:inline">Nuevo Archivo</span>
                   <span className="sm:hidden">Nuevo</span>
                 </Button>
@@ -768,22 +960,28 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Seleccionar Columnas
-                    <Button variant="ghost" size="sm" onClick={() => setIsColumnSelectorOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsColumnSelectorOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-2 mb-4">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
-                      onClick={() => setSelectedColumns(excelData.columns.map(c => c.key))}
+                      onClick={() =>
+                        setSelectedColumns(excelData.columns.map((c) => c.key))
+                      }
                     >
                       Todas
                     </Button>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="sm"
                       onClick={() => setSelectedColumns([])}
                     >
@@ -792,20 +990,33 @@ export default function Index() {
                   </div>
                   <ScrollArea className="h-64">
                     <div className="space-y-2">
-                      {excelData.columns.map(column => (
-                        <div key={column.key} className="flex items-center space-x-2">
+                      {excelData.columns.map((column) => (
+                        <div
+                          key={column.key}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={column.key}
                             checked={selectedColumns.includes(column.key)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setSelectedColumns([...selectedColumns, column.key]);
+                                setSelectedColumns([
+                                  ...selectedColumns,
+                                  column.key,
+                                ]);
                               } else {
-                                setSelectedColumns(selectedColumns.filter(c => c !== column.key));
+                                setSelectedColumns(
+                                  selectedColumns.filter(
+                                    (c) => c !== column.key,
+                                  ),
+                                );
                               }
                             }}
                           />
-                          <Label htmlFor={column.key} className="text-sm flex-1 cursor-pointer">
+                          <Label
+                            htmlFor={column.key}
+                            className="text-sm flex-1 cursor-pointer"
+                          >
                             {column.label}
                           </Label>
                           <Badge variant="secondary" className="text-xs">
@@ -825,7 +1036,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Constructor de Filtros
-                    <Button variant="ghost" size="sm" onClick={() => setIsFilterOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsFilterOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -847,7 +1062,7 @@ export default function Index() {
                       </Button>
                     )}
                   </div>
-                  
+
                   <ScrollArea className="h-96">
                     <div className="space-y-4">
                       {filterGroups.map((group, groupIndex) => (
@@ -855,11 +1070,13 @@ export default function Index() {
                           <div className="flex items-center justify-between mb-3">
                             <Select
                               value={group.logic}
-                              onValueChange={(value: 'AND' | 'OR') => {
-                                setFilterGroups(groups =>
-                                  groups.map(g =>
-                                    g.id === group.id ? { ...g, logic: value } : g
-                                  )
+                              onValueChange={(value: "AND" | "OR") => {
+                                setFilterGroups((groups) =>
+                                  groups.map((g) =>
+                                    g.id === group.id
+                                      ? { ...g, logic: value }
+                                      : g,
+                                  ),
                                 );
                               }}
                             >
@@ -881,21 +1098,31 @@ export default function Index() {
                           </div>
 
                           <div className="space-y-2">
-                            {group.conditions.map(condition => (
-                              <div key={condition.id} className="space-y-2 border-l-2 border-muted pl-3">
+                            {group.conditions.map((condition) => (
+                              <div
+                                key={condition.id}
+                                className="space-y-2 border-l-2 border-muted pl-3"
+                              >
                                 <div className="flex gap-2">
                                   <Select
                                     value={condition.column}
                                     onValueChange={(value) =>
-                                      updateFilterCondition(group.id, condition.id, { column: value })
+                                      updateFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                        { column: value },
+                                      )
                                     }
                                   >
                                     <SelectTrigger className="flex-1">
                                       <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {excelData.columns.map(col => (
-                                        <SelectItem key={col.key} value={col.key}>
+                                      {excelData.columns.map((col) => (
+                                        <SelectItem
+                                          key={col.key}
+                                          value={col.key}
+                                        >
                                           {col.label}
                                         </SelectItem>
                                       ))}
@@ -904,7 +1131,12 @@ export default function Index() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => removeFilterCondition(group.id, condition.id)}
+                                    onClick={() =>
+                                      removeFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                      )
+                                    }
                                   >
                                     <X className="h-4 w-4" />
                                   </Button>
@@ -913,15 +1145,22 @@ export default function Index() {
                                 <Select
                                   value={condition.operator}
                                   onValueChange={(value: any) =>
-                                    updateFilterCondition(group.id, condition.id, { operator: value })
+                                    updateFilterCondition(
+                                      group.id,
+                                      condition.id,
+                                      { operator: value },
+                                    )
                                   }
                                 >
                                   <SelectTrigger>
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {OPERATORS.map(op => (
-                                      <SelectItem key={op.value} value={op.value}>
+                                    {OPERATORS.map((op) => (
+                                      <SelectItem
+                                        key={op.value}
+                                        value={op.value}
+                                      >
                                         {op.label}
                                       </SelectItem>
                                     ))}
@@ -932,22 +1171,30 @@ export default function Index() {
                                   placeholder="Valor"
                                   value={String(condition.value)}
                                   onChange={(e) =>
-                                    updateFilterCondition(group.id, condition.id, { value: e.target.value })
+                                    updateFilterCondition(
+                                      group.id,
+                                      condition.id,
+                                      { value: e.target.value },
+                                    )
                                   }
                                 />
 
-                                {condition.operator === 'between' && (
+                                {condition.operator === "between" && (
                                   <Input
                                     placeholder="Segundo valor"
-                                    value={String(condition.secondValue || '')}
+                                    value={String(condition.secondValue || "")}
                                     onChange={(e) =>
-                                      updateFilterCondition(group.id, condition.id, { secondValue: e.target.value })
+                                      updateFilterCondition(
+                                        group.id,
+                                        condition.id,
+                                        { secondValue: e.target.value },
+                                      )
                                     }
                                   />
                                 )}
                               </div>
                             ))}
-                            
+
                             <Button
                               variant="outline"
                               size="sm"
@@ -972,7 +1219,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Análisis Estadístico
-                    <Button variant="ghost" size="sm" onClick={() => setIsStatsOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsStatsOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -983,92 +1234,151 @@ export default function Index() {
                     <h4 className="font-medium mb-3">Resumen del Dataset</h4>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-muted-foreground">Total filas:</span>
-                        <div className="font-medium">{currentStats.totalRows.toLocaleString('es-ES')}</div>
+                        <span className="text-muted-foreground">
+                          Total filas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.totalRows.toLocaleString("es-ES")}
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Total columnas:</span>
-                        <div className="font-medium">{currentStats.totalColumns}</div>
+                        <span className="text-muted-foreground">
+                          Total columnas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.totalColumns}
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Completitud:</span>
-                        <div className="font-medium">{currentStats.completenessScore}%</div>
+                        <span className="text-muted-foreground">
+                          Completitud:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.completenessScore}%
+                        </div>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Filas duplicadas:</span>
-                        <div className="font-medium">{currentStats.duplicateRows}</div>
+                        <span className="text-muted-foreground">
+                          Filas duplicadas:
+                        </span>
+                        <div className="font-medium">
+                          {currentStats.duplicateRows}
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Column Statistics */}
                   <div>
-                    <h4 className="font-medium mb-3">Estadísticas por Columna</h4>
+                    <h4 className="font-medium mb-3">
+                      Estadísticas por Columna
+                    </h4>
                     <ScrollArea className="h-96">
                       <div className="space-y-4">
                         {currentStats.columnStats
-                          .filter(stat => selectedColumns.includes(stat.column))
-                          .map(stat => (
-                          <div key={stat.column} className="border rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-medium text-sm">{stat.column}</h5>
-                              <Badge variant="secondary" className="text-xs">
-                                {stat.type}
-                              </Badge>
-                            </div>
-
-                            <div className="text-xs text-muted-foreground mb-3">
-                              {generateColumnSummary(stat)}
-                            </div>
-
-                            {/* Type-specific stats */}
-                            {stat.type === 'number' && (
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                <div>
-                                  <span className="text-muted-foreground">Min:</span> {formatStatValue(stat.min, 'number')}
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Max:</span> {formatStatValue(stat.max, 'number')}
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Media:</span> {formatStatValue(stat.mean, 'number')}
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Mediana:</span> {formatStatValue(stat.median, 'number')}
-                                </div>
+                          .filter((stat) =>
+                            selectedColumns.includes(stat.column),
+                          )
+                          .map((stat) => (
+                            <div
+                              key={stat.column}
+                              className="border rounded-lg p-3"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <h5 className="font-medium text-sm">
+                                  {stat.column}
+                                </h5>
+                                <Badge variant="secondary" className="text-xs">
+                                  {stat.type}
+                                </Badge>
                               </div>
-                            )}
 
-                            {stat.type === 'date' && stat.minDate && stat.maxDate && (
-                              <div className="grid grid-cols-1 gap-1 text-xs">
-                                <div>
-                                  <span className="text-muted-foreground">Desde:</span> {formatStatValue(stat.minDate, 'date')}
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Hasta:</span> {formatStatValue(stat.maxDate, 'date')}
-                                </div>
-                                <div>
-                                  <span className="text-muted-foreground">Rango:</span> {stat.dateRange} días
-                                </div>
+                              <div className="text-xs text-muted-foreground mb-3">
+                                {generateColumnSummary(stat)}
                               </div>
-                            )}
 
-                            {/* Top values */}
-                            {stat.topValues.length > 0 && (
-                              <div className="mt-3">
-                                <div className="text-xs text-muted-foreground mb-1">Valores más frecuentes:</div>
-                                <div className="space-y-1">
-                                  {stat.topValues.slice(0, 3).map((item, index) => (
-                                    <div key={index} className="flex justify-between text-xs">
-                                      <span className="truncate">{String(item.value)}</span>
-                                      <span className="text-muted-foreground">{item.count} ({item.percentage}%)</span>
+                              {/* Type-specific stats */}
+                              {stat.type === "number" && (
+                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Min:
+                                    </span>{" "}
+                                    {formatStatValue(stat.min, "number")}
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Max:
+                                    </span>{" "}
+                                    {formatStatValue(stat.max, "number")}
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Media:
+                                    </span>{" "}
+                                    {formatStatValue(stat.mean, "number")}
+                                  </div>
+                                  <div>
+                                    <span className="text-muted-foreground">
+                                      Mediana:
+                                    </span>{" "}
+                                    {formatStatValue(stat.median, "number")}
+                                  </div>
+                                </div>
+                              )}
+
+                              {stat.type === "date" &&
+                                stat.minDate &&
+                                stat.maxDate && (
+                                  <div className="grid grid-cols-1 gap-1 text-xs">
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Desde:
+                                      </span>{" "}
+                                      {formatStatValue(stat.minDate, "date")}
                                     </div>
-                                  ))}
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Hasta:
+                                      </span>{" "}
+                                      {formatStatValue(stat.maxDate, "date")}
+                                    </div>
+                                    <div>
+                                      <span className="text-muted-foreground">
+                                        Rango:
+                                      </span>{" "}
+                                      {stat.dateRange} días
+                                    </div>
+                                  </div>
+                                )}
+
+                              {/* Top values */}
+                              {stat.topValues.length > 0 && (
+                                <div className="mt-3">
+                                  <div className="text-xs text-muted-foreground mb-1">
+                                    Valores más frecuentes:
+                                  </div>
+                                  <div className="space-y-1">
+                                    {stat.topValues
+                                      .slice(0, 3)
+                                      .map((item, index) => (
+                                        <div
+                                          key={index}
+                                          className="flex justify-between text-xs"
+                                        >
+                                          <span className="truncate">
+                                            {String(item.value)}
+                                          </span>
+                                          <span className="text-muted-foreground">
+                                            {item.count} ({item.percentage}%)
+                                          </span>
+                                        </div>
+                                      ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                              )}
+                            </div>
+                          ))}
                       </div>
                     </ScrollArea>
                   </div>
@@ -1082,7 +1392,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Búsqueda Avanzada
-                    <Button variant="ghost" size="sm" onClick={() => setIsAdvancedSearchOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAdvancedSearchOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1094,25 +1408,39 @@ export default function Index() {
                       <div className="space-y-2 text-sm">
                         <div className="p-3 border rounded-lg">
                           <div className="font-medium">Normal</div>
-                          <div className="text-muted-foreground">Búsqueda simple de texto, no sensible a mayúsculas</div>
-                          <div className="text-xs text-muted-foreground mt-1">Ejemplo: "madrid" encuentra "Madrid", "MADRID", etc.</div>
-                        </div>
-
-                        <div className="p-3 border rounded-lg">
-                          <div className="font-medium">Patrones</div>
-                          <div className="text-muted-foreground">Utiliza comodines: * (cualquier texto) y ? (un carácter)</div>
+                          <div className="text-muted-foreground">
+                            Búsqueda simple de texto, no sensible a mayúsculas
+                          </div>
                           <div className="text-xs text-muted-foreground mt-1">
-                            Ejemplos: "mad*" encuentra "madrid", "madreña" | "m?drid" encuentra "madrid", "midrid"
+                            Ejemplo: "madrid" encuentra "Madrid", "MADRID", etc.
                           </div>
                         </div>
 
                         <div className="p-3 border rounded-lg">
-                          <div className="font-medium">Regex (Expresiones Regulares)</div>
-                          <div className="text-muted-foreground">Búsqueda avanzada con patrones complejos</div>
+                          <div className="font-medium">Patrones</div>
+                          <div className="text-muted-foreground">
+                            Utiliza comodines: * (cualquier texto) y ? (un
+                            carácter)
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Ejemplos: "mad*" encuentra "madrid", "madreña" |
+                            "m?drid" encuentra "madrid", "midrid"
+                          </div>
+                        </div>
+
+                        <div className="p-3 border rounded-lg">
+                          <div className="font-medium">
+                            Regex (Expresiones Regulares)
+                          </div>
+                          <div className="text-muted-foreground">
+                            Búsqueda avanzada con patrones complejos
+                          </div>
                           <div className="text-xs text-muted-foreground mt-1 space-y-1">
                             <div>• "^[A-Z]" - Comienza con mayúscula</div>
                             <div>• "\d{4}" - Exactamente 4 dígitos</div>
-                            <div>• "(gmail|hotmail)" - Contiene gmail o hotmail</div>
+                            <div>
+                              • "(gmail|hotmail)" - Contiene gmail o hotmail
+                            </div>
                             <div>• "\w+@\w+\.\w+" - Formato de email</div>
                           </div>
                         </div>
@@ -1125,48 +1453,60 @@ export default function Index() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setGlobalSearch('^\\d+$')}
+                          onClick={() => setGlobalSearch("^\\d+$")}
                           className="justify-start h-auto p-2"
                         >
                           <div>
                             <div className="font-medium">^\\d+$</div>
-                            <div className="text-muted-foreground">Solo números</div>
+                            <div className="text-muted-foreground">
+                              Solo números
+                            </div>
                           </div>
                         </Button>
 
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setGlobalSearch('\\w+@\\w+\\.\\w+')}
+                          onClick={() => setGlobalSearch("\\w+@\\w+\\.\\w+")}
                           className="justify-start h-auto p-2"
                         >
                           <div>
                             <div className="font-medium">\\w+@\\w+\\.\\w+</div>
-                            <div className="text-muted-foreground">Formato de email</div>
+                            <div className="text-muted-foreground">
+                              Formato de email
+                            </div>
                           </div>
                         </Button>
 
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setGlobalSearch('^[A-Z][a-z]+')}
+                          onClick={() => setGlobalSearch("^[A-Z][a-z]+")}
                           className="justify-start h-auto p-2"
                         >
                           <div>
                             <div className="font-medium">^[A-Z][a-z]+</div>
-                            <div className="text-muted-foreground">Comienza con mayúscula</div>
+                            <div className="text-muted-foreground">
+                              Comienza con mayúscula
+                            </div>
                           </div>
                         </Button>
 
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setGlobalSearch('\\d{2}/\\d{2}/\\d{4}')}
+                          onClick={() =>
+                            setGlobalSearch("\\d{2}/\\d{2}/\\d{4}")
+                          }
                           className="justify-start h-auto p-2"
                         >
                           <div>
-                            <div className="font-medium">\\d{2}/\\d{2}/\\d{4}</div>
-                            <div className="text-muted-foreground">Formato de fecha DD/MM/YYYY</div>
+                            <div className="font-medium">
+                              \\d{2}/\\d{2}/\\d{4}
+                            </div>
+                            <div className="text-muted-foreground">
+                              Formato de fecha DD/MM/YYYY
+                            </div>
                           </div>
                         </Button>
                       </div>
@@ -1179,7 +1519,7 @@ export default function Index() {
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setGlobalSearch('');
+                            setGlobalSearch("");
                             setColumnFilters({});
                             setFilterGroups([]);
                           }}
@@ -1201,7 +1541,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Visualización de Datos
-                    <Button variant="ghost" size="sm" onClick={() => setIsVisualizationOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsVisualizationOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1223,7 +1567,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Agregación de Datos
-                    <Button variant="ghost" size="sm" onClick={() => setIsAggregationOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsAggregationOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1244,7 +1592,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Operaciones Masivas y Transformaciones
-                    <Button variant="ghost" size="sm" onClick={() => setIsBulkOperationsOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsBulkOperationsOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1266,7 +1618,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Exportación Avanzada
-                    <Button variant="ghost" size="sm" onClick={() => setIsEnhancedExportOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsEnhancedExportOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1288,7 +1644,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Validación y Calidad de Datos
-                    <Button variant="ghost" size="sm" onClick={() => setIsDataValidationOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsDataValidationOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1309,7 +1669,11 @@ export default function Index() {
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Gestión de Configuraciones
-                    <Button variant="ghost" size="sm" onClick={() => setIsConfigurationOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsConfigurationOpen(false)}
+                    >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
@@ -1332,11 +1696,13 @@ export default function Index() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>
-                      Datos ({filteredAndSortedData.length.toLocaleString()} filas)
+                      Datos ({filteredAndSortedData.length.toLocaleString()}{" "}
+                      filas)
                     </CardTitle>
                     {filteredAndSortedData.length !== excelData.rows.length && (
                       <p className="text-sm text-muted-foreground mt-1">
-                        Filtrado de {excelData.rows.length.toLocaleString()} filas totales
+                        Filtrado de {excelData.rows.length.toLocaleString()}{" "}
+                        filas totales
                       </p>
                     )}
                   </div>
@@ -1344,7 +1710,11 @@ export default function Index() {
                     <Select
                       value={pagination.pageSize.toString()}
                       onValueChange={(value) =>
-                        setPagination(prev => ({ ...prev, pageSize: Number(value), page: 1 }))
+                        setPagination((prev) => ({
+                          ...prev,
+                          pageSize: Number(value),
+                          page: 1,
+                        }))
                       }
                     >
                       <SelectTrigger className="w-24">
@@ -1357,7 +1727,9 @@ export default function Index() {
                         <SelectItem value="100">100</SelectItem>
                       </SelectContent>
                     </Select>
-                    <span className="text-sm text-muted-foreground">filas por página</span>
+                    <span className="text-sm text-muted-foreground">
+                      filas por página
+                    </span>
                   </div>
                 </div>
               </CardHeader>
@@ -1374,78 +1746,101 @@ export default function Index() {
                     <ScrollArea className="w-full whitespace-nowrap">
                       <div className="min-w-full">
                         <Table>
-                        <TableHeader>
-                          <TableRow>
-                            {selectedColumns.map(columnKey => {
-                              const column = excelData.columns.find(c => c.key === columnKey);
-                              return (
-                                <TableHead key={columnKey} className="p-0">
-                                  <div className="p-3">
-                                    <div
-                                      className="flex items-center gap-1 cursor-pointer hover:text-primary"
-                                      onClick={() => handleSort(columnKey)}
-                                    >
-                                      <span className="font-medium">{column?.label}</span>
-                                      <Badge variant="secondary" className="text-xs">
-                                        {column?.type}
-                                      </Badge>
-                                      {sortColumn === columnKey && (
-                                        <span className="text-xs text-primary">
-                                          {sortDirection === 'asc' ? '↑' : '↓'}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <Input
-                                      placeholder={`Filtrar ${column?.label}...`}
-                                      value={columnFilters[columnKey] || ''}
-                                      onChange={(e) => {
-                                        e.stopPropagation();
-                                        setColumnFilters(prev => ({
-                                          ...prev,
-                                          [columnKey]: e.target.value
-                                        }));
-                                      }}
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="h-7 text-xs mt-2"
-                                    />
-                                  </div>
-                                </TableHead>
-                              );
-                            })}
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {paginatedData.map((row, index) => (
-                            <TableRow key={row._id || index} className="hover:bg-muted/50">
-                              {selectedColumns.map(columnKey => {
-                                const column = excelData.columns.find(c => c.key === columnKey);
-                                const value = row[columnKey];
-
+                          <TableHeader>
+                            <TableRow>
+                              {selectedColumns.map((columnKey) => {
+                                const column = excelData.columns.find(
+                                  (c) => c.key === columnKey,
+                                );
                                 return (
-                                  <TableCell key={columnKey} className="max-w-48">
-                                    <div className="truncate">
-                                      {column?.type === 'boolean' ? (
-                                        <Badge variant={value ? 'default' : 'secondary'}>
-                                          {value ? 'Sí' : 'No'}
+                                  <TableHead key={columnKey} className="p-0">
+                                    <div className="p-3">
+                                      <div
+                                        className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                        onClick={() => handleSort(columnKey)}
+                                      >
+                                        <span className="font-medium">
+                                          {column?.label}
+                                        </span>
+                                        <Badge
+                                          variant="secondary"
+                                          className="text-xs"
+                                        >
+                                          {column?.type}
                                         </Badge>
-                                      ) : column?.type === 'number' ? (
-                                        <span className="font-mono">
-                                          {typeof value === 'number' ? value.toLocaleString('es-ES') : value}
-                                        </span>
-                                      ) : column?.type === 'date' ? (
-                                        <span className="text-sm">
-                                          {value || ''}
-                                        </span>
-                                      ) : (
-                                        <span>{String(value || '')}</span>
-                                      )}
+                                        {sortColumn === columnKey && (
+                                          <span className="text-xs text-primary">
+                                            {sortDirection === "asc"
+                                              ? "↑"
+                                              : "↓"}
+                                          </span>
+                                        )}
+                                      </div>
+                                      <Input
+                                        placeholder={`Filtrar ${column?.label}...`}
+                                        value={columnFilters[columnKey] || ""}
+                                        onChange={(e) => {
+                                          e.stopPropagation();
+                                          setColumnFilters((prev) => ({
+                                            ...prev,
+                                            [columnKey]: e.target.value,
+                                          }));
+                                        }}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="h-7 text-xs mt-2"
+                                      />
                                     </div>
-                                  </TableCell>
+                                  </TableHead>
                                 );
                               })}
                             </TableRow>
-                          ))}
-                        </TableBody>
+                          </TableHeader>
+                          <TableBody>
+                            {paginatedData.map((row, index) => (
+                              <TableRow
+                                key={row._id || index}
+                                className="hover:bg-muted/50"
+                              >
+                                {selectedColumns.map((columnKey) => {
+                                  const column = excelData.columns.find(
+                                    (c) => c.key === columnKey,
+                                  );
+                                  const value = row[columnKey];
+
+                                  return (
+                                    <TableCell
+                                      key={columnKey}
+                                      className="max-w-48"
+                                    >
+                                      <div className="truncate">
+                                        {column?.type === "boolean" ? (
+                                          <Badge
+                                            variant={
+                                              value ? "default" : "secondary"
+                                            }
+                                          >
+                                            {value ? "Sí" : "No"}
+                                          </Badge>
+                                        ) : column?.type === "number" ? (
+                                          <span className="font-mono">
+                                            {typeof value === "number"
+                                              ? value.toLocaleString("es-ES")
+                                              : value}
+                                          </span>
+                                        ) : column?.type === "date" ? (
+                                          <span className="text-sm">
+                                            {value || ""}
+                                          </span>
+                                        ) : (
+                                          <span>{String(value || "")}</span>
+                                        )}
+                                      </div>
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
+                            ))}
+                          </TableBody>
                         </Table>
                       </div>
                     </ScrollArea>
@@ -1453,15 +1848,24 @@ export default function Index() {
                     {/* Pagination */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4">
                       <div className="text-xs sm:text-sm text-muted-foreground">
-                        Mostrando {((pagination.page - 1) * pagination.pageSize) + 1} a{' '}
-                        {Math.min(pagination.page * pagination.pageSize, filteredAndSortedData.length)} de{' '}
-                        {filteredAndSortedData.length.toLocaleString()} filas
+                        Mostrando{" "}
+                        {(pagination.page - 1) * pagination.pageSize + 1} a{" "}
+                        {Math.min(
+                          pagination.page * pagination.pageSize,
+                          filteredAndSortedData.length,
+                        )}{" "}
+                        de {filteredAndSortedData.length.toLocaleString()} filas
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+                          onClick={() =>
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: prev.page - 1,
+                            }))
+                          }
                           disabled={pagination.page === 1}
                         >
                           <ChevronLeft className="h-4 w-4" />
@@ -1473,7 +1877,12 @@ export default function Index() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+                          onClick={() =>
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: prev.page + 1,
+                            }))
+                          }
                           disabled={pagination.page === totalPages}
                         >
                           Siguiente

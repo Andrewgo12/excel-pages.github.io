@@ -1,23 +1,46 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ExcelColumn } from '@shared/excel-types';
-import { 
-  ValidationRule, 
-  validateData, 
+import React, { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ExcelColumn } from "@shared/excel-types";
+import {
+  ValidationRule,
+  validateData,
   getValidationTemplates,
   generateAutoValidationRules,
-  QualityReport
-} from '@/utils/dataValidation';
-import { Shield, AlertTriangle, Info, CheckCircle, X, Plus, Play, Zap, BarChart3 } from 'lucide-react';
+  QualityReport,
+} from "@/utils/dataValidation";
+import {
+  Shield,
+  AlertTriangle,
+  Info,
+  CheckCircle,
+  X,
+  Plus,
+  Play,
+  Zap,
+  BarChart3,
+} from "lucide-react";
 
 interface DataValidationProps {
   data: Record<string, any>[];
@@ -28,23 +51,27 @@ interface DataValidationProps {
 export const DataValidation: React.FC<DataValidationProps> = ({
   data,
   columns,
-  selectedColumns
+  selectedColumns,
 }) => {
   const [validationRules, setValidationRules] = useState<ValidationRule[]>([]);
   const [newRule, setNewRule] = useState<Partial<ValidationRule>>({});
-  const [qualityReport, setQualityReport] = useState<QualityReport | null>(null);
+  const [qualityReport, setQualityReport] = useState<QualityReport | null>(
+    null,
+  );
   const [showOnlyIssues, setShowOnlyIssues] = useState(false);
 
-  const availableColumns = columns.filter(col => selectedColumns.includes(col.key));
+  const availableColumns = columns.filter((col) =>
+    selectedColumns.includes(col.key),
+  );
   const templates = getValidationTemplates();
 
   // Run validation
   const runValidation = () => {
     if (validationRules.length === 0) {
-      alert('Agrega al menos una regla de validación');
+      alert("Agrega al menos una regla de validación");
       return;
     }
-    
+
     const report = validateData(data, validationRules, columns);
     setQualityReport(report);
   };
@@ -58,55 +85,55 @@ export const DataValidation: React.FC<DataValidationProps> = ({
   // Add validation rule
   const addValidationRule = () => {
     if (!newRule.name || !newRule.column || !newRule.type) return;
-    
+
     const rule: ValidationRule = {
       id: Date.now().toString(),
       name: newRule.name,
       column: newRule.column,
       type: newRule.type as any,
       parameters: newRule.parameters || {},
-      severity: newRule.severity || 'error',
-      description: newRule.description
+      severity: newRule.severity || "error",
+      description: newRule.description,
     };
-    
+
     setValidationRules([...validationRules, rule]);
     setNewRule({});
   };
 
   // Remove validation rule
   const removeValidationRule = (id: string) => {
-    setValidationRules(validationRules.filter(r => r.id !== id));
+    setValidationRules(validationRules.filter((r) => r.id !== id));
   };
 
   // Load template rule
   const loadTemplate = (template: Partial<ValidationRule>) => {
     setNewRule({
       ...template,
-      column: availableColumns[0]?.key || ''
+      column: availableColumns[0]?.key || "",
     });
   };
 
   // Filter issues for display
   const filteredIssues = useMemo(() => {
     if (!qualityReport) return [];
-    
+
     let issues = qualityReport.issues;
-    
+
     if (showOnlyIssues) {
-      issues = issues.filter(issue => issue.severity === 'error');
+      issues = issues.filter((issue) => issue.severity === "error");
     }
-    
+
     return issues.slice(0, 100); // Limit for performance
   }, [qualityReport, showOnlyIssues]);
 
   // Get severity icon and color
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
-      case 'error':
+      case "error":
         return <X className="h-4 w-4 text-red-500" />;
-      case 'warning':
+      case "warning":
         return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'info':
+      case "info":
         return <Info className="h-4 w-4 text-blue-500" />;
       default:
         return <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -133,23 +160,27 @@ export const DataValidation: React.FC<DataValidationProps> = ({
             <div>
               <Label>Nombre de la regla</Label>
               <Input
-                value={newRule.name || ''}
-                onChange={(e) => setNewRule({...newRule, name: e.target.value})}
+                value={newRule.name || ""}
+                onChange={(e) =>
+                  setNewRule({ ...newRule, name: e.target.value })
+                }
                 placeholder="Ej: Email válido"
               />
             </div>
-            
+
             <div>
               <Label>Columna</Label>
-              <Select 
-                value={newRule.column || ''} 
-                onValueChange={(value) => setNewRule({...newRule, column: value})}
+              <Select
+                value={newRule.column || ""}
+                onValueChange={(value) =>
+                  setNewRule({ ...newRule, column: value })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar columna" />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableColumns.map(col => (
+                  {availableColumns.map((col) => (
                     <SelectItem key={col.key} value={col.key}>
                       {col.label} ({col.type})
                     </SelectItem>
@@ -157,12 +188,14 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label>Tipo de validación</Label>
-              <Select 
-                value={newRule.type || ''} 
-                onValueChange={(value: any) => setNewRule({...newRule, type: value, parameters: {}})}
+              <Select
+                value={newRule.type || ""}
+                onValueChange={(value: any) =>
+                  setNewRule({ ...newRule, type: value, parameters: {} })
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Tipo" />
@@ -179,12 +212,14 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label>Severidad</Label>
-              <Select 
-                value={newRule.severity || 'error'} 
-                onValueChange={(value: any) => setNewRule({...newRule, severity: value})}
+              <Select
+                value={newRule.severity || "error"}
+                onValueChange={(value: any) =>
+                  setNewRule({ ...newRule, severity: value })
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -196,17 +231,19 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             {/* Dynamic parameters based on validation type */}
-            {newRule.type === 'format' && (
+            {newRule.type === "format" && (
               <div>
                 <Label>Formato</Label>
-                <Select 
-                  value={newRule.parameters?.format || ''} 
-                  onValueChange={(value) => setNewRule({
-                    ...newRule, 
-                    parameters: {...newRule.parameters, format: value}
-                  })}
+                <Select
+                  value={newRule.parameters?.format || ""}
+                  onValueChange={(value) =>
+                    setNewRule({
+                      ...newRule,
+                      parameters: { ...newRule.parameters, format: value },
+                    })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -220,94 +257,123 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                 </Select>
               </div>
             )}
-            
-            {newRule.type === 'range' && (
+
+            {newRule.type === "range" && (
               <>
                 <div>
                   <Label>Valor mínimo</Label>
                   <Input
                     type="number"
-                    value={newRule.parameters?.min || ''}
-                    onChange={(e) => setNewRule({
-                      ...newRule,
-                      parameters: {...newRule.parameters, min: Number(e.target.value)}
-                    })}
+                    value={newRule.parameters?.min || ""}
+                    onChange={(e) =>
+                      setNewRule({
+                        ...newRule,
+                        parameters: {
+                          ...newRule.parameters,
+                          min: Number(e.target.value),
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div>
                   <Label>Valor máximo</Label>
                   <Input
                     type="number"
-                    value={newRule.parameters?.max || ''}
-                    onChange={(e) => setNewRule({
-                      ...newRule,
-                      parameters: {...newRule.parameters, max: Number(e.target.value)}
-                    })}
+                    value={newRule.parameters?.max || ""}
+                    onChange={(e) =>
+                      setNewRule({
+                        ...newRule,
+                        parameters: {
+                          ...newRule.parameters,
+                          max: Number(e.target.value),
+                        },
+                      })
+                    }
                   />
                 </div>
               </>
             )}
-            
-            {newRule.type === 'length' && (
+
+            {newRule.type === "length" && (
               <>
                 <div>
                   <Label>Longitud mínima</Label>
                   <Input
                     type="number"
-                    value={newRule.parameters?.min || ''}
-                    onChange={(e) => setNewRule({
-                      ...newRule,
-                      parameters: {...newRule.parameters, min: Number(e.target.value)}
-                    })}
+                    value={newRule.parameters?.min || ""}
+                    onChange={(e) =>
+                      setNewRule({
+                        ...newRule,
+                        parameters: {
+                          ...newRule.parameters,
+                          min: Number(e.target.value),
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div>
                   <Label>Longitud máxima</Label>
                   <Input
                     type="number"
-                    value={newRule.parameters?.max || ''}
-                    onChange={(e) => setNewRule({
-                      ...newRule,
-                      parameters: {...newRule.parameters, max: Number(e.target.value)}
-                    })}
+                    value={newRule.parameters?.max || ""}
+                    onChange={(e) =>
+                      setNewRule({
+                        ...newRule,
+                        parameters: {
+                          ...newRule.parameters,
+                          max: Number(e.target.value),
+                        },
+                      })
+                    }
                   />
                 </div>
               </>
             )}
-            
-            {newRule.type === 'pattern' && (
+
+            {newRule.type === "pattern" && (
               <div>
                 <Label>Expresión regular</Label>
                 <Input
-                  value={newRule.parameters?.pattern || ''}
-                  onChange={(e) => setNewRule({
-                    ...newRule,
-                    parameters: {...newRule.parameters, pattern: e.target.value}
-                  })}
+                  value={newRule.parameters?.pattern || ""}
+                  onChange={(e) =>
+                    setNewRule({
+                      ...newRule,
+                      parameters: {
+                        ...newRule.parameters,
+                        pattern: e.target.value,
+                      },
+                    })
+                  }
                   placeholder="^[A-Z]{2}[0-9]{6}$"
                 />
               </div>
             )}
-            
-            {newRule.type === 'enum' && (
+
+            {newRule.type === "enum" && (
               <div>
                 <Label>Valores permitidos (separados por coma)</Label>
                 <Input
-                  value={newRule.parameters?.allowedValues?.join(', ') || ''}
-                  onChange={(e) => setNewRule({
-                    ...newRule,
-                    parameters: {
-                      ...newRule.parameters,
-                      allowedValues: e.target.value.split(',').map(v => v.trim())
-                    }
-                  })}
+                  value={newRule.parameters?.allowedValues?.join(", ") || ""}
+                  onChange={(e) =>
+                    setNewRule({
+                      ...newRule,
+                      parameters: {
+                        ...newRule.parameters,
+                        allowedValues: e.target.value
+                          .split(",")
+                          .map((v) => v.trim()),
+                      },
+                    })
+                  }
                   placeholder="Activo, Inactivo, Pendiente"
                 />
               </div>
             )}
-            
+
             <div className="flex items-end">
-              <Button 
+              <Button
                 onClick={addValidationRule}
                 disabled={!newRule.name || !newRule.column || !newRule.type}
               >
@@ -336,7 +402,9 @@ export const DataValidation: React.FC<DataValidationProps> = ({
               >
                 <div>
                   <div className="font-medium text-xs">{template.name}</div>
-                  <div className="text-xs text-muted-foreground">{template.description}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {template.description}
+                  </div>
                 </div>
               </Button>
             ))}
@@ -364,8 +432,11 @@ export const DataValidation: React.FC<DataValidationProps> = ({
             </div>
           ) : (
             <div className="space-y-3">
-              {validationRules.map(rule => (
-                <div key={rule.id} className="flex items-center justify-between p-3 border rounded">
+              {validationRules.map((rule) => (
+                <div
+                  key={rule.id}
+                  className="flex items-center justify-between p-3 border rounded"
+                >
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       {getSeverityIcon(rule.severity)}
@@ -411,7 +482,9 @@ export const DataValidation: React.FC<DataValidationProps> = ({
         {/* Quality Summary */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Resumen de Calidad de Datos</CardTitle>
+            <CardTitle className="text-base">
+              Resumen de Calidad de Datos
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -419,34 +492,45 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                 <div className="text-2xl font-bold text-green-600">
                   {qualityReport.summary.validRows}
                 </div>
-                <div className="text-sm text-muted-foreground">Filas válidas</div>
+                <div className="text-sm text-muted-foreground">
+                  Filas válidas
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600">
                   {qualityReport.summary.invalidRows}
                 </div>
-                <div className="text-sm text-muted-foreground">Filas con errores</div>
+                <div className="text-sm text-muted-foreground">
+                  Filas con errores
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-yellow-600">
                   {qualityReport.summary.warningRows}
                 </div>
-                <div className="text-sm text-muted-foreground">Filas con advertencias</div>
+                <div className="text-sm text-muted-foreground">
+                  Filas con advertencias
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
                   {qualityReport.summary.qualityScore}%
                 </div>
-                <div className="text-sm text-muted-foreground">Puntuación de calidad</div>
+                <div className="text-sm text-muted-foreground">
+                  Puntuación de calidad
+                </div>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Calidad general</span>
                 <span>{qualityReport.summary.qualityScore}%</span>
               </div>
-              <Progress value={qualityReport.summary.qualityScore} className="h-2" />
+              <Progress
+                value={qualityReport.summary.qualityScore}
+                className="h-2"
+              />
             </div>
           </CardContent>
         </Card>
@@ -469,32 +553,41 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Object.entries(qualityReport.columnQuality).map(([column, quality]) => (
-                    <TableRow key={column}>
-                      <TableCell className="font-medium">{column}</TableCell>
-                      <TableCell>{quality.validValues}/{quality.totalValues}</TableCell>
-                      <TableCell>
-                        {quality.errorCount > 0 && (
-                          <Badge variant="destructive" className="text-xs">
-                            {quality.errorCount}
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {quality.warningCount > 0 && (
-                          <Badge variant="secondary" className="text-xs">
-                            {quality.warningCount}
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Progress value={quality.qualityScore} className="h-2 flex-1" />
-                          <span className="text-sm w-12">{Math.round(quality.qualityScore)}%</span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {Object.entries(qualityReport.columnQuality).map(
+                    ([column, quality]) => (
+                      <TableRow key={column}>
+                        <TableCell className="font-medium">{column}</TableCell>
+                        <TableCell>
+                          {quality.validValues}/{quality.totalValues}
+                        </TableCell>
+                        <TableCell>
+                          {quality.errorCount > 0 && (
+                            <Badge variant="destructive" className="text-xs">
+                              {quality.errorCount}
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {quality.warningCount > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              {quality.warningCount}
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={quality.qualityScore}
+                              className="h-2 flex-1"
+                            />
+                            <span className="text-sm w-12">
+                              {Math.round(quality.qualityScore)}%
+                            </span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ),
+                  )}
                 </TableBody>
               </Table>
             </ScrollArea>
@@ -538,13 +631,13 @@ export const DataValidation: React.FC<DataValidationProps> = ({
                   <TableBody>
                     {filteredIssues.map((issue, index) => (
                       <TableRow key={index}>
-                        <TableCell>
-                          {getSeverityIcon(issue.severity)}
-                        </TableCell>
+                        <TableCell>{getSeverityIcon(issue.severity)}</TableCell>
                         <TableCell>{issue.rowIndex + 1}</TableCell>
-                        <TableCell className="font-medium">{issue.column}</TableCell>
+                        <TableCell className="font-medium">
+                          {issue.column}
+                        </TableCell>
                         <TableCell className="max-w-32 truncate">
-                          {String(issue.value || '')}
+                          {String(issue.value || "")}
                         </TableCell>
                         <TableCell className="max-w-48 truncate">
                           {issue.message}
@@ -582,14 +675,10 @@ export const DataValidation: React.FC<DataValidationProps> = ({
             )}
           </TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="rules">
-          {renderRulesTab()}
-        </TabsContent>
-        
-        <TabsContent value="results">
-          {renderResultsTab()}
-        </TabsContent>
+
+        <TabsContent value="rules">{renderRulesTab()}</TabsContent>
+
+        <TabsContent value="results">{renderResultsTab()}</TabsContent>
       </Tabs>
     </div>
   );
