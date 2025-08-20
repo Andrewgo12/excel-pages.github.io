@@ -1895,6 +1895,29 @@ export default function Index() {
                 />
               </Suspense>
             )}
+
+            {/* Data Cleaning Panel */}
+            {isDataCleaningOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando herramientas de limpieza...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <DataCleaning
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                  onApplyCleanedData={handleDataChange}
+                />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
