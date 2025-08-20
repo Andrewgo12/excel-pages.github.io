@@ -133,6 +133,11 @@ const SheetNavigator = lazy(() =>
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { TableStylesControl } from "@/components/TableStylesControl";
+import { CustomizableTable } from "@/components/CustomizableTable";
+import {
+  TableCustomization,
+  DEFAULT_TABLE_CUSTOMIZATION
+} from "@shared/table-customization";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
