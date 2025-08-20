@@ -10,131 +10,145 @@ import {
   generateTableStyles,
 } from "@shared/table-customization";
 import { ExcelColumn } from "@shared/excel-types";
-import { Sparkles, CheckCircle, AlertCircle, FileSpreadsheet } from "lucide-react";
+import {
+  Sparkles,
+  CheckCircle,
+  AlertCircle,
+  FileSpreadsheet,
+} from "lucide-react";
 
 // Datos de prueba
 const TEST_COLUMNS: ExcelColumn[] = [
-  { key: 'id', label: 'ID', type: 'number' },
-  { key: 'name', label: 'Nombre Completo', type: 'text' },
-  { key: 'email', label: 'Correo Electrónico', type: 'text' },
-  { key: 'department', label: 'Departamento', type: 'text' },
-  { key: 'salary', label: 'Salario', type: 'number' },
-  { key: 'hire_date', label: 'Fecha de Contratación', type: 'date' },
-  { key: 'active', label: 'Estado Activo', type: 'boolean' },
-  { key: 'performance', label: 'Calificación', type: 'number' },
-  { key: 'location', label: 'Ubicación', type: 'text' },
-  { key: 'projects', label: 'Proyectos', type: 'number' },
+  { key: "id", label: "ID", type: "number" },
+  { key: "name", label: "Nombre Completo", type: "text" },
+  { key: "email", label: "Correo Electrónico", type: "text" },
+  { key: "department", label: "Departamento", type: "text" },
+  { key: "salary", label: "Salario", type: "number" },
+  { key: "hire_date", label: "Fecha de Contratación", type: "date" },
+  { key: "active", label: "Estado Activo", type: "boolean" },
+  { key: "performance", label: "Calificación", type: "number" },
+  { key: "location", label: "Ubicación", type: "text" },
+  { key: "projects", label: "Proyectos", type: "number" },
 ];
 
 const TEST_DATA = [
   {
     id: 1,
-    name: 'Ana García Martín',
-    email: 'ana.garcia@empresa.com',
-    department: 'Desarrollo Frontend',
+    name: "Ana García Martín",
+    email: "ana.garcia@empresa.com",
+    department: "Desarrollo Frontend",
     salary: 65000,
-    hire_date: '2022-01-15',
+    hire_date: "2022-01-15",
     active: true,
     performance: 4.8,
-    location: 'Madrid',
+    location: "Madrid",
     projects: 12,
   },
   {
     id: 2,
-    name: 'Carlos López Ruiz',
-    email: 'carlos.lopez@empresa.com',
-    department: 'Marketing Digital',
+    name: "Carlos López Ruiz",
+    email: "carlos.lopez@empresa.com",
+    department: "Marketing Digital",
     salary: 55000,
-    hire_date: '2021-11-20',
+    hire_date: "2021-11-20",
     active: true,
     performance: 4.2,
-    location: 'Barcelona',
+    location: "Barcelona",
     projects: 8,
   },
   {
     id: 3,
-    name: 'María Rodríguez Sánchez',
-    email: 'maria.rodriguez@empresa.com',
-    department: 'Recursos Humanos',
+    name: "María Rodríguez Sánchez",
+    email: "maria.rodriguez@empresa.com",
+    department: "Recursos Humanos",
     salary: 58000,
-    hire_date: '2023-03-10',
+    hire_date: "2023-03-10",
     active: false,
     performance: 3.9,
-    location: 'Valencia',
+    location: "Valencia",
     projects: 5,
   },
   {
     id: 4,
-    name: 'Juan Martínez González',
-    email: 'juan.martinez@empresa.com',
-    department: 'Desarrollo Backend',
+    name: "Juan Martínez González",
+    email: "juan.martinez@empresa.com",
+    department: "Desarrollo Backend",
     salary: 70000,
-    hire_date: '2020-08-05',
+    hire_date: "2020-08-05",
     active: true,
     performance: 4.6,
-    location: 'Sevilla',
+    location: "Sevilla",
     projects: 15,
   },
   {
     id: 5,
-    name: 'Laura Sánchez Torres',
-    email: 'laura.sanchez@empresa.com',
-    department: 'Ventas Corporativas',
+    name: "Laura Sánchez Torres",
+    email: "laura.sanchez@empresa.com",
+    department: "Ventas Corporativas",
     salary: 52000,
-    hire_date: '2022-06-18',
+    hire_date: "2022-06-18",
     active: true,
     performance: 4.3,
-    location: 'Bilbao',
+    location: "Bilbao",
     projects: 9,
   },
   {
     id: 6,
-    name: 'Diego Fernández Castro',
-    email: 'diego.fernandez@empresa.com',
-    department: 'Diseño UX/UI',
+    name: "Diego Fernández Castro",
+    email: "diego.fernandez@empresa.com",
+    department: "Diseño UX/UI",
     salary: 59000,
-    hire_date: '2021-09-12',
+    hire_date: "2021-09-12",
     active: true,
     performance: 4.7,
-    location: 'Málaga',
+    location: "Málaga",
     projects: 11,
   },
   {
     id: 7,
-    name: 'Carmen Herrera Jiménez',
-    email: 'carmen.herrera@empresa.com',
-    department: 'Contabilidad',
+    name: "Carmen Herrera Jiménez",
+    email: "carmen.herrera@empresa.com",
+    department: "Contabilidad",
     salary: 48000,
-    hire_date: '2023-01-22',
+    hire_date: "2023-01-22",
     active: true,
     performance: 4.1,
-    location: 'Zaragoza',
+    location: "Zaragoza",
     projects: 6,
   },
   {
     id: 8,
-    name: 'Roberto Morales Vega',
-    email: 'roberto.morales@empresa.com',
-    department: 'Desarrollo Móvil',
+    name: "Roberto Morales Vega",
+    email: "roberto.morales@empresa.com",
+    department: "Desarrollo Móvil",
     salary: 68000,
-    hire_date: '2019-05-30',
+    hire_date: "2019-05-30",
     active: true,
     performance: 4.9,
-    location: 'Granada',
+    location: "Granada",
     projects: 18,
   },
 ];
 
 export default function TableStylesTest() {
-  const [customization, setCustomization] = useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
+  const [customization, setCustomization] = useState<TableCustomization>(
+    DEFAULT_TABLE_CUSTOMIZATION,
+  );
   const [selectedColumns, setSelectedColumns] = useState<string[]>([
-    'name', 'email', 'department', 'salary', 'active', 'performance'
+    "name",
+    "email",
+    "department",
+    "salary",
+    "active",
+    "performance",
   ]);
-  const [testResults, setTestResults] = useState<{ [key: string]: boolean }>({});
+  const [testResults, setTestResults] = useState<{ [key: string]: boolean }>(
+    {},
+  );
 
   const handleColumnResize = (columnKey: string, width: number) => {
     console.log(`Column ${columnKey} resized to ${width}px`);
-    setTestResults(prev => ({ ...prev, columnResize: true }));
+    setTestResults((prev) => ({ ...prev, columnResize: true }));
   };
 
   const handleColumnReorder = (fromIndex: number, toIndex: number) => {
@@ -143,21 +157,21 @@ export default function TableStylesTest() {
     const [removed] = newSelectedColumns.splice(fromIndex, 1);
     newSelectedColumns.splice(toIndex, 0, removed);
     setSelectedColumns(newSelectedColumns);
-    setTestResults(prev => ({ ...prev, columnReorder: true }));
+    setTestResults((prev) => ({ ...prev, columnReorder: true }));
   };
 
   const handleColumnToggle = (columnKey: string, visible: boolean) => {
     if (visible && !selectedColumns.includes(columnKey)) {
       setSelectedColumns([...selectedColumns, columnKey]);
     } else if (!visible) {
-      setSelectedColumns(selectedColumns.filter(col => col !== columnKey));
+      setSelectedColumns(selectedColumns.filter((col) => col !== columnKey));
     }
-    setTestResults(prev => ({ ...prev, columnToggle: true }));
+    setTestResults((prev) => ({ ...prev, columnToggle: true }));
   };
 
   const handleCustomizationChange = (newCustomization: TableCustomization) => {
     setCustomization(newCustomization);
-    setTestResults(prev => ({ ...prev, customizationChange: true }));
+    setTestResults((prev) => ({ ...prev, customizationChange: true }));
   };
 
   const runTests = () => {
@@ -165,7 +179,7 @@ export default function TableStylesTest() {
       componentRender: true, // Si llegamos aquí, el componente se renderiza
       dataDisplay: TEST_DATA.length > 0,
       columnsVisible: selectedColumns.length > 0,
-      customizationApplied: customization.name !== '',
+      customizationApplied: customization.name !== "",
     };
     setTestResults(tests);
   };
@@ -182,7 +196,8 @@ export default function TableStylesTest() {
             Prueba de Estilos de Tabla
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Página de prueba para verificar que todos los componentes del sistema de personalización de tablas funcionen correctamente.
+            Página de prueba para verificar que todos los componentes del
+            sistema de personalización de tablas funcionen correctamente.
           </p>
         </div>
 
@@ -216,7 +231,7 @@ export default function TableStylesTest() {
                     <AlertCircle className="h-4 w-4 text-orange-500" />
                   )}
                   <span className="text-sm capitalize">
-                    {test.replace(/([A-Z])/g, ' $1').toLowerCase()}
+                    {test.replace(/([A-Z])/g, " $1").toLowerCase()}
                   </span>
                 </div>
               ))}
@@ -227,12 +242,16 @@ export default function TableStylesTest() {
         {/* Current Configuration Status */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Estado de la Configuración</CardTitle>
+            <CardTitle className="text-lg">
+              Estado de la Configuración
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <div className="font-medium text-muted-foreground">Preset Actual</div>
+                <div className="font-medium text-muted-foreground">
+                  Preset Actual
+                </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary">{customization.name}</Badge>
                 </div>
@@ -243,11 +262,18 @@ export default function TableStylesTest() {
               </div>
               <div>
                 <div className="font-medium text-muted-foreground">Fuente</div>
-                <div>{customization.cellFont.size}px {customization.cellFont.family.split(',')[0]}</div>
+                <div>
+                  {customization.cellFont.size}px{" "}
+                  {customization.cellFont.family.split(",")[0]}
+                </div>
               </div>
               <div>
-                <div className="font-medium text-muted-foreground">Columnas Visibles</div>
-                <div>{selectedColumns.length} de {TEST_COLUMNS.length}</div>
+                <div className="font-medium text-muted-foreground">
+                  Columnas Visibles
+                </div>
+                <div>
+                  {selectedColumns.length} de {TEST_COLUMNS.length}
+                </div>
               </div>
             </div>
           </CardContent>
@@ -261,8 +287,9 @@ export default function TableStylesTest() {
               Tabla de Prueba
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Esta tabla muestra la funcionalidad completa del sistema de estilos. 
-              Usa el botón "Estilos Tabla" arriba para personalizar la apariencia.
+              Esta tabla muestra la funcionalidad completa del sistema de
+              estilos. Usa el botón "Estilos Tabla" arriba para personalizar la
+              apariencia.
             </p>
           </CardHeader>
           <CardContent>
@@ -273,12 +300,12 @@ export default function TableStylesTest() {
                 selectedColumns={selectedColumns}
                 customization={customization}
                 onRowClick={(row, index) => {
-                  console.log('Row clicked:', row.name, index);
-                  setTestResults(prev => ({ ...prev, rowClick: true }));
+                  console.log("Row clicked:", row.name, index);
+                  setTestResults((prev) => ({ ...prev, rowClick: true }));
                 }}
                 onCellClick={(value, column, row) => {
-                  console.log('Cell clicked:', column.label, value);
-                  setTestResults(prev => ({ ...prev, cellClick: true }));
+                  console.log("Cell clicked:", column.label, value);
+                  setTestResults((prev) => ({ ...prev, cellClick: true }));
                 }}
                 className="test-table"
               />
@@ -289,12 +316,16 @@ export default function TableStylesTest() {
         {/* Feature Verification */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Verificación de Funcionalidades</CardTitle>
+            <CardTitle className="text-lg">
+              Verificación de Funcionalidades
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-medium mb-3">✅ Funcionalidades Implementadas</h4>
+                <h4 className="font-medium mb-3">
+                  ✅ Funcionalidades Implementadas
+                </h4>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -302,7 +333,8 @@ export default function TableStylesTest() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    Gestión de columnas (redimensionar, reordenar, mostrar/ocultar)
+                    Gestión de columnas (redimensionar, reordenar,
+                    mostrar/ocultar)
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -330,7 +362,10 @@ export default function TableStylesTest() {
                   <li>Redimensiona columnas en la pestaña "Columnas"</li>
                   <li>Experimenta con el diseño en "Diseño"</li>
                   <li>Ajusta el tamaño global en "Tamaño"</li>
-                  <li>Accede a configuración avanzada para personalización completa</li>
+                  <li>
+                    Accede a configuración avanzada para personalización
+                    completa
+                  </li>
                   <li>Verifica que los cambios se aplican en tiempo real</li>
                   <li>Prueba exportar/importar configuraciones</li>
                 </ol>
