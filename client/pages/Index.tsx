@@ -474,9 +474,30 @@ export default function Index() {
                     placeholder="Buscar en todos los datos..."
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 pr-8"
                   />
+                  {globalSearch && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setGlobalSearch('')}
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  )}
                 </div>
+                {Object.keys(columnFilters).some(key => columnFilters[key]) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setColumnFilters({})}
+                    className="mt-2 text-xs"
+                  >
+                    <X className="h-3 w-3 mr-1" />
+                    Limpiar filtros de columnas
+                  </Button>
+                )}
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="outline" size="sm" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
