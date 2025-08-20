@@ -39,6 +39,7 @@ import {
   Database,
   BarChart3,
   TrendingUp,
+  Grid,
 } from "lucide-react";
 import {
   ExcelData,
