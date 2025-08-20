@@ -508,6 +508,30 @@ export default function Index() {
     }
   };
 
+  const handleDataChange = (newData: Record<string, any>[]) => {
+    if (!excelData) return;
+
+    // Update the current sheet data
+    const updatedData = {
+      ...excelData,
+      rows: newData
+    };
+
+    // If we have multiple sheets, update the active sheet's data
+    if (excelData.sheetsData) {
+      updatedData.sheetsData = {
+        ...excelData.sheetsData,
+        [excelData.activeSheet]: {
+          columns: excelData.columns,
+          rows: newData
+        }
+      };
+    }
+
+    setExcelData(updatedData);
+    setPagination(prev => ({ ...prev, totalRows: newData.length, page: 1 }));
+  };
+
   if (!excelData) {
     return (
       <div className="min-h-screen bg-background">
@@ -1089,7 +1113,7 @@ export default function Index() {
                             <div>• "^[A-Z]" - Comienza con mayúscula</div>
                             <div>• "\d{4}" - Exactamente 4 dígitos</div>
                             <div>• "(gmail|hotmail)" - Contiene gmail o hotmail</div>
-                            <div>��� "\w+@\w+\.\w+" - Formato de email</div>
+                            <div>• "\w+@\w+\.\w+" - Formato de email</div>
                           </div>
                         </div>
                       </div>
