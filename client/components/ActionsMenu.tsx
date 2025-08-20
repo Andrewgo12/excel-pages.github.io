@@ -103,6 +103,10 @@ export function ActionsMenu({
             <Target className="h-3 w-3 mr-2" />
             Análisis Avanzado
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={onMachineLearningOpen} className="text-xs">
+            <Cpu className="h-3 w-3 mr-2" />
+            Machine Learning
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={onVisualizationOpen} className="text-xs">
             <TrendingUp className="h-3 w-3 mr-2" />
             Gráficos Interactivos
