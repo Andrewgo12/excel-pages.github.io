@@ -125,9 +125,7 @@ const SheetNavigator = lazy(() =>
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { TableStylesControl } from "@/components/TableStylesControl";
 import { CustomizableTable } from "@/components/CustomizableTable";
-import {
-  DEFAULT_TABLE_CUSTOMIZATION,
-} from "@shared/table-customization";
+import { DEFAULT_TABLE_CUSTOMIZATION } from "@shared/table-customization";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
@@ -202,7 +200,9 @@ export default function Index() {
   const [sheetNavigatorOpen, setSheetNavigatorOpen] = useState(false);
 
   // Table customization
-  const [tableCustomization, setTableCustomization] = useState(DEFAULT_TABLE_CUSTOMIZATION);
+  const [tableCustomization, setTableCustomization] = useState(
+    DEFAULT_TABLE_CUSTOMIZATION,
+  );
 
   const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
