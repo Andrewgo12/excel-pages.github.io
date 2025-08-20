@@ -123,6 +123,11 @@ const FontSettings = lazy(() =>
     default: m.FontSettings,
   })),
 );
+const SheetNavigator = lazy(() =>
+  import("@/components/SheetNavigator").then((m) => ({
+    default: m.SheetNavigator,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { FontScaleControl } from "@/components/FontScaleControl";
