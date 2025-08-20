@@ -1718,29 +1718,7 @@ export default function Index() {
                 ) : (
                   <>
                     <div className="relative">
-                      {/* Top horizontal scrollbar for navigation */}
-                      <div className="w-full overflow-x-auto mb-2 bg-muted/20 rounded border">
-                        <div
-                          className="h-4 bg-gradient-to-r from-primary/10 to-primary/5"
-                          style={{ width: `${selectedColumns.length * 200}px`, minWidth: '100%' }}
-                        >
-                          <div className="text-xs text-center text-muted-foreground leading-4">
-                            ← Desliza aquí para navegar horizontalmente →
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Original table design with synchronized scroll */}
-                      <div
-                        className="w-full overflow-x-auto overflow-y-visible"
-                        onScroll={(e) => {
-                          // Sync with top scrollbar
-                          const topScrollbar = e.currentTarget.previousElementSibling?.firstElementChild as HTMLElement;
-                          if (topScrollbar) {
-                            topScrollbar.parentElement!.scrollLeft = e.currentTarget.scrollLeft;
-                          }
-                        }}
-                      >
+                      <div className="w-full overflow-x-auto overflow-y-visible">
                         <Table>
                           <TableHeader>
                             <TableRow>
