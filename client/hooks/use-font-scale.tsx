@@ -57,7 +57,9 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    applyScale();
+    if (fontScale) {
+      applyScale();
+    }
   }, [fontScale]);
 
   return (
