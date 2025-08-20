@@ -467,12 +467,18 @@ export default function Index() {
                   <div className="text-sm text-muted-foreground mb-3">
                     ¿Quieres ver todas las funcionalidades?
                   </div>
-                  <Button onClick={loadSampleData} variant="outline" className="gap-2">
-                    <Database className="h-4 w-4" />
-                    Cargar Datos de Demostración
-                  </Button>
+                  <div className="flex gap-3 justify-center">
+                    <Button onClick={loadSampleData} variant="outline" className="gap-2">
+                      <Database className="h-4 w-4" />
+                      Datos Básicos
+                    </Button>
+                    <Button onClick={loadMultiSheetData} className="gap-2">
+                      <Database className="h-4 w-4" />
+                      Demo Completo
+                    </Button>
+                  </div>
                   <div className="text-xs text-muted-foreground mt-2">
-                    40 columnas • 100 filas • Datos variados para pruebas
+                    Básicos: 80 columnas • 500 filas | Completo: 4 hojas • Datos empresariales
                   </div>
                 </div>
               </CardContent>
