@@ -1981,6 +1981,29 @@ export default function Index() {
                 <FontSettings onClose={() => setActivePanel(null)} />
               </Suspense>
             )}
+
+            {/* Sheet Navigator Panel */}
+            {isSheetNavigatorOpen && multiSheetAnalysis && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando navegador de hojas...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <SheetNavigator
+                  excelData={excelData!}
+                  analysis={multiSheetAnalysis}
+                  currentSheet={excelData!.activeSheet}
+                  onSheetChange={switchSheet}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
