@@ -734,7 +734,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                               pinned: config.pinned === 'left' ? 'none' : 'left'
                             })}
                           >
-                            {config.pinned === 'left' ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
+                            {config.pinned === 'left' ? <Pin className="h-4 w-4 text-primary" /> : <Pin className="h-4 w-4" />}
                           </Button>
                         </div>
                       </div>
