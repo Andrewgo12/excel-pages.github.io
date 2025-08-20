@@ -359,7 +359,7 @@ export default function Index() {
 
   const exportFilteredData = () => {
     if (!excelData || filteredAndSortedData.length === 0) return;
-    
+
     const exportData = filteredAndSortedData.map(row => {
       const exportRow: Record<string, any> = {};
       selectedColumns.forEach(col => {
@@ -367,11 +367,21 @@ export default function Index() {
       });
       return exportRow;
     });
-    
+
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Filtered Data');
     XLSX.writeFile(workbook, 'filtered_data.xlsx');
+  };
+
+  const loadSampleData = () => {
+    const sampleData = generateSampleData();
+    setExcelData(sampleData);
+    setSelectedColumns(sampleData.columns.slice(0, 8).map(c => c.key)); // Show first 8 columns
+    setPagination(prev => ({ ...prev, totalRows: sampleData.rows.length, page: 1 }));
+    setGlobalSearch('');
+    setColumnFilters({});
+    setFilterGroups([]);
   };
 
   if (!excelData) {
