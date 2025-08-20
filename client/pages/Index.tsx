@@ -1129,6 +1129,7 @@ export default function Index() {
                   }
                   onMachineLearningOpen={() => togglePanel("machineLearning")}
                   onFontSettingsOpen={() => togglePanel("fontSettings")}
+                  onTableCustomizationOpen={() => togglePanel("tableCustomization")}
                 />
                 <Button
                   variant="outline"
