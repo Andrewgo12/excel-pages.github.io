@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type FontScale = "font-scale-xs" | "font-scale-sm" | "font-scale-base" | "font-scale-lg" | "font-scale-xl" | "font-scale-2xl";
+type FontScale =
+  | "font-scale-xs"
+  | "font-scale-sm"
+  | "font-scale-base"
+  | "font-scale-lg"
+  | "font-scale-xl"
+  | "font-scale-2xl";
 
 interface FontScaleContextType {
   fontScale: FontScale;
@@ -26,7 +32,8 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
 
   const applyScale = (element?: HTMLElement) => {
     const target = element || document.documentElement;
-    const scaleValue = FONT_SCALE_VALUES[fontScale] || FONT_SCALE_VALUES["font-scale-base"];
+    const scaleValue =
+      FONT_SCALE_VALUES[fontScale] || FONT_SCALE_VALUES["font-scale-base"];
     const spacingScale = scaleValue;
 
     target.style.setProperty("--font-scale", scaleValue.toString());
@@ -37,7 +44,7 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
       /font-scale-\w+/g,
       "",
     );
-    document.body.classList.add(fontScale || 'font-scale-base');
+    document.body.classList.add(fontScale || "font-scale-base");
   };
 
   const setFontScale = (scale: FontScale) => {
@@ -78,10 +85,22 @@ export function useFontScale() {
 }
 
 export const FONT_SCALE_OPTIONS = [
-  { value: "font-scale-xs" as FontScale, label: "Extra Pequeño", percentage: "75%" },
+  {
+    value: "font-scale-xs" as FontScale,
+    label: "Extra Pequeño",
+    percentage: "75%",
+  },
   { value: "font-scale-sm" as FontScale, label: "Pequeño", percentage: "85%" },
-  { value: "font-scale-base" as FontScale, label: "Compacto (Base)", percentage: "90%" },
+  {
+    value: "font-scale-base" as FontScale,
+    label: "Compacto (Base)",
+    percentage: "90%",
+  },
   { value: "font-scale-lg" as FontScale, label: "Normal", percentage: "100%" },
   { value: "font-scale-xl" as FontScale, label: "Grande", percentage: "115%" },
-  { value: "font-scale-2xl" as FontScale, label: "Extra Grande", percentage: "130%" },
+  {
+    value: "font-scale-2xl" as FontScale,
+    label: "Extra Grande",
+    percentage: "130%",
+  },
 ];

@@ -136,7 +136,7 @@ import { TableStylesControl } from "@/components/TableStylesControl";
 import { CustomizableTable } from "@/components/CustomizableTable";
 import {
   TableCustomization,
-  DEFAULT_TABLE_CUSTOMIZATION
+  DEFAULT_TABLE_CUSTOMIZATION,
 } from "@shared/table-customization";
 
 const OPERATORS = [
@@ -1106,8 +1106,13 @@ export default function Index() {
                   onColumnToggle={(columnKey, visible) => {
                     if (visible && !selectedColumns.includes(columnKey)) {
                       setSelectedColumns([...selectedColumns, columnKey]);
-                    } else if (!visible && selectedColumns.includes(columnKey)) {
-                      setSelectedColumns(selectedColumns.filter(col => col !== columnKey));
+                    } else if (
+                      !visible &&
+                      selectedColumns.includes(columnKey)
+                    ) {
+                      setSelectedColumns(
+                        selectedColumns.filter((col) => col !== columnKey),
+                      );
                     }
                   }}
                 />
@@ -2277,9 +2282,7 @@ export default function Index() {
                                   : value}
                               </span>
                             ) : column.type === "date" ? (
-                              <span className="text-sm">
-                                {value || ""}
-                              </span>
+                              <span className="text-sm">{value || ""}</span>
                             ) : (
                               <span>{String(value || "")}</span>
                             )}
