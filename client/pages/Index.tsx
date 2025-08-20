@@ -1915,7 +1915,7 @@ export default function Index() {
                                           {column?.type}
                                         </Badge>
                                         {sortColumn === columnKey && (
-                                          <span className="text-xs text-primary">
+                                          <span className="text-responsive-xs text-primary">
                                             {sortDirection === "asc"
                                               ? "↑"
                                               : "↓"}
@@ -1925,6 +1925,7 @@ export default function Index() {
                                       <Input
                                         placeholder={`Filtrar ${column?.label}...`}
                                         value={columnFilters[columnKey] || ""}
+                                        className="control-responsive mt-responsive-sm"
                                         onChange={(e) => {
                                           e.stopPropagation();
                                           setColumnFilters((prev) => ({
