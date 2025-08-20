@@ -103,11 +103,17 @@ export function ActionsMenu({
               <BarChart3 className="h-3 w-3 mr-2" />
               Estadísticas Básicas
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onAdvancedAnalyticsOpen} className="text-xs">
+            <DropdownMenuItem
+              onClick={onAdvancedAnalyticsOpen}
+              className="text-xs"
+            >
               <Target className="h-3 w-3 mr-2" />
               Análisis Avanzado
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onRealTimeAnalyticsOpen} className="text-xs">
+            <DropdownMenuItem
+              onClick={onRealTimeAnalyticsOpen}
+              className="text-xs"
+            >
               <Activity className="h-3 w-3 mr-2" />
               Análisis en Tiempo Real
             </DropdownMenuItem>
@@ -125,7 +131,10 @@ export function ActionsMenu({
             🤖 Inteligencia Artificial
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-48">
-            <DropdownMenuItem onClick={onMachineLearningOpen} className="text-xs">
+            <DropdownMenuItem
+              onClick={onMachineLearningOpen}
+              className="text-xs"
+            >
               <Cpu className="h-3 w-3 mr-2" />
               Machine Learning
             </DropdownMenuItem>
@@ -147,7 +156,10 @@ export function ActionsMenu({
               <FileSpreadsheet className="h-3 w-3 mr-2" />
               Formulario Dinámico
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onBulkOperationsOpen} className="text-xs">
+            <DropdownMenuItem
+              onClick={onBulkOperationsOpen}
+              className="text-xs"
+            >
               <Plus className="h-3 w-3 mr-2" />
               Operaciones Masivas
             </DropdownMenuItem>
@@ -169,7 +181,10 @@ export function ActionsMenu({
             🔍 Búsqueda y Filtros
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-48">
-            <DropdownMenuItem onClick={onAdvancedSearchOpen} className="text-xs">
+            <DropdownMenuItem
+              onClick={onAdvancedSearchOpen}
+              className="text-xs"
+            >
               <Search className="h-3 w-3 mr-2" />
               Búsqueda Avanzada
             </DropdownMenuItem>

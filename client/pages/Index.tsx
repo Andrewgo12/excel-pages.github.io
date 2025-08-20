@@ -62,7 +62,7 @@ import {
 import {
   loadCompleteExcelFile,
   MultiSheetAnalysis,
-  optimizeSheetForDisplay
+  optimizeSheetForDisplay,
 } from "@/utils/multiSheetExcel";
 // Lazy loaded components for performance optimization
 const DataVisualization = lazy(() =>
@@ -205,7 +205,8 @@ export default function Index() {
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
   // Multi-sheet management
-  const [multiSheetAnalysis, setMultiSheetAnalysis] = useState<MultiSheetAnalysis | null>(null);
+  const [multiSheetAnalysis, setMultiSheetAnalysis] =
+    useState<MultiSheetAnalysis | null>(null);
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [sheetNavigatorOpen, setSheetNavigatorOpen] = useState(false);
@@ -223,8 +224,12 @@ export default function Index() {
 
       setExcelData(data);
       setMultiSheetAnalysis(analysis);
-      setSelectedColumns(data.columns.slice(0, 8).map(c => c.key)); // Show first 8 columns by default
-      setPagination((prev) => ({ ...prev, totalRows: data.rows.length, page: 1 }));
+      setSelectedColumns(data.columns.slice(0, 8).map((c) => c.key)); // Show first 8 columns by default
+      setPagination((prev) => ({
+        ...prev,
+        totalRows: data.rows.length,
+        page: 1,
+      }));
 
       // Reset filters and search when new file is loaded
       setGlobalSearch("");
@@ -233,10 +238,11 @@ export default function Index() {
 
       // Clear any previous errors
       setFileError(null);
-
     } catch (error) {
       console.error("Error reading Excel file:", error);
-      setFileError("Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.");
+      setFileError(
+        "Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.",
+      );
     } finally {
       setIsFileLoading(false);
     }
@@ -664,7 +670,6 @@ export default function Index() {
       if (activePanel === "sheetNavigator") {
         setActivePanel(null);
       }
-
     } catch (error) {
       console.error("Error switching sheet:", error);
     }
@@ -791,7 +796,8 @@ export default function Index() {
                         Haz clic para seleccionar o arrastra el archivo
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Soporta archivos .xlsx y .xls (incluye archivos complejos con múltiples hojas)
+                        Soporta archivos .xlsx y .xls (incluye archivos
+                        complejos con múltiples hojas)
                       </p>
                     </div>
                   )}
@@ -800,9 +806,7 @@ export default function Index() {
                 {fileError && (
                   <Alert variant="destructive" className="mt-4">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      {fileError}
-                    </AlertDescription>
+                    <AlertDescription>{fileError}</AlertDescription>
                   </Alert>
                 )}
 
@@ -860,16 +864,27 @@ export default function Index() {
                       <Badge
                         variant="outline"
                         className={`text-responsive-xs ${
-                          multiSheetAnalysis.estimatedComplexity === 'simple' ? 'border-green-500 text-green-700' :
-                          multiSheetAnalysis.estimatedComplexity === 'moderate' ? 'border-blue-500 text-blue-700' :
-                          multiSheetAnalysis.estimatedComplexity === 'complex' ? 'border-orange-500 text-orange-700' :
-                          'border-red-500 text-red-700'
+                          multiSheetAnalysis.estimatedComplexity === "simple"
+                            ? "border-green-500 text-green-700"
+                            : multiSheetAnalysis.estimatedComplexity ===
+                                "moderate"
+                              ? "border-blue-500 text-blue-700"
+                              : multiSheetAnalysis.estimatedComplexity ===
+                                  "complex"
+                                ? "border-orange-500 text-orange-700"
+                                : "border-red-500 text-red-700"
                         }`}
                       >
-                        {multiSheetAnalysis.estimatedComplexity.replace('_', ' ')}
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
+                        )}
                       </Badge>
                       {multiSheetAnalysis.relationships.length > 0 && (
-                        <Badge variant="outline" className="text-responsive-xs border-blue-500 text-blue-700">
+                        <Badge
+                          variant="outline"
+                          className="text-responsive-xs border-blue-500 text-blue-700"
+                        >
                           {multiSheetAnalysis.relationships.length} relaciones
                         </Badge>
                       )}
@@ -912,20 +927,29 @@ export default function Index() {
                     </Label>
                     {multiSheetAnalysis && (
                       <Badge variant="outline" className="text-responsive-xs">
-                        {multiSheetAnalysis.estimatedComplexity.replace('_', ' ')}
+                        {multiSheetAnalysis.estimatedComplexity.replace(
+                          "_",
+                          " ",
+                        )}
                       </Badge>
                     )}
                   </div>
                   <ScrollArea className="w-full">
                     <div className="flex gap-responsive-sm pb-2">
                       {excelData.sheetNames.map((sheetName) => {
-                        const sheetAnalysis = multiSheetAnalysis?.sheetAnalyses.find(
-                          s => s.name === sheetName
-                        );
-                        const hasRelationships = multiSheetAnalysis?.relationships.some(rel =>
-                          rel.sourceSheet === sheetName || rel.targetSheet === sheetName
-                        );
-                        const isRecommended = sheetName === multiSheetAnalysis?.recommendedStartSheet;
+                        const sheetAnalysis =
+                          multiSheetAnalysis?.sheetAnalyses.find(
+                            (s) => s.name === sheetName,
+                          );
+                        const hasRelationships =
+                          multiSheetAnalysis?.relationships.some(
+                            (rel) =>
+                              rel.sourceSheet === sheetName ||
+                              rel.targetSheet === sheetName,
+                          );
+                        const isRecommended =
+                          sheetName ===
+                          multiSheetAnalysis?.recommendedStartSheet;
 
                         return (
                           <Button
@@ -943,14 +967,22 @@ export default function Index() {
                               {isRecommended && (
                                 <span className="text-yellow-500">★</span>
                               )}
-                              <span className="truncate max-w-24">{sheetName}</span>
+                              <span className="truncate max-w-24">
+                                {sheetName}
+                              </span>
                               {sheetAnalysis && !sheetAnalysis.isEmpty && (
-                                <Badge variant="secondary" className="text-responsive-xs ml-1">
+                                <Badge
+                                  variant="secondary"
+                                  className="text-responsive-xs ml-1"
+                                >
                                   {sheetAnalysis.rowCount.toLocaleString()}
                                 </Badge>
                               )}
                               {hasRelationships && (
-                                <div className="w-2 h-2 bg-blue-500 rounded-full ml-1" title="Tiene relaciones con otras hojas" />
+                                <div
+                                  className="w-2 h-2 bg-blue-500 rounded-full ml-1"
+                                  title="Tiene relaciones con otras hojas"
+                                />
                               )}
                             </div>
                           </Button>
@@ -959,12 +991,13 @@ export default function Index() {
                     </div>
                   </ScrollArea>
 
-                  {multiSheetAnalysis && multiSheetAnalysis.relationships.length > 0 && (
-                    <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                      <span>Indica hojas con relaciones detectadas</span>
-                    </div>
-                  )}
+                  {multiSheetAnalysis &&
+                    multiSheetAnalysis.relationships.length > 0 && (
+                      <div className="text-responsive-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                        <span>Indica hojas con relaciones detectadas</span>
+                      </div>
+                    )}
                 </div>
               )}
             </div>
@@ -1088,7 +1121,9 @@ export default function Index() {
                   onSecurityOpen={() => togglePanel("dataValidation")}
                   onCloudSyncOpen={() => togglePanel("enhancedExport")}
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
-                  onAdvancedAnalyticsOpen={() => togglePanel("advancedAnalytics")}
+                  onAdvancedAnalyticsOpen={() =>
+                    togglePanel("advancedAnalytics")
+                  }
                   onMachineLearningOpen={() => togglePanel("machineLearning")}
                   onFontSettingsOpen={() => togglePanel("fontSettings")}
                 />

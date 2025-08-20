@@ -24,7 +24,11 @@ export interface ClassificationResult {
 export interface MLModelConfig {
   targetColumn: string;
   featureColumns: string[];
-  modelType: 'linear_regression' | 'logistic_regression' | 'naive_bayes' | 'decision_tree';
+  modelType:
+    | "linear_regression"
+    | "logistic_regression"
+    | "naive_bayes"
+    | "decision_tree";
   trainTestSplit: number; // 0.8 = 80% training, 20% testing
   crossValidation?: boolean;
 }
@@ -54,7 +58,7 @@ export class SimpleLinearRegression {
 
   fit(x: number[], y: number[]): LinearRegressionResult {
     if (x.length !== y.length || x.length < 2) {
-      throw new Error('Invalid data for linear regression');
+      throw new Error("Invalid data for linear regression");
     }
 
     const n = x.length;
@@ -67,14 +71,17 @@ export class SimpleLinearRegression {
     this.intercept = (sumY - this.slope * sumX) / n;
     this.trained = true;
 
-    const predictions = x.map(xi => this.slope * xi + this.intercept);
+    const predictions = x.map((xi) => this.slope * xi + this.intercept);
     const residuals = y.map((yi, i) => yi - predictions[i]);
-    
+
     // Calculate R-squared
     const yMean = sumY / n;
-    const totalSumSquares = y.reduce((sum, yi) => sum + Math.pow(yi - yMean, 2), 0);
+    const totalSumSquares = y.reduce(
+      (sum, yi) => sum + Math.pow(yi - yMean, 2),
+      0,
+    );
     const residualSumSquares = residuals.reduce((sum, r) => sum + r * r, 0);
-    const rSquared = 1 - (residualSumSquares / totalSumSquares);
+    const rSquared = 1 - residualSumSquares / totalSumSquares;
 
     // Calculate error metrics
     const mse = residualSumSquares / n;
@@ -89,15 +96,15 @@ export class SimpleLinearRegression {
       residuals,
       mse,
       rmse,
-      mae
+      mae,
     };
   }
 
   predict(x: number[]): number[] {
     if (!this.trained) {
-      throw new Error('Model must be trained before making predictions');
+      throw new Error("Model must be trained before making predictions");
     }
-    return x.map(xi => this.slope * xi + this.intercept);
+    return x.map((xi) => this.slope * xi + this.intercept);
   }
 }
 
@@ -109,12 +116,12 @@ export class MultipleLinearRegression {
 
   fit(X: number[][], y: number[]): LinearRegressionResult {
     if (X.length !== y.length || X.length < 2) {
-      throw new Error('Invalid data for multiple regression');
+      throw new Error("Invalid data for multiple regression");
     }
 
     // Add intercept column (all 1s)
-    const XWithIntercept = X.map(row => [1, ...row]);
-    
+    const XWithIntercept = X.map((row) => [1, ...row]);
+
     // Normal equation: β = (X'X)^-1 X'y
     const XTranspose = this.transpose(XWithIntercept);
     const XTX = this.multiply(XTranspose, XWithIntercept);
@@ -126,14 +133,17 @@ export class MultipleLinearRegression {
     this.coefficients = coefficients.slice(1);
     this.trained = true;
 
-    const predictions = X.map(row => this.predictSingle(row));
+    const predictions = X.map((row) => this.predictSingle(row));
     const residuals = y.map((yi, i) => yi - predictions[i]);
-    
+
     // Calculate R-squared
     const yMean = y.reduce((a, b) => a + b, 0) / y.length;
-    const totalSumSquares = y.reduce((sum, yi) => sum + Math.pow(yi - yMean, 2), 0);
+    const totalSumSquares = y.reduce(
+      (sum, yi) => sum + Math.pow(yi - yMean, 2),
+      0,
+    );
     const residualSumSquares = residuals.reduce((sum, r) => sum + r * r, 0);
-    const rSquared = Math.max(0, 1 - (residualSumSquares / totalSumSquares));
+    const rSquared = Math.max(0, 1 - residualSumSquares / totalSumSquares);
 
     // Calculate error metrics
     const mse = residualSumSquares / y.length;
@@ -148,24 +158,27 @@ export class MultipleLinearRegression {
       residuals,
       mse,
       rmse,
-      mae
+      mae,
     };
   }
 
   private predictSingle(x: number[]): number {
     if (!this.trained) {
-      throw new Error('Model must be trained before making predictions');
+      throw new Error("Model must be trained before making predictions");
     }
-    return this.intercept + x.reduce((sum, xi, i) => sum + xi * this.coefficients[i], 0);
+    return (
+      this.intercept +
+      x.reduce((sum, xi, i) => sum + xi * this.coefficients[i], 0)
+    );
   }
 
   predict(X: number[][]): number[] {
-    return X.map(row => this.predictSingle(row));
+    return X.map((row) => this.predictSingle(row));
   }
 
   // Matrix operations (simplified implementations)
   private transpose(matrix: number[][]): number[][] {
-    return matrix[0].map((_, colIndex) => matrix.map(row => row[colIndex]));
+    return matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
   }
 
   private multiply(a: number[][], b: number[][]): number[][] {
@@ -184,8 +197,8 @@ export class MultipleLinearRegression {
   }
 
   private multiplyVector(matrix: number[][], vector: number[]): number[] {
-    return matrix.map(row => 
-      row.reduce((sum, val, i) => sum + val * vector[i], 0)
+    return matrix.map((row) =>
+      row.reduce((sum, val, i) => sum + val * vector[i], 0),
     );
   }
 
@@ -195,32 +208,34 @@ export class MultipleLinearRegression {
       const [[a, b], [c, d]] = matrix;
       const det = a * d - b * c;
       if (Math.abs(det) < 1e-10) {
-        throw new Error('Matrix is singular and cannot be inverted');
+        throw new Error("Matrix is singular and cannot be inverted");
       }
       return [
         [d / det, -b / det],
-        [-c / det, a / det]
+        [-c / det, a / det],
       ];
     }
-    
+
     // For larger matrices, use Gaussian elimination (simplified)
     const n = matrix.length;
     const augmented = matrix.map((row, i) => [
       ...row,
-      ...Array(n).fill(0).map((_, j) => (i === j ? 1 : 0))
+      ...Array(n)
+        .fill(0)
+        .map((_, j) => (i === j ? 1 : 0)),
     ]);
 
     // Forward elimination
     for (let i = 0; i < n; i++) {
       let pivot = augmented[i][i];
       if (Math.abs(pivot) < 1e-10) {
-        throw new Error('Matrix is singular and cannot be inverted');
+        throw new Error("Matrix is singular and cannot be inverted");
       }
-      
+
       for (let j = 0; j < 2 * n; j++) {
         augmented[i][j] /= pivot;
       }
-      
+
       for (let k = 0; k < n; k++) {
         if (k !== i) {
           const factor = augmented[k][i];
@@ -231,20 +246,23 @@ export class MultipleLinearRegression {
       }
     }
 
-    return augmented.map(row => row.slice(n));
+    return augmented.map((row) => row.slice(n));
   }
 }
 
 // Naive Bayes Classifier Implementation
 export class NaiveBayesClassifier {
   private classProbabilities: Record<string, number> = {};
-  private featureProbabilities: Record<string, Record<number, Record<any, number>>> = {};
+  private featureProbabilities: Record<
+    string,
+    Record<number, Record<any, number>>
+  > = {};
   private classes: string[] = [];
   private trained: boolean = false;
 
   fit(X: number[][], y: string[]): ClassificationResult {
     if (X.length !== y.length || X.length < 2) {
-      throw new Error('Invalid data for classification');
+      throw new Error("Invalid data for classification");
     }
 
     this.classes = [...new Set(y)];
@@ -252,24 +270,28 @@ export class NaiveBayesClassifier {
 
     // Calculate class probabilities
     this.classProbabilities = {};
-    this.classes.forEach(className => {
-      this.classProbabilities[className] = y.filter(yi => yi === className).length / n;
+    this.classes.forEach((className) => {
+      this.classProbabilities[className] =
+        y.filter((yi) => yi === className).length / n;
     });
 
     // Calculate feature probabilities for each class
     this.featureProbabilities = {};
-    this.classes.forEach(className => {
+    this.classes.forEach((className) => {
       this.featureProbabilities[className] = {};
-      const classIndices = y.map((yi, i) => yi === className ? i : -1).filter(i => i !== -1);
-      
+      const classIndices = y
+        .map((yi, i) => (yi === className ? i : -1))
+        .filter((i) => i !== -1);
+
       for (let featureIndex = 0; featureIndex < X[0].length; featureIndex++) {
         this.featureProbabilities[className][featureIndex] = {};
-        const featureValues = classIndices.map(i => X[i][featureIndex]);
+        const featureValues = classIndices.map((i) => X[i][featureIndex]);
         const uniqueValues = [...new Set(featureValues)];
-        
-        uniqueValues.forEach(value => {
-          const count = featureValues.filter(v => v === value).length;
-          this.featureProbabilities[className][featureIndex][value] = (count + 1) / (classIndices.length + uniqueValues.length); // Laplace smoothing
+
+        uniqueValues.forEach((value) => {
+          const count = featureValues.filter((v) => v === value).length;
+          this.featureProbabilities[className][featureIndex][value] =
+            (count + 1) / (classIndices.length + uniqueValues.length); // Laplace smoothing
         });
       }
     });
@@ -283,19 +305,23 @@ export class NaiveBayesClassifier {
 
   predict(X: number[][]): string[] {
     if (!this.trained) {
-      throw new Error('Model must be trained before making predictions');
+      throw new Error("Model must be trained before making predictions");
     }
 
-    return X.map(row => {
+    return X.map((row) => {
       let bestClass = this.classes[0];
       let bestProbability = -Infinity;
 
-      this.classes.forEach(className => {
+      this.classes.forEach((className) => {
         let probability = Math.log(this.classProbabilities[className]);
-        
+
         row.forEach((value, featureIndex) => {
-          const featureProb = this.featureProbabilities[className][featureIndex][value] || 
-                              (1 / (Object.keys(this.featureProbabilities[className][featureIndex]).length + 1));
+          const featureProb =
+            this.featureProbabilities[className][featureIndex][value] ||
+            1 /
+              (Object.keys(this.featureProbabilities[className][featureIndex])
+                .length +
+                1);
           probability += Math.log(featureProb);
         });
 
@@ -309,17 +335,21 @@ export class NaiveBayesClassifier {
     });
   }
 
-  private calculateClassificationMetrics(actual: string[], predicted: string[]): ClassificationResult {
-    const accuracy = actual.filter((yi, i) => yi === predicted[i]).length / actual.length;
-    
+  private calculateClassificationMetrics(
+    actual: string[],
+    predicted: string[],
+  ): ClassificationResult {
+    const accuracy =
+      actual.filter((yi, i) => yi === predicted[i]).length / actual.length;
+
     const precision: Record<string, number> = {};
     const recall: Record<string, number> = {};
     const f1Score: Record<string, number> = {};
     const confusionMatrix: Record<string, Record<string, number>> = {};
-    
-    this.classes.forEach(className => {
+
+    this.classes.forEach((className) => {
       confusionMatrix[className] = {};
-      this.classes.forEach(predictedClass => {
+      this.classes.forEach((predictedClass) => {
         confusionMatrix[className][predictedClass] = 0;
       });
     });
@@ -331,23 +361,34 @@ export class NaiveBayesClassifier {
     });
 
     // Calculate precision, recall, and F1 score for each class
-    this.classes.forEach(className => {
+    this.classes.forEach((className) => {
       const truePositives = confusionMatrix[className][className];
-      const falsePositives = this.classes.reduce((sum, other) => 
-        sum + (other !== className ? confusionMatrix[other][className] : 0), 0);
-      const falseNegatives = this.classes.reduce((sum, other) => 
-        sum + (other !== className ? confusionMatrix[className][other] : 0), 0);
+      const falsePositives = this.classes.reduce(
+        (sum, other) =>
+          sum + (other !== className ? confusionMatrix[other][className] : 0),
+        0,
+      );
+      const falseNegatives = this.classes.reduce(
+        (sum, other) =>
+          sum + (other !== className ? confusionMatrix[className][other] : 0),
+        0,
+      );
 
-      precision[className] = truePositives / (truePositives + falsePositives) || 0;
+      precision[className] =
+        truePositives / (truePositives + falsePositives) || 0;
       recall[className] = truePositives / (truePositives + falseNegatives) || 0;
-      f1Score[className] = 2 * (precision[className] * recall[className]) / 
-                          (precision[className] + recall[className]) || 0;
+      f1Score[className] =
+        (2 * (precision[className] * recall[className])) /
+          (precision[className] + recall[className]) || 0;
     });
 
-    const classDistribution = this.classes.reduce((acc, className) => {
-      acc[className] = actual.filter(yi => yi === className).length;
-      return acc;
-    }, {} as Record<string, number>);
+    const classDistribution = this.classes.reduce(
+      (acc, className) => {
+        acc[className] = actual.filter((yi) => yi === className).length;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     return {
       predictions: predicted,
@@ -356,7 +397,7 @@ export class NaiveBayesClassifier {
       recall,
       f1Score,
       confusionMatrix,
-      classDistribution
+      classDistribution,
     };
   }
 }
@@ -365,36 +406,44 @@ export class NaiveBayesClassifier {
 export const createMLModel = (
   data: Record<string, any>[],
   config: MLModelConfig,
-  columns: ExcelColumn[]
+  columns: ExcelColumn[],
 ): MLModel => {
   if (data.length < 10) {
-    throw new Error('Insufficient data for machine learning (minimum 10 rows required)');
+    throw new Error(
+      "Insufficient data for machine learning (minimum 10 rows required)",
+    );
   }
 
   // Validate columns
-  const targetColumn = columns.find(col => col.key === config.targetColumn);
+  const targetColumn = columns.find((col) => col.key === config.targetColumn);
   if (!targetColumn) {
     throw new Error(`Target column '${config.targetColumn}' not found`);
   }
 
   const featureColumns = config.featureColumns
-    .map(key => columns.find(col => col.key === key))
-    .filter(col => col !== undefined) as ExcelColumn[];
+    .map((key) => columns.find((col) => col.key === key))
+    .filter((col) => col !== undefined) as ExcelColumn[];
 
   if (featureColumns.length === 0) {
-    throw new Error('No valid feature columns found');
+    throw new Error("No valid feature columns found");
   }
 
   // Prepare data
-  const cleanData = data.filter(row => {
+  const cleanData = data.filter((row) => {
     const targetValue = row[config.targetColumn];
-    const featureValues = config.featureColumns.map(key => row[key]);
-    return targetValue !== null && targetValue !== undefined && targetValue !== '' &&
-           featureValues.every(val => val !== null && val !== undefined && val !== '');
+    const featureValues = config.featureColumns.map((key) => row[key]);
+    return (
+      targetValue !== null &&
+      targetValue !== undefined &&
+      targetValue !== "" &&
+      featureValues.every(
+        (val) => val !== null && val !== undefined && val !== "",
+      )
+    );
   });
 
   if (cleanData.length < 5) {
-    throw new Error('Insufficient clean data for training');
+    throw new Error("Insufficient clean data for training");
   }
 
   // Split data
@@ -405,77 +454,95 @@ export const createMLModel = (
   let modelMetrics: LinearRegressionResult | ClassificationResult;
   let predictions: MLPrediction[] = [];
 
-  if (config.modelType === 'linear_regression') {
+  if (config.modelType === "linear_regression") {
     // Regression
-    const X_train = trainData.map(row => 
-      config.featureColumns.map(key => Number(row[key]) || 0)
+    const X_train = trainData.map((row) =>
+      config.featureColumns.map((key) => Number(row[key]) || 0),
     );
-    const y_train = trainData.map(row => Number(row[config.targetColumn]) || 0);
+    const y_train = trainData.map(
+      (row) => Number(row[config.targetColumn]) || 0,
+    );
 
-    const model = featureColumns.length === 1 ? 
-                  new SimpleLinearRegression() : 
-                  new MultipleLinearRegression();
+    const model =
+      featureColumns.length === 1
+        ? new SimpleLinearRegression()
+        : new MultipleLinearRegression();
 
     if (featureColumns.length === 1) {
-      modelMetrics = (model as SimpleLinearRegression).fit(X_train.map(x => x[0]), y_train);
+      modelMetrics = (model as SimpleLinearRegression).fit(
+        X_train.map((x) => x[0]),
+        y_train,
+      );
     } else {
       modelMetrics = (model as MultipleLinearRegression).fit(X_train, y_train);
     }
 
     // Predict on test data
-    const X_test = testData.map(row => 
-      config.featureColumns.map(key => Number(row[key]) || 0)
+    const X_test = testData.map((row) =>
+      config.featureColumns.map((key) => Number(row[key]) || 0),
     );
-    const y_test = testData.map(row => Number(row[config.targetColumn]) || 0);
+    const y_test = testData.map((row) => Number(row[config.targetColumn]) || 0);
 
-    const testPredictions = featureColumns.length === 1 ?
-                           (model as SimpleLinearRegression).predict(X_test.map(x => x[0])) :
-                           (model as MultipleLinearRegression).predict(X_test);
+    const testPredictions =
+      featureColumns.length === 1
+        ? (model as SimpleLinearRegression).predict(X_test.map((x) => x[0]))
+        : (model as MultipleLinearRegression).predict(X_test);
 
     predictions = testData.map((row, i) => ({
       rowIndex: splitIndex + i,
       actualValue: y_test[i],
       predictedValue: testPredictions[i],
-      residual: y_test[i] - testPredictions[i]
+      residual: y_test[i] - testPredictions[i],
     }));
-
   } else {
     // Classification
-    const X_train = trainData.map(row => 
-      config.featureColumns.map(key => {
+    const X_train = trainData.map((row) =>
+      config.featureColumns.map((key) => {
         const val = row[key];
-        return typeof val === 'number' ? val : (typeof val === 'string' ? val.charCodeAt(0) : 0);
-      })
+        return typeof val === "number"
+          ? val
+          : typeof val === "string"
+            ? val.charCodeAt(0)
+            : 0;
+      }),
     );
-    const y_train = trainData.map(row => String(row[config.targetColumn]));
+    const y_train = trainData.map((row) => String(row[config.targetColumn]));
 
     const model = new NaiveBayesClassifier();
     modelMetrics = model.fit(X_train, y_train);
 
     // Predict on test data
-    const X_test = testData.map(row => 
-      config.featureColumns.map(key => {
+    const X_test = testData.map((row) =>
+      config.featureColumns.map((key) => {
         const val = row[key];
-        return typeof val === 'number' ? val : (typeof val === 'string' ? val.charCodeAt(0) : 0);
-      })
+        return typeof val === "number"
+          ? val
+          : typeof val === "string"
+            ? val.charCodeAt(0)
+            : 0;
+      }),
     );
-    const y_test = testData.map(row => String(row[config.targetColumn]));
+    const y_test = testData.map((row) => String(row[config.targetColumn]));
 
     const testPredictions = model.predict(X_test);
 
     predictions = testData.map((row, i) => ({
       rowIndex: splitIndex + i,
       actualValue: y_test[i],
-      predictedValue: testPredictions[i]
+      predictedValue: testPredictions[i],
     }));
 
     // Update metrics with test data
-    modelMetrics = model.calculateClassificationMetrics(y_test, testPredictions);
+    modelMetrics = model.calculateClassificationMetrics(
+      y_test,
+      testPredictions,
+    );
   }
 
-  const trainingAccuracy = config.modelType === 'linear_regression' ? 
-                          (modelMetrics as LinearRegressionResult).rSquared :
-                          (modelMetrics as ClassificationResult).accuracy;
+  const trainingAccuracy =
+    config.modelType === "linear_regression"
+      ? (modelMetrics as LinearRegressionResult).rSquared
+      : (modelMetrics as ClassificationResult).accuracy;
 
   const testingAccuracy = trainingAccuracy; // For simplicity, using same metric
 
@@ -484,25 +551,27 @@ export const createMLModel = (
     trainingAccuracy,
     testingAccuracy,
     predictions,
-    modelMetrics
+    modelMetrics,
   };
 };
 
 // Utility functions
 export const getNumericColumns = (columns: ExcelColumn[]): ExcelColumn[] => {
-  return columns.filter(col => col.type === 'number');
+  return columns.filter((col) => col.type === "number");
 };
 
-export const getCategoricalColumns = (columns: ExcelColumn[]): ExcelColumn[] => {
-  return columns.filter(col => col.type === 'text' || col.type === 'boolean');
+export const getCategoricalColumns = (
+  columns: ExcelColumn[],
+): ExcelColumn[] => {
+  return columns.filter((col) => col.type === "text" || col.type === "boolean");
 };
 
 export const formatModelType = (type: string): string => {
   const labels = {
-    linear_regression: 'Regresión Lineal',
-    logistic_regression: 'Regresión Logística',
-    naive_bayes: 'Naive Bayes',
-    decision_tree: 'Árbol de Decisión'
+    linear_regression: "Regresión Lineal",
+    logistic_regression: "Regresión Logística",
+    naive_bayes: "Naive Bayes",
+    decision_tree: "Árbol de Decisión",
   };
   return labels[type as keyof typeof labels] || type;
 };

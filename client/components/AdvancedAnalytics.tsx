@@ -1,19 +1,19 @@
-import React, { useMemo, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
+import React, { useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   TrendingUp,
   TrendingDown,
@@ -25,9 +25,9 @@ import {
   X,
   Eye,
   EyeOff,
-  RefreshCw
-} from 'lucide-react';
-import { ExcelData, ExcelColumn } from '@shared/excel-types';
+  RefreshCw,
+} from "lucide-react";
+import { ExcelData, ExcelColumn } from "@shared/excel-types";
 import {
   generateAdvancedStats,
   formatCorrelationStrength,
@@ -35,8 +35,8 @@ import {
   formatTrend,
   AdvancedStats,
   CorrelationResult,
-  OutlierResult
-} from '@/utils/advancedStatistics';
+  OutlierResult,
+} from "@/utils/advancedStatistics";
 
 interface AdvancedAnalyticsProps {
   data: ExcelData;
@@ -51,11 +51,16 @@ export function AdvancedAnalytics({
   filteredData,
   selectedColumns,
   onClose,
-  onHighlightOutliers
+  onHighlightOutliers,
 }: AdvancedAnalyticsProps) {
-  const [selectedCorrelation, setSelectedCorrelation] = useState<CorrelationResult | null>(null);
-  const [outlierMethod, setOutlierMethod] = useState<'zscore' | 'iqr'>('zscore');
-  const [showOutlierDetails, setShowOutlierDetails] = useState<Record<string, boolean>>({});
+  const [selectedCorrelation, setSelectedCorrelation] =
+    useState<CorrelationResult | null>(null);
+  const [outlierMethod, setOutlierMethod] = useState<"zscore" | "iqr">(
+    "zscore",
+  );
+  const [showOutlierDetails, setShowOutlierDetails] = useState<
+    Record<string, boolean>
+  >({});
 
   // Calculate advanced statistics
   const advancedStats = useMemo(() => {
@@ -63,9 +68,12 @@ export function AdvancedAnalytics({
     return generateAdvancedStats(filteredData, data.columns);
   }, [data, filteredData]);
 
-  const numericColumns = useMemo(() => 
-    data.columns.filter(col => col.type === 'number' && selectedColumns.includes(col.key)),
-    [data.columns, selectedColumns]
+  const numericColumns = useMemo(
+    () =>
+      data.columns.filter(
+        (col) => col.type === "number" && selectedColumns.includes(col.key),
+      ),
+    [data.columns, selectedColumns],
   );
 
   if (!advancedStats) {
@@ -77,7 +85,12 @@ export function AdvancedAnalytics({
               <BarChart3 className="h-responsive-input w-responsive-input text-primary" />
               Análisis Avanzado
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose} className="button-responsive">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="button-responsive"
+            >
               <X className="h-responsive-input w-responsive-input" />
             </Button>
           </CardTitle>
@@ -93,9 +106,9 @@ export function AdvancedAnalytics({
   }
 
   const toggleOutlierDetails = (column: string) => {
-    setShowOutlierDetails(prev => ({
+    setShowOutlierDetails((prev) => ({
       ...prev,
-      [column]: !prev[column]
+      [column]: !prev[column],
     }));
   };
 
@@ -110,7 +123,12 @@ export function AdvancedAnalytics({
               {filteredData.length.toLocaleString()} registros
             </Badge>
           </div>
-          <Button variant="ghost" size="sm" onClick={onClose} className="button-responsive">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="button-responsive"
+          >
             <X className="h-responsive-input w-responsive-input" />
           </Button>
         </CardTitle>
@@ -147,28 +165,39 @@ export function AdvancedAnalytics({
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription className="text-responsive-sm">
-                  No se encontraron correlaciones significativas entre las columnas numéricas seleccionadas.
+                  No se encontraron correlaciones significativas entre las
+                  columnas numéricas seleccionadas.
                 </AlertDescription>
               </Alert>
             ) : (
               <ScrollArea className="h-80">
                 <div className="space-y-responsive-sm">
                   {advancedStats.correlations
-                    .filter(corr => Math.abs(corr.correlation) > 0.1) // Only show meaningful correlations
+                    .filter((corr) => Math.abs(corr.correlation) > 0.1) // Only show meaningful correlations
                     .map((correlation, index) => (
-                      <Card key={index} className="border-l-4 border-l-primary/20">
+                      <Card
+                        key={index}
+                        className="border-l-4 border-l-primary/20"
+                      >
                         <CardContent className="p-responsive-sm">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-responsive-sm">
-                              <Badge 
-                                variant={correlation.strength === 'very_strong' || correlation.strength === 'strong' ? 'default' : 'secondary'}
+                              <Badge
+                                variant={
+                                  correlation.strength === "very_strong" ||
+                                  correlation.strength === "strong"
+                                    ? "default"
+                                    : "secondary"
+                                }
                                 className="text-responsive-xs"
                               >
-                                {formatCorrelationStrength(correlation.strength)}
+                                {formatCorrelationStrength(
+                                  correlation.strength,
+                                )}
                               </Badge>
-                              <Badge 
-                                variant="outline" 
-                                className={`text-responsive-xs ${correlation.direction === 'positive' ? 'border-green-500 text-green-700' : 'border-red-500 text-red-700'}`}
+                              <Badge
+                                variant="outline"
+                                className={`text-responsive-xs ${correlation.direction === "positive" ? "border-green-500 text-green-700" : "border-red-500 text-red-700"}`}
                               >
                                 {formatDirection(correlation.direction)}
                               </Badge>
@@ -177,23 +206,30 @@ export function AdvancedAnalytics({
                               {correlation.correlation.toFixed(3)}
                             </span>
                           </div>
-                          
+
                           <div className="flex items-center gap-2 text-responsive-sm">
-                            <span className="font-medium">{correlation.column1}</span>
+                            <span className="font-medium">
+                              {correlation.column1}
+                            </span>
                             <span className="text-muted-foreground">↔</span>
-                            <span className="font-medium">{correlation.column2}</span>
+                            <span className="font-medium">
+                              {correlation.column2}
+                            </span>
                           </div>
-                          
+
                           <div className="mt-2 flex items-center gap-responsive-sm">
-                            <Progress 
-                              value={Math.abs(correlation.correlation) * 100} 
+                            <Progress
+                              value={Math.abs(correlation.correlation) * 100}
                               className="flex-1 h-2"
                             />
                             <span className="text-responsive-xs text-muted-foreground">
-                              {(Math.abs(correlation.correlation) * 100).toFixed(1)}%
+                              {(
+                                Math.abs(correlation.correlation) * 100
+                              ).toFixed(1)}
+                              %
                             </span>
                           </div>
-                          
+
                           {correlation.significance < 0.05 && (
                             <div className="mt-1 text-responsive-xs text-green-600">
                               ✓ Estadísticamente significativa
@@ -214,7 +250,12 @@ export function AdvancedAnalytics({
                 Detección de Outliers
               </h3>
               <div className="flex items-center gap-responsive-sm">
-                <Select value={outlierMethod} onValueChange={(value: 'zscore' | 'iqr') => setOutlierMethod(value)}>
+                <Select
+                  value={outlierMethod}
+                  onValueChange={(value: "zscore" | "iqr") =>
+                    setOutlierMethod(value)
+                  }
+                >
                   <SelectTrigger className="w-32 control-responsive">
                     <SelectValue />
                   </SelectTrigger>
@@ -224,9 +265,9 @@ export function AdvancedAnalytics({
                   </SelectContent>
                 </Select>
                 {onHighlightOutliers && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => onHighlightOutliers(advancedStats.outliers)}
                     className="button-responsive gap-1"
                   >
@@ -241,7 +282,8 @@ export function AdvancedAnalytics({
               <Alert>
                 <Activity className="h-4 w-4" />
                 <AlertDescription className="text-responsive-sm">
-                  No se detectaron outliers significativos en las columnas analizadas.
+                  No se detectaron outliers significativos en las columnas
+                  analizadas.
                 </AlertDescription>
               </Alert>
             ) : (
@@ -258,16 +300,24 @@ export function AdvancedAnalytics({
                             </span>
                           </div>
                           <div className="flex items-center gap-responsive-sm">
-                            <Badge variant="destructive" className="text-responsive-xs">
+                            <Badge
+                              variant="destructive"
+                              className="text-responsive-xs"
+                            >
                               {outlierResult.totalOutliers} outliers
                             </Badge>
-                            <Badge variant="outline" className="text-responsive-xs">
+                            <Badge
+                              variant="outline"
+                              className="text-responsive-xs"
+                            >
                               {outlierResult.outlierPercentage.toFixed(1)}%
                             </Badge>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => toggleOutlierDetails(outlierResult.column)}
+                              onClick={() =>
+                                toggleOutlierDetails(outlierResult.column)
+                              }
                               className="h-6 w-6 p-0"
                             >
                               {showOutlierDetails[outlierResult.column] ? (
@@ -279,24 +329,34 @@ export function AdvancedAnalytics({
                           </div>
                         </div>
 
-                        <Progress 
-                          value={Math.min(outlierResult.outlierPercentage, 100)} 
+                        <Progress
+                          value={Math.min(outlierResult.outlierPercentage, 100)}
                           className="h-2 mb-2"
                         />
 
                         {showOutlierDetails[outlierResult.column] && (
                           <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                            {outlierResult.outliers.slice(0, 10).map((outlier, i) => (
-                              <div key={i} className="flex items-center justify-between text-responsive-xs bg-muted/30 rounded px-2 py-1">
-                                <span>Fila {outlier.rowIndex + 1}</span>
-                                <span className="font-mono">{outlier.value}</span>
-                                {outlier.method === 'zscore' && (
-                                  <Badge variant="outline" className="text-xs">
-                                    Z: {outlier.zScore.toFixed(2)}
-                                  </Badge>
-                                )}
-                              </div>
-                            ))}
+                            {outlierResult.outliers
+                              .slice(0, 10)
+                              .map((outlier, i) => (
+                                <div
+                                  key={i}
+                                  className="flex items-center justify-between text-responsive-xs bg-muted/30 rounded px-2 py-1"
+                                >
+                                  <span>Fila {outlier.rowIndex + 1}</span>
+                                  <span className="font-mono">
+                                    {outlier.value}
+                                  </span>
+                                  {outlier.method === "zscore" && (
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs"
+                                    >
+                                      Z: {outlier.zScore.toFixed(2)}
+                                    </Badge>
+                                  )}
+                                </div>
+                              ))}
                             {outlierResult.outliers.length > 10 && (
                               <div className="text-responsive-xs text-muted-foreground text-center">
                                 ... y {outlierResult.outliers.length - 10} más
@@ -330,9 +390,9 @@ export function AdvancedAnalytics({
                     <CardContent className="p-responsive-sm">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-responsive-sm">
-                          {trend.trend === 'increasing' ? (
+                          {trend.trend === "increasing" ? (
                             <TrendingUp className="h-4 w-4 text-green-500" />
-                          ) : trend.trend === 'decreasing' ? (
+                          ) : trend.trend === "decreasing" ? (
                             <TrendingDown className="h-4 w-4 text-red-500" />
                           ) : (
                             <Activity className="h-4 w-4 text-gray-500" />
@@ -341,10 +401,13 @@ export function AdvancedAnalytics({
                             {trend.column}
                           </span>
                         </div>
-                        <Badge 
+                        <Badge
                           variant={
-                            trend.trend === 'increasing' ? 'default' : 
-                            trend.trend === 'decreasing' ? 'destructive' : 'secondary'
+                            trend.trend === "increasing"
+                              ? "default"
+                              : trend.trend === "decreasing"
+                                ? "destructive"
+                                : "secondary"
                           }
                           className="text-responsive-xs"
                         >
@@ -353,8 +416,13 @@ export function AdvancedAnalytics({
                       </div>
 
                       <div className="flex items-center gap-responsive-sm">
-                        <span className="text-responsive-xs text-muted-foreground">Confianza:</span>
-                        <Progress value={trend.confidence * 100} className="flex-1 h-2" />
+                        <span className="text-responsive-xs text-muted-foreground">
+                          Confianza:
+                        </span>
+                        <Progress
+                          value={trend.confidence * 100}
+                          className="flex-1 h-2"
+                        />
                         <span className="text-responsive-xs font-mono">
                           {(trend.confidence * 100).toFixed(1)}%
                         </span>
@@ -386,11 +454,11 @@ export function AdvancedAnalytics({
                         <span className="text-responsive-sm font-medium">
                           {test.column}
                         </span>
-                        <Badge 
-                          variant={test.isNormal ? 'default' : 'secondary'}
+                        <Badge
+                          variant={test.isNormal ? "default" : "secondary"}
                           className="text-responsive-xs"
                         >
-                          {test.isNormal ? 'Normal' : 'No Normal'}
+                          {test.isNormal ? "Normal" : "No Normal"}
                         </Badge>
                       </div>
 
@@ -399,8 +467,8 @@ export function AdvancedAnalytics({
                           <span className="text-responsive-xs text-muted-foreground">
                             Estadístico:
                           </span>
-                          <Progress 
-                            value={test.shapiroWilk * 100} 
+                          <Progress
+                            value={test.shapiroWilk * 100}
                             className="flex-1 h-2"
                           />
                           <span className="text-responsive-xs font-mono">
@@ -410,10 +478,9 @@ export function AdvancedAnalytics({
                       )}
 
                       <div className="mt-1 text-responsive-xs text-muted-foreground">
-                        {test.isNormal 
-                          ? '✓ Distribución aproximadamente normal'
-                          : '⚠ Distribución no normal - considerar transformaciones'
-                        }
+                        {test.isNormal
+                          ? "✓ Distribución aproximadamente normal"
+                          : "⚠ Distribución no normal - considerar transformaciones"}
                       </div>
                     </CardContent>
                   </Card>
