@@ -1494,7 +1494,7 @@ export default function Index() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
-                    Visualización de Datos
+                    Visualizaci��n de Datos
                     <Button
                       variant="ghost"
                       size="sm"
@@ -1697,107 +1697,115 @@ export default function Index() {
                   </div>
                 ) : (
                   <>
-                    <ScrollArea className="w-full whitespace-nowrap">
-                      <div className="min-w-full">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              {selectedColumns.map((columnKey) => {
-                                const column = excelData.columns.find(
-                                  (c) => c.key === columnKey,
-                                );
-                                return (
-                                  <TableHead key={columnKey} className="p-0">
-                                    <div className="p-3">
-                                      <div
-                                        className="flex items-center gap-1 cursor-pointer hover:text-primary"
-                                        onClick={() => handleSort(columnKey)}
-                                      >
-                                        <span className="font-medium">
-                                          {column?.label}
-                                        </span>
-                                        <Badge
-                                          variant="secondary"
-                                          className="text-xs"
-                                        >
-                                          {column?.type}
-                                        </Badge>
-                                        {sortColumn === columnKey && (
-                                          <span className="text-xs text-primary">
-                                            {sortDirection === "asc"
-                                              ? "↑"
-                                              : "↓"}
-                                          </span>
-                                        )}
-                                      </div>
-                                      <Input
-                                        placeholder={`Filtrar ${column?.label}...`}
-                                        value={columnFilters[columnKey] || ""}
-                                        onChange={(e) => {
-                                          e.stopPropagation();
-                                          setColumnFilters((prev) => ({
-                                            ...prev,
-                                            [columnKey]: e.target.value,
-                                          }));
-                                        }}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="h-7 text-xs mt-2"
-                                      />
-                                    </div>
-                                  </TableHead>
-                                );
-                              })}
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {paginatedData.map((row, index) => (
-                              <TableRow
-                                key={row._id || index}
-                                className="hover:bg-muted/50"
-                              >
+                    <div className="relative">
+                      <div className="bg-muted/30 p-3 mb-2 rounded-md text-sm text-muted-foreground">
+                        💡 <strong>Navegación horizontal:</strong> Desliza hacia la derecha o izquierda para ver más columnas
+                      </div>
+                      <ScrollArea className="w-full whitespace-nowrap rounded-md border bg-card">
+                        <div className="min-w-full">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
                                 {selectedColumns.map((columnKey) => {
                                   const column = excelData.columns.find(
                                     (c) => c.key === columnKey,
                                   );
-                                  const value = row[columnKey];
-
                                   return (
-                                    <TableCell
-                                      key={columnKey}
-                                      className="max-w-48"
-                                    >
-                                      <div className="truncate">
-                                        {column?.type === "boolean" ? (
+                                    <TableHead key={columnKey} className="p-0 min-w-[200px]">
+                                      <div className="p-3">
+                                        <div
+                                          className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                          onClick={() => handleSort(columnKey)}
+                                        >
+                                          <span className="font-medium">
+                                            {column?.label}
+                                          </span>
                                           <Badge
-                                            variant={
-                                              value ? "default" : "secondary"
-                                            }
+                                            variant="secondary"
+                                            className="text-xs"
                                           >
-                                            {value ? "Sí" : "No"}
+                                            {column?.type}
                                           </Badge>
-                                        ) : column?.type === "number" ? (
-                                          <span className="font-mono">
-                                            {typeof value === "number"
-                                              ? value.toLocaleString("es-ES")
-                                              : value}
-                                          </span>
-                                        ) : column?.type === "date" ? (
-                                          <span className="text-sm">
-                                            {value || ""}
-                                          </span>
-                                        ) : (
-                                          <span>{String(value || "")}</span>
-                                        )}
+                                          {sortColumn === columnKey && (
+                                            <span className="text-xs text-primary">
+                                              {sortDirection === "asc"
+                                                ? "↑"
+                                                : "↓"}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <Input
+                                          placeholder={`Filtrar ${column?.label}...`}
+                                          value={columnFilters[columnKey] || ""}
+                                          onChange={(e) => {
+                                            e.stopPropagation();
+                                            setColumnFilters((prev) => ({
+                                              ...prev,
+                                              [columnKey]: e.target.value,
+                                            }));
+                                          }}
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="h-7 text-xs mt-2"
+                                        />
                                       </div>
-                                    </TableCell>
+                                    </TableHead>
                                   );
                                 })}
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </ScrollArea>
+                            </TableHeader>
+                            <TableBody>
+                              {paginatedData.map((row, index) => (
+                                <TableRow
+                                  key={row._id || index}
+                                  className="hover:bg-muted/50"
+                                >
+                                  {selectedColumns.map((columnKey) => {
+                                    const column = excelData.columns.find(
+                                      (c) => c.key === columnKey,
+                                    );
+                                    const value = row[columnKey];
+
+                                    return (
+                                      <TableCell
+                                        key={columnKey}
+                                        className="min-w-[200px] max-w-xs"
+                                      >
+                                        <div className="truncate">
+                                          {column?.type === "boolean" ? (
+                                            <Badge
+                                              variant={
+                                                value ? "default" : "secondary"
+                                              }
+                                            >
+                                              {value ? "Sí" : "No"}
+                                            </Badge>
+                                          ) : column?.type === "number" ? (
+                                            <span className="font-mono">
+                                              {typeof value === "number"
+                                                ? value.toLocaleString("es-ES")
+                                                : value}
+                                            </span>
+                                          ) : column?.type === "date" ? (
+                                            <span className="text-sm">
+                                              {value || ""}
+                                            </span>
+                                          ) : (
+                                            <span>{String(value || "")}</span>
+                                          )}
+                                        </div>
+                                      </TableCell>
+                                    );
+                                  })}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                        <div className="flex h-4 items-center justify-center bg-gradient-to-r from-muted/50 to-muted/20">
+                          <span className="text-xs text-muted-foreground">← Desliza para ver más columnas →</span>
+                        </div>
+                      </ScrollArea>
+                    </div>
 
                     {/* Pagination */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4">
