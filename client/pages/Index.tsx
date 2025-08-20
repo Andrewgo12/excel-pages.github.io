@@ -571,10 +571,26 @@ export default function Index() {
       return exportRow;
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Filtered Data");
-    XLSX.writeFile(workbook, "filtered_data.xlsx");
+    // Create CSV for quick export
+    const headers = selectedColumns.map(col =>
+      excelData.columns.find(c => c.key === col)?.label || col
+    );
+    const csvContent = [
+      headers.join(","),
+      ...exportData.map(row =>
+        selectedColumns.map(col => `"${String(row[col] || "")}"`).join(",")
+      )
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "filtered_data.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
 
