@@ -1887,8 +1887,8 @@ export default function Index() {
                 ) : (
                   <>
                     <div className="relative">
-                      <div className="w-full overflow-x-auto overflow-y-visible">
-                        <Table>
+                      <div className="w-full overflow-x-auto overflow-y-visible table-responsive">
+                        <Table className="table-responsive">
                           <TableHeader>
                             <TableRow>
                               {selectedColumns.map((columnKey) => {
