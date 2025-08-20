@@ -82,8 +82,9 @@ const formatDateTime = (date: Date): string => {
 };
 
 export const generateSampleData = (): ExcelData => {
-  // Define all 40 columns with different data types
+  // Define all 80 columns with comprehensive business data types
   const columns: ExcelColumn[] = [
+    // Personal Information
     { key: 'id', label: 'ID', type: 'number' },
     { key: 'nombre', label: 'Nombre', type: 'text' },
     { key: 'apellido', label: 'Apellido', type: 'text' },
@@ -92,38 +93,103 @@ export const generateSampleData = (): ExcelData => {
     { key: 'telefono', label: 'Teléfono', type: 'text' },
     { key: 'edad', label: 'Edad', type: 'number' },
     { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento', type: 'date' },
+    { key: 'genero', label: 'Género', type: 'text' },
+    { key: 'nacionalidad', label: 'Nacionalidad', type: 'text' },
+
+    // Employment Details
     { key: 'salario', label: 'Salario (€)', type: 'number' },
     { key: 'activo', label: 'Activo', type: 'boolean' },
     { key: 'departamento', label: 'Departamento', type: 'text' },
+    { key: 'puesto', label: 'Puesto de Trabajo', type: 'text' },
+    { key: 'nivel_jerarquico', label: 'Nivel Jerárquico', type: 'text' },
+    { key: 'tipo_contrato', label: 'Tipo de Contrato', type: 'text' },
+    { key: 'fecha_contratacion', label: 'Fecha de Contratación', type: 'date' },
+    { key: 'fecha_fin_contrato', label: 'Fecha Fin Contrato', type: 'date' },
+    { key: 'experiencia_años', label: 'Años de Experiencia', type: 'number' },
+    { key: 'es_manager', label: 'Es Manager', type: 'boolean' },
+
+    // Location & Office
     { key: 'ciudad', label: 'Ciudad', type: 'text' },
     { key: 'pais', label: 'País', type: 'text' },
     { key: 'codigo_postal', label: 'Código Postal', type: 'text' },
-    { key: 'fecha_contratacion', label: 'Fecha de Contratación', type: 'date' },
-    { key: 'experiencia_años', label: 'Años de Experiencia', type: 'number' },
+    { key: 'direccion_completa', label: 'Dirección Completa', type: 'text' },
+    { key: 'oficina', label: 'Oficina', type: 'text' },
+    { key: 'region', label: 'Región', type: 'text' },
+    { key: 'zona_horaria', label: 'Zona Horaria', type: 'text' },
+
+    // Performance & Evaluation
     { key: 'puntuacion', label: 'Puntuación (1-10)', type: 'number' },
-    { key: 'producto_favorito', label: 'Producto Favorito', type: 'text' },
+    { key: 'rating_rendimiento', label: 'Rating de Rendimiento', type: 'text' },
+    { key: 'satisfaccion_cliente', label: 'Satisfacción Cliente (%)', type: 'number' },
+    { key: 'productividad_score', label: 'Score de Productividad', type: 'number' },
+    { key: 'fecha_evaluacion', label: 'Fecha Última Evaluación', type: 'date' },
+    { key: 'fecha_promocion', label: 'Fecha Última Promoción', type: 'date' },
+    { key: 'incremento_salarial', label: 'Último Incremento Salarial (%)', type: 'number' },
+
+    // Sales & Business Metrics
     { key: 'ventas_ultimo_mes', label: 'Ventas Último Mes (€)', type: 'number' },
+    { key: 'ventas_trimestre', label: 'Ventas Trimestre (€)', type: 'number' },
+    { key: 'ventas_año', label: 'Ventas Año (€)', type: 'number' },
     { key: 'comision', label: 'Comisión (%)', type: 'number' },
+    { key: 'meta_anual', label: 'Meta Anual (€)', type: 'number' },
+    { key: 'progreso_meta', label: 'Progreso Meta (%)', type: 'number' },
+    { key: 'clientes_activos', label: 'Clientes Activos', type: 'number' },
+    { key: 'nuevos_clientes', label: 'Nuevos Clientes/Mes', type: 'number' },
+    { key: 'canal_ventas', label: 'Canal de Ventas Principal', type: 'text' },
+    { key: 'tipo_cliente', label: 'Tipo de Cliente Principal', type: 'text' },
+
+    // Skills & Education
+    { key: 'nivel_educacion', label: 'Nivel de Educación', type: 'text' },
+    { key: 'universidad', label: 'Universidad', type: 'text' },
+    { key: 'carrera', label: 'Carrera/Especialización', type: 'text' },
+    { key: 'idiomas', label: 'Número de Idiomas', type: 'number' },
+    { key: 'idioma_principal', label: 'Idioma Principal', type: 'text' },
+    { key: 'skill_principal', label: 'Skill Principal', type: 'text' },
+    { key: 'certificaciones', label: 'Certificaciones', type: 'number' },
+    { key: 'certificacion_principal', label: 'Certificación Principal', type: 'text' },
+    { key: 'formacion_horas', label: 'Horas de Formación/Año', type: 'number' },
+
+    // Work Patterns & Preferences
+    { key: 'horas_trabajadas', label: 'Horas Trabajadas/Semana', type: 'number' },
+    { key: 'modalidad_trabajo', label: 'Modalidad de Trabajo', type: 'text' },
+    { key: 'flexibilidad_horaria', label: 'Flexibilidad Horaria', type: 'boolean' },
+    { key: 'viajes_trabajo', label: 'Viajes de Trabajo/Año', type: 'number' },
+    { key: 'preferencia_comunicacion', label: 'Preferencia de Comunicación', type: 'text' },
+    { key: 'vacaciones_dias', label: 'Días de Vacaciones', type: 'number' },
+    { key: 'dias_enfermedad', label: 'Días de Enfermedad/Año', type: 'number' },
+
+    // Projects & Activities
+    { key: 'proyectos_activos', label: 'Proyectos Activos', type: 'number' },
+    { key: 'proyecto_principal', label: 'Proyecto Principal', type: 'text' },
+    { key: 'industria_principal', label: 'Industria Principal', type: 'text' },
+    { key: 'fecha_ultima_actividad', label: 'Última Actividad', type: 'date' },
+    { key: 'reuniones_semana', label: 'Reuniones por Semana', type: 'number' },
+    { key: 'emails_dia', label: 'Emails por Día', type: 'number' },
+
+    // Personal Assets & Benefits
+    { key: 'tiene_coche', label: 'Tiene Coche', type: 'boolean' },
+    { key: 'seguro_medico', label: 'Seguro Médico', type: 'boolean' },
+    { key: 'seguro_dental', label: 'Seguro Dental', type: 'boolean' },
+    { key: 'plan_pension', label: 'Plan de Pensiones', type: 'boolean' },
+    { key: 'stock_options', label: 'Stock Options', type: 'boolean' },
+    { key: 'gimnasio', label: 'Acceso a Gimnasio', type: 'boolean' },
+    { key: 'formacion_budget', label: 'Budget Formación (€)', type: 'number' },
+
+    // Status & Classifications
     { key: 'estado', label: 'Estado', type: 'text' },
     { key: 'prioridad', label: 'Prioridad', type: 'text' },
     { key: 'categoria', label: 'Categoría', type: 'text' },
-    { key: 'region', label: 'Región', type: 'text' },
-    { key: 'fecha_ultima_actividad', label: 'Última Actividad', type: 'date' },
-    { key: 'horas_trabajadas', label: 'Horas Trabajadas/Semana', type: 'number' },
-    { key: 'tiene_coche', label: 'Tiene Coche', type: 'boolean' },
-    { key: 'estudios_superiores', label: 'Estudios Superiores', type: 'boolean' },
-    { key: 'idiomas', label: 'Número de Idiomas', type: 'number' },
-    { key: 'certificaciones', label: 'Certificaciones', type: 'number' },
-    { key: 'proyectos_activos', label: 'Proyectos Activos', type: 'number' },
-    { key: 'satisfaccion_cliente', label: 'Satisfacción Cliente (%)', type: 'number' },
-    { key: 'fecha_evaluacion', label: 'Fecha Última Evaluación', type: 'date' },
-    { key: 'meta_anual', label: 'Meta Anual (€)', type: 'number' },
-    { key: 'progreso_meta', label: 'Progreso Meta (%)', type: 'number' },
-    { key: 'vacaciones_dias', label: 'Días de Vacaciones', type: 'number' },
-    { key: 'formacion_horas', label: 'Horas de Formación', type: 'number' },
-    { key: 'es_manager', label: 'Es Manager', type: 'boolean' },
-    { key: 'fecha_promocion', label: 'Fecha Última Promoción', type: 'date' },
-    { key: 'notas', label: 'Notas', type: 'text' }
+    { key: 'riesgo_rotacion', label: 'Riesgo de Rotación', type: 'text' },
+    { key: 'potencial_liderazgo', label: 'Potencial de Liderazgo', type: 'text' },
+
+    // Financial Details
+    { key: 'bonus_anual', label: 'Bonus Anual (€)', type: 'number' },
+    { key: 'gastos_viaje', label: 'Gastos de Viaje/Año (€)', type: 'number' },
+    { key: 'coste_total_empresa', label: 'Coste Total Empresa (€)', type: 'number' },
+
+    // Notes & Comments
+    { key: 'notas', label: 'Notas', type: 'text' },
+    { key: 'comentarios_manager', label: 'Comentarios del Manager', type: 'text' }
   ];
 
   // Generate 100 rows of data
