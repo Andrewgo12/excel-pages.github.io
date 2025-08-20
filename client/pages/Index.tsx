@@ -99,20 +99,29 @@ export default function Index() {
   });
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isStatsOpen, setIsStatsOpen] = useState(false);
-  const [isVisualizationOpen, setIsVisualizationOpen] = useState(false);
-  const [isAggregationOpen, setIsAggregationOpen] = useState(false);
-  const [isConfigurationOpen, setIsConfigurationOpen] = useState(false);
-  const [isBulkOperationsOpen, setIsBulkOperationsOpen] = useState(false);
-  const [isEnhancedExportOpen, setIsEnhancedExportOpen] = useState(false);
-  const [isDataValidationOpen, setIsDataValidationOpen] = useState(false);
+  // Panel management - only one panel open at a time
+  const [activePanel, setActivePanel] = useState<string | null>(null);
   const [globalSearch, setGlobalSearch] = useState("");
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
     {},
   );
-  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
+
+  // Derived states for panel visibility
+  const isColumnSelectorOpen = activePanel === 'columnSelector';
+  const isFilterOpen = activePanel === 'filter';
+  const isStatsOpen = activePanel === 'stats';
+  const isVisualizationOpen = activePanel === 'visualization';
+  const isAggregationOpen = activePanel === 'aggregation';
+  const isConfigurationOpen = activePanel === 'configuration';
+  const isBulkOperationsOpen = activePanel === 'bulkOperations';
+  const isEnhancedExportOpen = activePanel === 'enhancedExport';
+  const isDataValidationOpen = activePanel === 'dataValidation';
+  const isAdvancedSearchOpen = activePanel === 'advancedSearch';
+
+  // Helper function to toggle panels
+  const togglePanel = (panelName: string) => {
+    setActivePanel(activePanel === panelName ? null : panelName);
+  };
   const [searchMode, setSearchMode] = useState<"normal" | "regex" | "pattern">(
     "normal",
   );
