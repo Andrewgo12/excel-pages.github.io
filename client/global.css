@@ -40,20 +40,35 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Font scale and size variables - 10% reduction applied */
+    --font-scale: 0.9;
+    --base-font-size: calc(14px * var(--font-scale));
+    --heading-font-size: calc(18px * var(--font-scale));
+    --title-font-size: calc(20px * var(--font-scale));
+    --large-title-font-size: calc(24px * var(--font-scale));
+
+    /* Spacing scale - 10% reduction applied */
+    --spacing-scale: 0.9;
+    --space-xs: calc(0.25rem * var(--spacing-scale));
+    --space-sm: calc(0.5rem * var(--spacing-scale));
+    --space-md: calc(1rem * var(--spacing-scale));
+    --space-lg: calc(1.5rem * var(--spacing-scale));
+    --space-xl: calc(2rem * var(--spacing-scale));
+    --space-2xl: calc(3rem * var(--spacing-scale));
+
+    /* Component sizing - responsive to font scaling */
+    --input-height: calc(32px * var(--font-scale));
+    --button-height: calc(36px * var(--font-scale));
+    --table-row-height: calc(40px * var(--font-scale));
+    --table-header-height: calc(44px * var(--font-scale));
   }
 
   .dark {
