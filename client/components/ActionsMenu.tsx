@@ -83,6 +83,7 @@ export function ActionsMenu({
   onAdvancedAnalyticsOpen,
   onMachineLearningOpen,
   onFontSettingsOpen,
+  onTableCustomizationOpen,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu>
