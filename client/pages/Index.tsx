@@ -966,6 +966,7 @@ export default function Index() {
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
                   onAdvancedAnalyticsOpen={() => togglePanel("advancedAnalytics")}
                   onMachineLearningOpen={() => togglePanel("machineLearning")}
+                  onFontSettingsOpen={() => togglePanel("fontSettings")}
                 />
                 <Button
                   variant="outline"
