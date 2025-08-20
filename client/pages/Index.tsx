@@ -256,45 +256,6 @@ export default function Index() {
     setIsFileLoading(false);
   }, []);
 
-  const inferColumnType = (
-    rows: Record<string, any>[],
-    column: string,
-  ): "text" | "number" | "date" | "boolean" => {
-    const sample = rows
-      .slice(0, 10)
-      .map((row) => row[column])
-      .filter((val) => val !== null && val !== undefined && val !== "");
-
-    if (sample.length === 0) return "text";
-
-    // Check if all values are numbers
-    if (sample.every((val) => !isNaN(Number(val)))) return "number";
-
-    // Check if all values are dates
-    if (sample.every((val) => !isNaN(Date.parse(val)))) return "date";
-
-    // Check if all values are booleans
-    if (
-      sample.every(
-        (val) =>
-          val === true || val === false || val === "true" || val === "false",
-      )
-    )
-      return "boolean";
-
-    return "text";
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-        ".xlsx",
-      ],
-      "application/vnd.ms-excel": [".xls"],
-    },
-    multiple: false,
-  });
 
   const filteredAndSortedData = useMemo(() => {
     if (!excelData) return [];
