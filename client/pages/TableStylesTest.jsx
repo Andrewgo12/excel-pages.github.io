@@ -129,7 +129,9 @@ const TEST_DATA = [
 ];
 
 export default function TableStylesTest() {
-  const [customization, setCustomization] = useState(DEFAULT_TABLE_CUSTOMIZATION);
+  const [customization, setCustomization] = useState(
+    DEFAULT_TABLE_CUSTOMIZATION,
+  );
   const [selectedColumns, setSelectedColumns] = useState([
     "name",
     "email",
