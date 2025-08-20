@@ -330,9 +330,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
           <div className="p-4">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="quick" className="text-xs">Rápido</TabsTrigger>
                 <TabsTrigger value="columns" className="text-xs">Columnas</TabsTrigger>
+                <TabsTrigger value="layout" className="text-xs">Diseño</TabsTrigger>
                 <TabsTrigger value="size" className="text-xs">Tamaño</TabsTrigger>
               </TabsList>
 
