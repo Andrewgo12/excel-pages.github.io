@@ -786,7 +786,7 @@ export default function Index() {
             <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                   <Input
                     placeholder={
                       searchMode === "regex"
@@ -797,7 +797,7 @@ export default function Index() {
                     }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className={`pl-10 pr-8 ${regexError ? "border-destructive" : ""}`}
+                    className={`h-8 pl-8 pr-6 text-sm ${regexError ? "border-destructive" : ""}`}
                   />
                   {globalSearch && (
                     <Button
