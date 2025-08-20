@@ -5,6 +5,8 @@ import { createServer } from "./server";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // GitHub Pages configuration
+  base: mode === 'production' ? '/' : '/',
   server: {
     host: "::",
     port: 8080,
@@ -14,9 +16,16 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    outDir: "dist/spa",
+    outDir: "dist",
+    assetsDir: "assets",
+    // Ensure proper asset handling for GitHub Pages
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
-  plugins: [react(), expressPlugin()],
+  plugins: [react(), ...(mode === 'development' ? [expressPlugin()] : [])],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
