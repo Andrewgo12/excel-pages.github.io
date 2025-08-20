@@ -216,6 +216,10 @@ export default function Index() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [sheetNavigatorOpen, setSheetNavigatorOpen] = useState(false);
 
+  // Table customization
+  const [tableCustomization, setTableCustomization] =
+    useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
