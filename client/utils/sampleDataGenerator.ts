@@ -198,12 +198,22 @@ export const generateSampleData = (): ExcelData => {
     const lastName = randomElement(LAST_NAMES);
     const birthDate = randomDate(new Date('1970-01-01'), new Date('2000-12-31'));
     const hireDate = randomDate(new Date('2015-01-01'), new Date('2024-01-01'));
+    const contractEndDate = randomBoolean() ? randomDate(hireDate, new Date('2025-12-31')) : null;
     const currentYear = new Date().getFullYear();
     const age = currentYear - birthDate.getFullYear();
     const experienceYears = Math.max(0, currentYear - hireDate.getFullYear());
-    
+    const baseSalary = randomInt(25000, 120000);
+    const isManager = randomBoolean() && experienceYears > 2;
+    const department = randomElement(DEPARTMENTS);
+    const city = randomElement(CITIES);
+    const country = randomElement(COUNTRIES);
+    const ventas_mes = randomInt(1000, 50000);
+    const meta_anual = randomInt(50000, 500000);
+    const progreso = randomInt(0, 150);
+
     return {
       _id: index,
+      // Personal Information
       id: index + 1,
       nombre: firstName,
       apellido: lastName,
@@ -212,38 +222,103 @@ export const generateSampleData = (): ExcelData => {
       telefono: generatePhone(),
       edad: age,
       fecha_nacimiento: formatDate(birthDate),
-      salario: randomInt(25000, 120000),
+      genero: randomElement(['Masculino', 'Femenino', 'No especificado']),
+      nacionalidad: country,
+
+      // Employment Details
+      salario: baseSalary,
       activo: randomBoolean(),
-      departamento: randomElement(DEPARTMENTS),
-      ciudad: randomElement(CITIES),
-      pais: randomElement(COUNTRIES),
-      codigo_postal: randomInt(10000, 99999).toString(),
+      departamento: department,
+      puesto: `${department} ${randomElement(['Specialist', 'Analyst', 'Coordinator', 'Manager', 'Director', 'Senior', 'Junior'])}`,
+      nivel_jerarquico: randomElement(['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'C-Level']),
+      tipo_contrato: randomElement(CONTRACT_TYPES),
       fecha_contratacion: formatDate(hireDate),
+      fecha_fin_contrato: contractEndDate ? formatDate(contractEndDate) : '',
       experiencia_años: experienceYears,
+      es_manager: isManager,
+
+      // Location & Office
+      ciudad: city,
+      pais: country,
+      codigo_postal: randomInt(10000, 99999).toString(),
+      direccion_completa: `Calle ${randomElement(['Mayor', 'Principal', 'del Sol', 'de la Paz', 'Real'])} ${randomInt(1, 200)}, ${city}`,
+      oficina: randomElement(OFFICE_LOCATIONS),
+      region: randomElement(REGIONS),
+      zona_horaria: 'CET',
+
+      // Performance & Evaluation
       puntuacion: randomFloat(1, 10, 1),
-      producto_favorito: randomElement(PRODUCTS),
-      ventas_ultimo_mes: randomInt(1000, 50000),
+      rating_rendimiento: randomElement(PERFORMANCE_RATINGS),
+      satisfaccion_cliente: randomInt(60, 100),
+      productividad_score: randomFloat(70, 100, 1),
+      fecha_evaluacion: formatDate(randomDate(new Date('2023-01-01'), new Date())),
+      fecha_promocion: formatDate(randomDate(new Date('2020-01-01'), new Date())),
+      incremento_salarial: randomFloat(0, 15, 1),
+
+      // Sales & Business Metrics
+      ventas_ultimo_mes: ventas_mes,
+      ventas_trimestre: ventas_mes * 3 + randomInt(-5000, 5000),
+      ventas_año: ventas_mes * 12 + randomInt(-20000, 20000),
       comision: randomFloat(0, 15, 1),
+      meta_anual: meta_anual,
+      progreso_meta: progreso,
+      clientes_activos: randomInt(5, 50),
+      nuevos_clientes: randomInt(0, 10),
+      canal_ventas: randomElement(SALES_CHANNELS),
+      tipo_cliente: randomElement(CLIENT_TYPES),
+
+      // Skills & Education
+      nivel_educacion: randomElement(EDUCATION_LEVELS),
+      universidad: `Universidad de ${randomElement(CITIES)}`,
+      carrera: randomElement(['Ingeniería', 'Administración', 'Marketing', 'Informática', 'Economía', 'Derecho', 'Psicología', 'Diseño']),
+      idiomas: randomInt(1, 5),
+      idioma_principal: randomElement(LANGUAGES),
+      skill_principal: randomElement(SKILLS),
+      certificaciones: randomInt(0, 8),
+      certificacion_principal: randomElement(CERTIFICATIONS),
+      formacion_horas: randomInt(10, 120),
+
+      // Work Patterns & Preferences
+      horas_trabajadas: randomInt(20, 50),
+      modalidad_trabajo: randomElement(['Presencial', 'Remoto', 'Híbrido']),
+      flexibilidad_horaria: randomBoolean(),
+      viajes_trabajo: randomInt(0, 20),
+      preferencia_comunicacion: randomElement(COMMUNICATION_PREFERENCES),
+      vacaciones_dias: randomInt(15, 35),
+      dias_enfermedad: randomInt(0, 15),
+
+      // Projects & Activities
+      proyectos_activos: randomInt(0, 15),
+      proyecto_principal: randomElement(PROJECTS),
+      industria_principal: randomElement(INDUSTRIES),
+      fecha_ultima_actividad: formatDate(randomDate(new Date('2024-01-01'), new Date())),
+      reuniones_semana: randomInt(2, 20),
+      emails_dia: randomInt(10, 100),
+
+      // Personal Assets & Benefits
+      tiene_coche: randomBoolean(),
+      seguro_medico: randomBoolean(),
+      seguro_dental: randomBoolean(),
+      plan_pension: randomBoolean(),
+      stock_options: randomBoolean(),
+      gimnasio: randomBoolean(),
+      formacion_budget: randomInt(500, 5000),
+
+      // Status & Classifications
       estado: randomElement(STATUSES),
       prioridad: randomElement(PRIORITIES),
       categoria: randomElement(CATEGORIES),
-      region: randomElement(REGIONS),
-      fecha_ultima_actividad: formatDate(randomDate(new Date('2024-01-01'), new Date())),
-      horas_trabajadas: randomInt(20, 50),
-      tiene_coche: randomBoolean(),
-      estudios_superiores: randomBoolean(),
-      idiomas: randomInt(1, 5),
-      certificaciones: randomInt(0, 8),
-      proyectos_activos: randomInt(0, 15),
-      satisfaccion_cliente: randomInt(60, 100),
-      fecha_evaluacion: formatDate(randomDate(new Date('2023-01-01'), new Date())),
-      meta_anual: randomInt(50000, 500000),
-      progreso_meta: randomInt(0, 150),
-      vacaciones_dias: randomInt(15, 35),
-      formacion_horas: randomInt(10, 120),
-      es_manager: randomBoolean(),
-      fecha_promocion: formatDate(randomDate(new Date('2020-01-01'), new Date())),
-      notas: `Empleado ${index + 1} - ${randomElement(['Excelente rendimiento', 'Buen colaborador', 'En desarrollo', 'Potencial de crecimiento', 'Necesita apoyo', 'Líder natural', 'Muy motivado', 'Orientado a resultados'])}`
+      riesgo_rotacion: randomElement(['Bajo', 'Medio', 'Alto']),
+      potencial_liderazgo: randomElement(['Bajo', 'Medio', 'Alto', 'Muy Alto']),
+
+      // Financial Details
+      bonus_anual: randomInt(0, baseSalary * 0.3),
+      gastos_viaje: randomInt(0, 10000),
+      coste_total_empresa: baseSalary + randomInt(5000, 25000),
+
+      // Notes & Comments
+      notas: `Empleado ${index + 1} - ${randomElement(['Excelente rendimiento', 'Buen colaborador', 'En desarrollo', 'Potencial de crecimiento', 'Necesita apoyo', 'Líder natural', 'Muy motivado', 'Orientado a resultados', 'Innovador', 'Detallista', 'Proactivo', 'Colaborativo'])}`,
+      comentarios_manager: randomElement(['Supera expectativas consistentemente', 'Cumple objetivos regularmente', 'Necesita seguimiento adicional', 'Candidato para promoción', 'Requiere formación específica', 'Excelente mentor para juniors', 'Fuerte orientación al cliente', 'Habilidades técnicas sobresalientes'])
     };
   });
 
