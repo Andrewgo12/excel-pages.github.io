@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRight, Download, Columns, X, Plus, Search, Database } from 'lucide-react';
 import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig } from '@shared/excel-types';
 import { generateSampleData } from '@/utils/sampleDataGenerator';
+import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
 
 const OPERATORS = [
   { value: 'equals', label: 'Igual a' },
@@ -394,7 +395,7 @@ export default function Index() {
               Excel Data Explorer
             </h1>
             <p className="text-muted-foreground mt-1">
-              Herramienta interactiva para visualización y exploración de datos Excel
+              Herramienta interactiva para visualizaci��n y exploración de datos Excel
             </p>
           </div>
         </div>
