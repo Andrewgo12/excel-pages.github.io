@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type FontScale = "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+type FontScale = "font-scale-xs" | "font-scale-sm" | "font-scale-base" | "font-scale-lg" | "font-scale-xl" | "font-scale-2xl";
 
 interface FontScaleContextType {
   fontScale: FontScale;
