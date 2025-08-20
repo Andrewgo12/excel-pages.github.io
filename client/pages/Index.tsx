@@ -57,6 +57,11 @@ import {
   DatasetStats,
   ColumnStats,
 } from "@/utils/statisticalAnalysis";
+import {
+  loadCompleteExcelFile,
+  MultiSheetAnalysis,
+  optimizeSheetForDisplay
+} from "@/utils/multiSheetExcel";
 // Lazy loaded components for performance optimization
 const DataVisualization = lazy(() =>
   import("@/components/DataVisualization").then((m) => ({
