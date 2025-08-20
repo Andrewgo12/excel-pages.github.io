@@ -1,6 +1,4 @@
 import React, { useState, useCallback, useMemo, lazy, Suspense } from "react";
-import { useDropzone } from "react-dropzone";
-import * as XLSX from "xlsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
