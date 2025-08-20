@@ -1077,7 +1077,10 @@ export default function Index() {
                 </Button>
               </div>
               <div className="flex flex-wrap gap-responsive-sm">
-                <FontScaleControl />
+                <TableStylesControl
+                  columns={excelData.columns}
+                  selectedColumns={selectedColumns}
+                />
                 <Button
                   variant="outline"
                   size="sm"
