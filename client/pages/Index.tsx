@@ -16,6 +16,7 @@ import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig 
 import { generateSampleData } from '@/utils/sampleDataGenerator';
 import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
 import { calculateDatasetStats, calculateColumnStats, formatStatValue, generateColumnSummary, DatasetStats, ColumnStats } from '@/utils/statisticalAnalysis';
+import { DataVisualization } from '@/components/DataVisualization';
 
 const OPERATORS = [
   { value: 'equals', label: 'Igual a' },
