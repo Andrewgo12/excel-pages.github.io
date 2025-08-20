@@ -746,11 +746,11 @@ export default function Index() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
-                <FileSpreadsheet className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
+              <h1 className="text-lg lg:text-xl font-bold text-foreground flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-sm lg:text-base text-muted-foreground mt-1">
+              <p className="text-xs lg:text-sm text-muted-foreground mt-1">
                 {excelData.rows.length.toLocaleString()} filas •{" "}
                 {excelData.columns.length} columnas • Hoja:{" "}
                 {excelData.activeSheet}
