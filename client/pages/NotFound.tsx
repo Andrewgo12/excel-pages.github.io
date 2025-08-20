@@ -1,27 +1,42 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileSpreadsheet, Home } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname,
-    );
-  }, [location.pathname]);
-
+export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <Link to="/" className="inline-flex items-center gap-2 text-foreground hover:text-primary">
+            <FileSpreadsheet className="h-6 w-6 text-primary" />
+            <h1 className="text-2xl font-bold">Excel Data Explorer</h1>
+          </Link>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl mb-2">Página no encontrada</CardTitle>
+              <p className="text-muted-foreground">
+                La página que buscas no existe o ha sido movida.
+              </p>
+            </CardHeader>
+            <CardContent className="text-center">
+              <Button asChild>
+                <Link to="/">
+                  <Home className="h-4 w-4 mr-2" />
+                  Volver al inicio
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
-};
-
-export default NotFound;
+}
