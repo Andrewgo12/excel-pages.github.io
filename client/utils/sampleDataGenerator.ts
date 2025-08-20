@@ -1,25 +1,49 @@
 import { ExcelData, ExcelColumn } from '@shared/excel-types';
 
 // Sample data for different fields
-const FIRST_NAMES = ['Ana', 'Carlos', 'Mar��a', 'José', 'Lucía', 'Miguel', 'Carmen', 'Antonio', 'Isabel', 'Francisco', 'Laura', 'Manuel', 'Pilar', 'Rafael', 'Elena', 'David', 'Rosa', 'Pablo', 'Dolores', 'Javier', 'Concepción', 'Daniel', 'Teresa', 'Jesús', 'Sara'];
+const FIRST_NAMES = ['Ana', 'Carlos', 'María', 'José', 'Lucía', 'Miguel', 'Carmen', 'Antonio', 'Isabel', 'Francisco', 'Laura', 'Manuel', 'Pilar', 'Rafael', 'Elena', 'David', 'Rosa', 'Pablo', 'Dolores', 'Javier', 'Concepción', 'Daniel', 'Teresa', 'Jesús', 'Sara', 'Alejandro', 'Cristina', 'Fernando', 'Beatriz', 'Alberto', 'Mercedes', 'Roberto', 'Patricia', 'Andrés', 'Raquel', 'Gonzalo', 'Mónica', 'Adrián', 'Silvia', 'Rubén', 'Natalia', 'Sergio', 'Claudia', 'Ignacio', 'Verónica', 'Álvaro', 'Sandra', 'Óscar', 'Alicia', 'Iván'];
 
-const LAST_NAMES = ['García', 'Rodríguez', 'González', 'Fernández', 'López', 'Martínez', 'Sánchez', 'Pérez', 'Gómez', 'Martín', 'Jiménez', 'Ruiz', 'Hernández', 'Díaz', 'Moreno', 'Muñoz', 'Álvarez', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro', 'Torres', 'Domínguez', 'Vázquez', 'Ramos'];
+const LAST_NAMES = ['García', 'Rodríguez', 'González', 'Fernández', 'López', 'Martínez', 'Sánchez', 'Pérez', 'Gómez', 'Martín', 'Jiménez', 'Ruiz', 'Hernández', 'Díaz', 'Moreno', 'Muñoz', 'Álvarez', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro', 'Torres', 'Domínguez', 'Vázquez', 'Ramos', 'Gil', 'Serrano', 'Blanco', 'Suárez', 'Castro', 'Ortega', 'Delgado', 'Ortiz', 'Morales', 'Medina', 'Garrido', 'Cortés', 'Castillo', 'Vargas', 'Reyes', 'Cruz', 'Herrera', 'Espinoza', 'Lara', 'Peña', 'Flores', 'Rivera', 'Aguilar', 'Mendoza', 'Campos'];
 
-const CITIES = ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza', 'Málaga', 'Murcia', 'Palma', 'Las Palmas', 'Bilbao', 'Alicante', 'Córdoba', 'Valladolid', 'Vigo', 'Gijón', 'Hospitalet', 'Vitoria', 'Coruña', 'Granada', 'Elche', 'Oviedo', 'Santa Cruz', 'Badalona', 'Cartagena', 'Terrassa'];
+const CITIES = ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza', 'Málaga', 'Murcia', 'Palma', 'Las Palmas', 'Bilbao', 'Alicante', 'Córdoba', 'Valladolid', 'Vigo', 'Gijón', 'Hospitalet', 'Vitoria', 'Coruña', 'Granada', 'Elche', 'Oviedo', 'Santa Cruz', 'Badalona', 'Cartagena', 'Terrassa', 'Jerez', 'Sabadell', 'Móstoles', 'Alcalá de Henares', 'Pamplona', 'Fuenlabrada', 'Almería', 'Leganés', 'Santander', 'Burgos', 'Castellón', 'Alcorcón', 'Albacete', 'Getafe', 'Salamanca'];
 
-const DEPARTMENTS = ['Ventas', 'Marketing', 'IT', 'Recursos Humanos', 'Finanzas', 'Operaciones', 'Legal', 'Investigación', 'Calidad', 'Logística'];
+const DEPARTMENTS = ['Ventas', 'Marketing', 'IT', 'Recursos Humanos', 'Finanzas', 'Operaciones', 'Legal', 'Investigación', 'Calidad', 'Logística', 'Atención al Cliente', 'Producto', 'Ingeniería', 'Diseño', 'Compras', 'Comunicación', 'Estrategia', 'Análisis', 'Seguridad', 'Administración'];
 
-const PRODUCTS = ['Laptop', 'Smartphone', 'Tablet', 'Monitor', 'Teclado', 'Mouse', 'Auriculares', 'Webcam', 'Impresora', 'Disco Duro', 'Router', 'Switch', 'Cable HDMI', 'Adaptador', 'Cargador'];
+const PRODUCTS = ['Laptop', 'Smartphone', 'Tablet', 'Monitor', 'Teclado', 'Mouse', 'Auriculares', 'Webcam', 'Impresora', 'Disco Duro', 'Router', 'Switch', 'Cable HDMI', 'Adaptador', 'Cargador', 'Proyector', 'Altavoces', 'Micrófono', 'Cámara', 'Servidor', 'NAS', 'UPS', 'Rack', 'Firewall', 'Access Point', 'Scanner', 'Plotter', 'Workstation', 'Smartphone Pro', 'Tablet Pro'];
 
-const STATUSES = ['Activo', 'Inactivo', 'Pendiente', 'Completado', 'En Progreso', 'Cancelado', 'Suspendido'];
+const STATUSES = ['Activo', 'Inactivo', 'Pendiente', 'Completado', 'En Progreso', 'Cancelado', 'Suspendido', 'Aprobado', 'Rechazado', 'En Revisión', 'Escalado', 'Cerrado', 'Reabierto', 'Bloqueado'];
 
-const PRIORITIES = ['Baja', 'Media', 'Alta', 'Crítica', 'Urgente'];
+const PRIORITIES = ['Baja', 'Media', 'Alta', 'Crítica', 'Urgente', 'Muy Baja', 'Muy Alta'];
 
-const CATEGORIES = ['Tecnología', 'Salud', 'Educación', 'Finanzas', 'Comercio', 'Manufactura', 'Servicios', 'Agricultura', 'Construcción', 'Transporte'];
+const CATEGORIES = ['Tecnología', 'Salud', 'Educación', 'Finanzas', 'Comercio', 'Manufactura', 'Servicios', 'Agricultura', 'Construcción', 'Transporte', 'Energía', 'Telecomunicaciones', 'Alimentación', 'Textil', 'Química', 'Farmacéutica', 'Automotriz', 'Aeroespacial', 'Marítimo', 'Inmobiliario'];
 
-const REGIONS = ['Norte', 'Sur', 'Este', 'Oeste', 'Centro', 'Noreste', 'Noroeste', 'Sureste', 'Suroeste'];
+const REGIONS = ['Norte', 'Sur', 'Este', 'Oeste', 'Centro', 'Noreste', 'Noroeste', 'Sureste', 'Suroeste', 'Mediterráneo', 'Atlántico', 'Cantábrico', 'Levante', 'Andalucía Oriental', 'Andalucía Occidental'];
 
-const COUNTRIES = ['España', 'Francia', 'Italia', 'Alemania', 'Portugal', 'Reino Unido', 'Países Bajos', 'Bélgica', 'Suiza', 'Austria'];
+const COUNTRIES = ['España', 'Francia', 'Italia', 'Alemania', 'Portugal', 'Reino Unido', 'Países Bajos', 'Bélgica', 'Suiza', 'Austria', 'Polonia', 'República Checa', 'Hungría', 'Rumania', 'Bulgaria', 'Grecia', 'Croacia', 'Eslovenia', 'Eslovaquia', 'Estonia', 'Letonia', 'Lituania', 'Finlandia', 'Suecia', 'Dinamarca', 'Noruega', 'Irlanda', 'Luxemburgo', 'Malta', 'Chipre'];
+
+const SKILLS = ['JavaScript', 'Python', 'Java', 'C#', 'React', 'Vue.js', 'Angular', 'Node.js', 'PHP', 'Ruby', 'Go', 'Rust', 'TypeScript', 'SQL', 'MongoDB', 'PostgreSQL', 'MySQL', 'AWS', 'Azure', 'Docker', 'Kubernetes', 'Git', 'Agile', 'Scrum', 'Project Management', 'Data Analysis', 'Machine Learning', 'UI/UX Design', 'SEO', 'Digital Marketing'];
+
+const CERTIFICATIONS = ['PMP', 'AWS Certified', 'Microsoft Certified', 'Google Cloud', 'Scrum Master', 'ITIL', 'Six Sigma', 'ISO 9001', 'CISSP', 'CISA', 'CompTIA', 'Oracle Certified', 'Salesforce Certified', 'HubSpot Certified', 'Google Analytics'];
+
+const INDUSTRIES = ['Retail', 'Banca', 'Seguros', 'Consultoría', 'Hospitality', 'E-commerce', 'SaaS', 'Gaming', 'Medios', 'Publicidad', 'Non-profit', 'Gobierno', 'Startup', 'Enterprise', 'SMB'];
+
+const PROJECTS = ['CRM Implementation', 'ERP Migration', 'Website Redesign', 'Mobile App', 'Data Migration', 'Cloud Migration', 'API Development', 'Database Optimization', 'Security Audit', 'Performance Tuning', 'Integration Project', 'Automation', 'Analytics Dashboard', 'Machine Learning Model', 'DevOps Pipeline'];
+
+const LANGUAGES = ['Español', 'Inglés', 'Francés', 'Alemán', 'Italiano', 'Portugués', 'Chino', 'Japonés', 'Árabe', 'Ruso', 'Hindi', 'Holandés', 'Sueco', 'Noruego', 'Danés', 'Finlandés', 'Polaco', 'Checo', 'Húngaro', 'Griego'];
+
+const EDUCATION_LEVELS = ['Bachillerato', 'FP Medio', 'FP Superior', 'Grado Universitario', 'Máster', 'MBA', 'Doctorado', 'Postgrado', 'Certificación Profesional', 'Bootcamp'];
+
+const OFFICE_LOCATIONS = ['Sede Central', 'Oficina Norte', 'Oficina Sur', 'Sucursal Este', 'Sucursal Oeste', 'Centro Comercial', 'Coworking Space', 'Home Office', 'Oficina Satélite', 'Campus Universitario'];
+
+const CONTRACT_TYPES = ['Indefinido', 'Temporal', 'Freelance', 'Prácticas', 'Becario', 'Consultor', 'Part-time', 'Full-time', 'Por Proyecto', 'Estacional'];
+
+const PERFORMANCE_RATINGS = ['Excepcional', 'Supera Expectativas', 'Cumple Expectativas', 'Necesita Mejora', 'Insatisfactorio'];
+
+const CLIENT_TYPES = ['Empresa', 'Particular', 'Gobierno', 'ONG', 'Startup', 'PYME', 'Multinacional', 'Universidad', 'Hospital', 'Retail'];
+
+const SALES_CHANNELS = ['Online', 'Tienda Física', 'Teléfono', 'Email', 'Partner', 'Distribuidor', 'Marketplace', 'Redes Sociales', 'Publicidad', 'Referido'];
+
+const COMMUNICATION_PREFERENCES = ['Email', 'Teléfono', 'WhatsApp', 'Slack', 'Teams', 'Presencial', 'Videoconferencia', 'Chat', 'SMS', 'Postal'];
 
 // Helper functions
 const randomInt = (min: number, max: number): number => 
