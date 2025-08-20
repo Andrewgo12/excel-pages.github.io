@@ -290,6 +290,12 @@ export default function Index() {
     return filtered;
   }, [excelData, filterGroups, sortColumn, sortDirection, globalSearch, columnFilters]);
 
+  // Calculate statistics for current filtered data
+  const currentStats = useMemo(() => {
+    if (!excelData) return null;
+    return calculateDatasetStats(filteredAndSortedData, excelData.columns);
+  }, [excelData, filteredAndSortedData]);
+
   const paginatedData = useMemo(() => {
     const startIndex = (pagination.page - 1) * pagination.pageSize;
     return filteredAndSortedData.slice(startIndex, startIndex + pagination.pageSize);
