@@ -946,6 +946,7 @@ export default function Index() {
                   onSecurityOpen={() => togglePanel("dataValidation")}
                   onCloudSyncOpen={() => togglePanel("enhancedExport")}
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
+                  onAdvancedAnalyticsOpen={() => togglePanel("advancedAnalytics")}
                 />
                 <Button
                   variant="outline"
