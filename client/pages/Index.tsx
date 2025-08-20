@@ -705,7 +705,8 @@ export default function Index() {
               Herramienta interactiva para visualización y exploración de datos
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Desarrollado por <span className="font-medium">Kevin Andrés González Dinas</span>
+              Desarrollado por{" "}
+              <span className="font-medium">Kevin Andrés González Dinas</span>
             </p>
           </div>
         </div>
@@ -747,7 +748,8 @@ export default function Index() {
                 Excel Data Explorer
               </h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Desarrollado por <span className="font-medium">Kevin Andrés González Dinas</span>
+                Desarrollado por{" "}
+                <span className="font-medium">Kevin Andrés González Dinas</span>
               </p>
               <div className="flex flex-col gap-2 mt-1">
                 <div className="flex items-center gap-responsive-sm">

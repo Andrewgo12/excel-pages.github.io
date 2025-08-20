@@ -11,30 +11,35 @@ A powerful, web-based Excel data processing and visualization tool built with Re
 ## ✨ Features
 
 ### 📊 Data Processing
+
 - **Multi-format Support**: Excel (.xlsx, .xls), CSV, JSON, TSV, and text files
 - **Multi-sheet Analysis**: Process and analyze multiple Excel sheets simultaneously
 - **Smart Data Detection**: Automatic data type detection and validation
 - **Large File Handling**: Optimized for processing large datasets
 
 ### 🔍 Advanced Filtering & Search
+
 - **Dynamic Filtering**: Real-time data filtering with multiple conditions
 - **Column-based Filters**: Individual column filtering with various operators
 - **Search Functionality**: Global and column-specific search capabilities
 - **Filter Groups**: Complex filter combinations with AND/OR logic
 
 ### 📈 Statistical Analysis
+
 - **Dataset Statistics**: Comprehensive statistical overview of your data
 - **Column Analysis**: Individual column statistics and summaries
 - **Data Visualization**: Interactive charts and graphs
 - **Trend Analysis**: Identify patterns and trends in your data
 
 ### 🛠️ Data Manipulation
+
 - **Bulk Operations**: Mass update, delete, or duplicate records
 - **Column Management**: Show/hide, reorder, and customize columns
 - **Data Validation**: Built-in data quality checks and warnings
 - **Undo/Redo**: Full operation history with undo capabilities
 
 ### 📤 Export Options
+
 - **Multiple Formats**: Export to Excel, CSV, JSON, XML, and PDF
 - **Custom Exports**: Export filtered data or specific selections
 - **Formatted Exports**: Maintain styling and formatting in exports
@@ -43,23 +48,27 @@ A powerful, web-based Excel data processing and visualization tool built with Re
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - pnpm (recommended) or npm
 
 ### Local Development
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Andrewgo12/excel-pages.github.io.git
    cd excel-pages.github.io
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Start development server**
+
    ```bash
    pnpm dev
    ```
@@ -118,6 +127,7 @@ This project is automatically deployed to GitHub Pages using GitHub Actions. Eve
 ### Custom Domain (Optional)
 
 To use a custom domain:
+
 1. Add a `CNAME` file to the `public/` directory with your domain
 2. Configure DNS settings with your domain provider
 3. Enable HTTPS in GitHub Pages settings
