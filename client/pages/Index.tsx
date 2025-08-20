@@ -848,34 +848,58 @@ export default function Index() {
                 <FileSpreadsheet className="h-responsive-input w-responsive-input text-primary" />
                 Excel Data Explorer
               </h1>
-              <div className="flex items-center gap-responsive-sm mt-1">
-                <p className="text-responsive-sm text-muted-foreground">
-                  {excelData.rows.length.toLocaleString()} filas •{" "}
-                  {excelData.columns.length} columnas
-                </p>
-                {multiSheetAnalysis && (
-                  <>
-                    <Separator orientation="vertical" className="h-4" />
-                    <div className="flex items-center gap-responsive-sm">
-                      <SheetNavigator
-                        excelData={excelData}
-                        analysis={multiSheetAnalysis}
-                        currentSheet={excelData.activeSheet}
-                        onSheetChange={switchSheet}
-                        onClose={() => {}}
-                        compact={true}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => togglePanel("sheetNavigator")}
-                        className="button-responsive text-responsive-xs gap-1"
+              <div className="flex flex-col gap-2 mt-1">
+                <div className="flex items-center gap-responsive-sm">
+                  <p className="text-responsive-sm text-muted-foreground">
+                    {excelData.rows.length.toLocaleString()} filas •{" "}
+                    {excelData.columns.length} columnas
+                  </p>
+                  {multiSheetAnalysis && (
+                    <>
+                      <Separator orientation="vertical" className="h-4" />
+                      <Badge
+                        variant="outline"
+                        className={`text-responsive-xs ${
+                          multiSheetAnalysis.estimatedComplexity === 'simple' ? 'border-green-500 text-green-700' :
+                          multiSheetAnalysis.estimatedComplexity === 'moderate' ? 'border-blue-500 text-blue-700' :
+                          multiSheetAnalysis.estimatedComplexity === 'complex' ? 'border-orange-500 text-orange-700' :
+                          'border-red-500 text-red-700'
+                        }`}
                       >
-                        <Grid className="h-responsive-input w-responsive-input" />
-                        Explorar
-                      </Button>
+                        {multiSheetAnalysis.estimatedComplexity.replace('_', ' ')}
+                      </Badge>
+                      {multiSheetAnalysis.relationships.length > 0 && (
+                        <Badge variant="outline" className="text-responsive-xs border-blue-500 text-blue-700">
+                          {multiSheetAnalysis.relationships.length} relaciones
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {multiSheetAnalysis && (
+                  <div className="flex items-center gap-responsive-sm">
+                    <SheetNavigator
+                      excelData={excelData}
+                      analysis={multiSheetAnalysis}
+                      currentSheet={excelData.activeSheet}
+                      onSheetChange={switchSheet}
+                      onClose={() => {}}
+                      compact={true}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => togglePanel("sheetNavigator")}
+                      className="button-responsive text-responsive-xs gap-1"
+                    >
+                      <Grid className="h-responsive-input w-responsive-input" />
+                      Explorar Hojas
+                    </Button>
+                    <div className="text-responsive-xs text-muted-foreground">
+                      Procesado en {multiSheetAnalysis.processingTime}ms
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
 
