@@ -893,6 +893,15 @@ export default function Index() {
                   onExportOpen={() => togglePanel('enhancedExport')}
                   onStatsOpen={() => togglePanel('stats')}
                   onVisualizationOpen={() => togglePanel('visualization')}
+                  onDataFormOpen={() => togglePanel('dataForm')}
+                  onRealTimeAnalyticsOpen={() => togglePanel('realTimeAnalytics')}
+                  onAdvancedSearchOpen={() => togglePanel('advancedSearch')}
+                  onDataCleaningOpen={() => togglePanel('bulkOperations')}
+                  onPerformanceOpen={() => togglePanel('stats')}
+                  onCollaborationOpen={() => togglePanel('configuration')}
+                  onSecurityOpen={() => togglePanel('dataValidation')}
+                  onCloudSyncOpen={() => togglePanel('enhancedExport')}
+                  onAIInsightsOpen={() => togglePanel('realTimeAnalytics')}
                 />
                 <Button
                   variant="outline"
@@ -1313,7 +1322,7 @@ export default function Index() {
                                       <span className="text-muted-foreground">
                                         Rango:
                                       </span>{" "}
-                                      {stat.dateRange} d��as
+                                      {stat.dateRange} días
                                     </div>
                                   </div>
                                 )}
