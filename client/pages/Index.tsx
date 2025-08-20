@@ -121,6 +121,8 @@ export default function Index() {
   const isEnhancedExportOpen = activePanel === 'enhancedExport';
   const isDataValidationOpen = activePanel === 'dataValidation';
   const isAdvancedSearchOpen = activePanel === 'advancedSearch';
+  const isDataFormOpen = activePanel === 'dataForm';
+  const isRealTimeAnalyticsOpen = activePanel === 'realTimeAnalytics';
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
@@ -1311,7 +1313,7 @@ export default function Index() {
                                       <span className="text-muted-foreground">
                                         Rango:
                                       </span>{" "}
-                                      {stat.dateRange} días
+                                      {stat.dateRange} d��as
                                     </div>
                                   </div>
                                 )}
