@@ -18,11 +18,23 @@ const OPERATORS = [
   { value: 'equals', label: 'Igual a' },
   { value: 'not_equals', label: 'No igual a' },
   { value: 'contains', label: 'Contiene' },
+  { value: 'not_contains', label: 'No contiene' },
   { value: 'starts_with', label: 'Comienza con' },
   { value: 'ends_with', label: 'Termina con' },
   { value: 'greater', label: 'Mayor que' },
+  { value: 'greater_equal', label: 'Mayor o igual que' },
   { value: 'less', label: 'Menor que' },
+  { value: 'less_equal', label: 'Menor o igual que' },
   { value: 'between', label: 'Entre' },
+  { value: 'is_empty', label: 'Está vacío' },
+  { value: 'is_not_empty', label: 'No está vacío' },
+  { value: 'date_today', label: 'Es hoy' },
+  { value: 'date_yesterday', label: 'Es ayer' },
+  { value: 'date_this_week', label: 'Esta semana' },
+  { value: 'date_this_month', label: 'Este mes' },
+  { value: 'date_this_year', label: 'Este año' },
+  { value: 'date_last_7_days', label: 'Últimos 7 días' },
+  { value: 'date_last_30_days', label: 'Últimos 30 días' },
 ];
 
 export default function Index() {
