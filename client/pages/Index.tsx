@@ -1898,20 +1898,19 @@ export default function Index() {
                                 return (
                                   <TableHead
                                     key={columnKey}
-                                    className="p-0"
-                                    style={{ minWidth: "200px" }}
+                                    className="p-0 min-w-[12em]"
                                   >
-                                    <div className="p-3">
+                                    <div className="p-responsive-sm">
                                       <div
-                                        className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                        className="flex items-center gap-responsive-sm cursor-pointer hover:text-primary"
                                         onClick={() => handleSort(columnKey)}
                                       >
-                                        <span className="font-medium">
+                                        <span className="font-medium text-responsive-sm">
                                           {column?.label}
                                         </span>
                                         <Badge
                                           variant="secondary"
-                                          className="text-xs"
+                                          className="text-responsive-xs"
                                         >
                                           {column?.type}
                                         </Badge>
