@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { useDropzone } from "react-dropzone";
 import * as XLSX from "xlsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,12 +57,49 @@ import {
   DatasetStats,
   ColumnStats,
 } from "@/utils/statisticalAnalysis";
-import { DataVisualization } from "@/components/DataVisualization";
-import { DataAggregation } from "@/components/DataAggregation";
-import { ConfigurationManager } from "@/components/ConfigurationManager";
-import { BulkOperations } from "@/components/BulkOperations";
-import { EnhancedExport } from "@/components/EnhancedExport";
-import { DataValidation } from "@/components/DataValidation";
+// Lazy loaded components for performance optimization
+const DataVisualization = lazy(() =>
+  import("@/components/DataVisualization").then((m) => ({
+    default: m.DataVisualization,
+  })),
+);
+const DataAggregation = lazy(() =>
+  import("@/components/DataAggregation").then((m) => ({
+    default: m.DataAggregation,
+  })),
+);
+const ConfigurationManager = lazy(() =>
+  import("@/components/ConfigurationManager").then((m) => ({
+    default: m.ConfigurationManager,
+  })),
+);
+const BulkOperations = lazy(() =>
+  import("@/components/BulkOperations").then((m) => ({
+    default: m.BulkOperations,
+  })),
+);
+const EnhancedExport = lazy(() =>
+  import("@/components/EnhancedExport").then((m) => ({
+    default: m.EnhancedExport,
+  })),
+);
+const DataValidation = lazy(() =>
+  import("@/components/DataValidation").then((m) => ({
+    default: m.DataValidation,
+  })),
+);
+const DynamicDataForm = lazy(() =>
+  import("@/components/DynamicDataForm").then((m) => ({
+    default: m.DynamicDataForm,
+  })),
+);
+const RealTimeAnalytics = lazy(() =>
+  import("@/components/RealTimeAnalytics").then((m) => ({
+    default: m.RealTimeAnalytics,
+  })),
+);
+
+import { ActionsMenu } from "@/components/ActionsMenu";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
@@ -98,20 +135,31 @@ export default function Index() {
   });
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [isStatsOpen, setIsStatsOpen] = useState(false);
-  const [isVisualizationOpen, setIsVisualizationOpen] = useState(false);
-  const [isAggregationOpen, setIsAggregationOpen] = useState(false);
-  const [isConfigurationOpen, setIsConfigurationOpen] = useState(false);
-  const [isBulkOperationsOpen, setIsBulkOperationsOpen] = useState(false);
-  const [isEnhancedExportOpen, setIsEnhancedExportOpen] = useState(false);
-  const [isDataValidationOpen, setIsDataValidationOpen] = useState(false);
+  // Panel management - only one panel open at a time
+  const [activePanel, setActivePanel] = useState<string | null>(null);
   const [globalSearch, setGlobalSearch] = useState("");
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
     {},
   );
-  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
+
+  // Derived states for panel visibility
+  const isColumnSelectorOpen = activePanel === "columnSelector";
+  const isFilterOpen = activePanel === "filter";
+  const isStatsOpen = activePanel === "stats";
+  const isVisualizationOpen = activePanel === "visualization";
+  const isAggregationOpen = activePanel === "aggregation";
+  const isConfigurationOpen = activePanel === "configuration";
+  const isBulkOperationsOpen = activePanel === "bulkOperations";
+  const isEnhancedExportOpen = activePanel === "enhancedExport";
+  const isDataValidationOpen = activePanel === "dataValidation";
+  const isAdvancedSearchOpen = activePanel === "advancedSearch";
+  const isDataFormOpen = activePanel === "dataForm";
+  const isRealTimeAnalyticsOpen = activePanel === "realTimeAnalytics";
+
+  // Helper function to toggle panels
+  const togglePanel = (panelName: string) => {
+    setActivePanel(activePanel === panelName ? null : panelName);
+  };
   const [searchMode, setSearchMode] = useState<"normal" | "regex" | "pattern">(
     "normal",
   );
@@ -731,14 +779,14 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-3 py-3">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
-                <FileSpreadsheet className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
+              <h1 className="text-lg lg:text-xl font-bold text-foreground flex items-center gap-2">
+                <FileSpreadsheet className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-sm lg:text-base text-muted-foreground mt-1">
+              <p className="text-xs lg:text-sm text-muted-foreground mt-1">
                 {excelData.rows.length.toLocaleString()} filas •{" "}
                 {excelData.columns.length} columnas • Hoja:{" "}
                 {excelData.activeSheet}
@@ -774,7 +822,7 @@ export default function Index() {
             <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
               <div className="flex-1 max-w-md">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-muted-foreground" />
                   <Input
                     placeholder={
                       searchMode === "regex"
@@ -785,7 +833,7 @@ export default function Index() {
                     }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className={`pl-10 pr-8 ${regexError ? "border-destructive" : ""}`}
+                    className={`h-8 pl-8 pr-6 text-sm ${regexError ? "border-destructive" : ""}`}
                   />
                   {globalSearch && (
                     <Button
@@ -797,36 +845,6 @@ export default function Index() {
                       <X className="h-3 w-3" />
                     </Button>
                   )}
-                </div>
-
-                <div className="flex gap-2 mt-2">
-                  <Select
-                    value={searchMode}
-                    onValueChange={(value: "normal" | "regex" | "pattern") =>
-                      setSearchMode(value)
-                    }
-                  >
-                    <SelectTrigger className="w-32 h-7 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="pattern">Patrones</SelectItem>
-                      <SelectItem value="regex">Regex</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setIsAdvancedSearchOpen(!isAdvancedSearchOpen)
-                    }
-                    className="h-7 text-xs"
-                  >
-                    <Settings className="h-3 w-3 mr-1" />
-                    Avanzado
-                  </Button>
                 </div>
 
                 {regexError && (
@@ -849,11 +867,38 @@ export default function Index() {
                   </Button>
                 )}
               </div>
+              <div className="flex gap-2 mt-2">
+                <Select
+                  value={searchMode}
+                  onValueChange={(value: "normal" | "regex" | "pattern") =>
+                    setSearchMode(value)
+                  }
+                >
+                  <SelectTrigger className="w-32 h-7 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="pattern">Patrones</SelectItem>
+                    <SelectItem value="regex">Regex</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => togglePanel("advancedSearch")}
+                  className="h-7 text-xs"
+                >
+                  <Settings className="h-3 w-3 mr-1" />
+                  Avanzado
+                </Button>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}
+                  onClick={() => togglePanel("columnSelector")}
                 >
                   <Columns className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Columnas</span> (
@@ -862,7 +907,7 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  onClick={() => togglePanel("filter")}
                 >
                   <Filter className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
@@ -872,69 +917,33 @@ export default function Index() {
                   )}
                   )
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsStatsOpen(!isStatsOpen)}
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Estadísticas</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsVisualizationOpen(!isVisualizationOpen)}
-                >
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Gráficos</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsAggregationOpen(!isAggregationOpen)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Agregaciones</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Operaciones</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsDataValidationOpen(!isDataValidationOpen)}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Validación</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsConfigurationOpen(!isConfigurationOpen)}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Configuración</span>
-                </Button>
+                <ActionsMenu
+                  onValidationOpen={() => togglePanel("dataValidation")}
+                  onConfigurationOpen={() => togglePanel("configuration")}
+                  onAggregationOpen={() => togglePanel("aggregation")}
+                  onBulkOperationsOpen={() => togglePanel("bulkOperations")}
+                  onExportOpen={() => togglePanel("enhancedExport")}
+                  onStatsOpen={() => togglePanel("stats")}
+                  onVisualizationOpen={() => togglePanel("visualization")}
+                  onDataFormOpen={() => togglePanel("dataForm")}
+                  onRealTimeAnalyticsOpen={() =>
+                    togglePanel("realTimeAnalytics")
+                  }
+                  onAdvancedSearchOpen={() => togglePanel("advancedSearch")}
+                  onDataCleaningOpen={() => togglePanel("bulkOperations")}
+                  onPerformanceOpen={() => togglePanel("stats")}
+                  onCollaborationOpen={() => togglePanel("configuration")}
+                  onSecurityOpen={() => togglePanel("dataValidation")}
+                  onCloudSyncOpen={() => togglePanel("enhancedExport")}
+                  onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
+                />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={exportFilteredData}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar</span>
+                  <span className="hidden sm:inline">Exportar Rápido</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -963,7 +972,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsColumnSelectorOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1039,7 +1048,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsFilterOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1222,7 +1231,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsStatsOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1395,7 +1404,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsAdvancedSearchOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1544,19 +1553,27 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsVisualizationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataVisualization
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    stats={currentStats.columnStats}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando visualización...
+                      </div>
+                    }
+                  >
+                    <DataVisualization
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      stats={currentStats.columnStats}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1570,18 +1587,26 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsAggregationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataAggregation
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando agregaciones...
+                      </div>
+                    }
+                  >
+                    <DataAggregation
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1595,19 +1620,27 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsBulkOperationsOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <BulkOperations
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                    onDataChange={handleDataChange}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando operaciones...
+                      </div>
+                    }
+                  >
+                    <BulkOperations
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                      onDataChange={handleDataChange}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1621,19 +1654,27 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsEnhancedExportOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <EnhancedExport
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                    filename={`${excelData.activeSheet}-export`}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando exportación...
+                      </div>
+                    }
+                  >
+                    <EnhancedExport
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                      filename={`${excelData.activeSheet}-export`}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1647,18 +1688,26 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsDataValidationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataValidation
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando validación...
+                      </div>
+                    }
+                  >
+                    <DataValidation
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1672,18 +1721,108 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsConfigurationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ConfigurationManager
-                    currentConfig={getCurrentConfiguration()}
-                    onLoadConfiguration={loadConfiguration}
-                    onPreferencesChange={handlePreferencesChange}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando configuración...
+                      </div>
+                    }
+                  >
+                    <ConfigurationManager
+                      currentConfig={getCurrentConfiguration()}
+                      onLoadConfiguration={loadConfiguration}
+                      onPreferencesChange={handlePreferencesChange}
+                    />
+                  </Suspense>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Dynamic Data Form Panel */}
+            {isDataFormOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm lg:text-base flex items-center justify-between">
+                    Formulario Dinámico
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando formulario...
+                      </div>
+                    }
+                  >
+                    <DynamicDataForm
+                      columns={excelData.columns}
+                      onAddData={
+                        handleDataChange
+                          ? (newRow) => {
+                              const updatedData = [
+                                ...filteredAndSortedData,
+                                newRow,
+                              ];
+                              handleDataChange(updatedData);
+                            }
+                          : () => {}
+                      }
+                      onBulkAdd={(newRows) => {
+                        const updatedData = [
+                          ...filteredAndSortedData,
+                          ...newRows,
+                        ];
+                        handleDataChange && handleDataChange(updatedData);
+                      }}
+                    />
+                  </Suspense>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Real-time Analytics Panel */}
+            {isRealTimeAnalyticsOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm lg:text-base flex items-center justify-between">
+                    Análisis en Tiempo Real
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando análisis...
+                      </div>
+                    }
+                  >
+                    <RealTimeAnalytics
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1743,8 +1882,8 @@ export default function Index() {
                   </div>
                 ) : (
                   <>
-                    <ScrollArea className="w-full whitespace-nowrap">
-                      <div className="min-w-full">
+                    <div className="relative">
+                      <div className="w-full overflow-x-auto overflow-y-visible">
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -1753,7 +1892,11 @@ export default function Index() {
                                   (c) => c.key === columnKey,
                                 );
                                 return (
-                                  <TableHead key={columnKey} className="p-0">
+                                  <TableHead
+                                    key={columnKey}
+                                    className="p-0"
+                                    style={{ minWidth: "200px" }}
+                                  >
                                     <div className="p-3">
                                       <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-primary"
@@ -1811,6 +1954,7 @@ export default function Index() {
                                     <TableCell
                                       key={columnKey}
                                       className="max-w-48"
+                                      style={{ minWidth: "200px" }}
                                     >
                                       <div className="truncate">
                                         {column?.type === "boolean" ? (
@@ -1843,7 +1987,7 @@ export default function Index() {
                           </TableBody>
                         </Table>
                       </div>
-                    </ScrollArea>
+                    </div>
 
                     {/* Pagination */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4">
