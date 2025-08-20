@@ -763,11 +763,21 @@ export default function Index() {
                       isDragActive
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-primary/50"
-                    }`}
+                    } ${isFileLoading ? "pointer-events-none opacity-50" : ""}`}
                 >
-                  <input {...getInputProps()} />
+                  <input {...getInputProps()} disabled={isFileLoading} />
                   <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  {isDragActive ? (
+                  {isFileLoading ? (
+                    <div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-primary font-medium mb-2">
+                        Procesando archivo Excel...
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Analizando hojas y detectando relaciones
+                      </p>
+                    </div>
+                  ) : isDragActive ? (
                     <p className="text-primary font-medium">
                       Suelta el archivo aquí...
                     </p>
@@ -777,11 +787,20 @@ export default function Index() {
                         Haz clic para seleccionar o arrastra el archivo
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Soporta archivos .xlsx y .xls
+                        Soporta archivos .xlsx y .xls (incluye archivos complejos con múltiples hojas)
                       </p>
                     </div>
                   )}
                 </div>
+
+                {fileError && (
+                  <Alert variant="destructive" className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      {fileError}
+                    </AlertDescription>
+                  </Alert>
+                )}
 
                 <div className="mt-6 text-center">
                   <div className="text-sm text-muted-foreground mb-3">
