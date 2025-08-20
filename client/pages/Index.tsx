@@ -699,7 +699,7 @@ export default function Index() {
               Excel Data Explorer
             </h1>
             <p className="text-muted-foreground mt-1">
-              Herramienta interactiva para visualización y exploración de datos
+              Herramienta interactiva para visualizaci��n y exploración de datos
               Excel
             </p>
           </div>
@@ -966,7 +966,7 @@ export default function Index() {
       <div className="container mx-auto px-responsive py-responsive-lg">
         <div className="flex flex-col lg:flex-row gap-responsive-lg">
           {/* Sidebar */}
-          <div className="w-full lg:w-80 space-y-4">
+          <div className="w-full lg:w-80 space-y-responsive">
             {/* Column Selector */}
             {isColumnSelectorOpen && (
               <Card>
