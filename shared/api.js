@@ -6,7 +6,6 @@
 
 /**
  * Example response type for /api/demo
+ * @typedef {Object} DemoResponse
+ * @property {string} message
  */
-export interface DemoResponse {
-  message: string;
-}

@@ -1,5 +1,3 @@
-import { ExcelData, ExcelColumn } from "@shared/excel-types";
-
 // Sample data for different fields
 const FIRST_NAMES = [
   "Ana",
@@ -504,44 +502,44 @@ const COMMUNICATION_PREFERENCES = [
 ];
 
 // Helper functions
-const randomInt = (min: number, max: number): number =>
+const randomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-const randomFloat = (min: number, max: number, decimals: number = 2): number =>
+const randomFloat = (min, max, decimals = 2) =>
   parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
 
-const randomElement = <T>(array: T[]): T =>
+const randomElement = (array) =>
   array[Math.floor(Math.random() * array.length)];
 
-const randomDate = (start: Date, end: Date): Date => {
+const randomDate = (start, end) => {
   const startTime = start.getTime();
   const endTime = end.getTime();
   const randomTime = startTime + Math.random() * (endTime - startTime);
   return new Date(randomTime);
 };
 
-const randomBoolean = (): boolean => Math.random() > 0.5;
+const randomBoolean = () => Math.random() > 0.5;
 
-const generateEmail = (firstName: string, lastName: string): string =>
+const generateEmail = (firstName, lastName) =>
   `${firstName.toLowerCase()}.${lastName.toLowerCase()}@empresa.com`;
 
-const generatePhone = (): string => {
+const generatePhone = () => {
   const prefix = randomElement(["6", "7", "9"]);
   const number = Array.from({ length: 8 }, () => randomInt(0, 9)).join("");
   return `${prefix}${number}`;
 };
 
-const formatDate = (date: Date): string => {
+const formatDate = (date) => {
   return date.toLocaleDateString("es-ES");
 };
 
-const formatDateTime = (date: Date): string => {
+const formatDateTime = (date) => {
   return date.toLocaleString("es-ES");
 };
 
-export const generateSampleData = (): ExcelData => {
+export const generateSampleData = () => {
   // Define all 80 columns with comprehensive business data types
-  const columns: ExcelColumn[] = [
+  const columns = [
     // Personal Information
     { key: "id", label: "ID", type: "number" },
     { key: "nombre", label: "Nombre", type: "text" },

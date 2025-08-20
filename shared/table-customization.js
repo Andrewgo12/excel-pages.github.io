@@ -1,149 +1,5 @@
-// Table customization types and interfaces
-export interface FontSettings {
-  family: string;
-  size: number;
-  weight: "normal" | "bold" | "lighter" | "bolder" | number;
-  style: "normal" | "italic" | "oblique";
-  lineHeight: number;
-}
-
-export interface TextAlignment {
-  horizontal: "left" | "center" | "right" | "justify";
-  vertical: "top" | "middle" | "bottom";
-}
-
-export interface ColorScheme {
-  background: string;
-  text: string;
-  border: string;
-  hover: string;
-  selected: string;
-  striped?: string; // For zebra striping
-}
-
-export interface BorderSettings {
-  style: "none" | "solid" | "dashed" | "dotted" | "double";
-  width: number;
-  color: string;
-  radius: number;
-}
-
-export interface SpacingSettings {
-  padding: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-  };
-  margin: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-  };
-  gap: number;
-}
-
-export interface ColumnCustomization {
-  columnKey: string;
-  width?: number;
-  minWidth?: number;
-  maxWidth?: number;
-  resizable: boolean;
-  pinned: "left" | "right" | "none";
-  visible: boolean;
-  sortable: boolean;
-  filterable: boolean;
-  alignment?: TextAlignment;
-  fontSettings?: Partial<FontSettings>;
-  colorScheme?: Partial<ColorScheme>;
-  borderSettings?: Partial<BorderSettings>;
-  formatter?:
-    | "default"
-    | "currency"
-    | "percentage"
-    | "date"
-    | "datetime"
-    | "number"
-    | "custom";
-  customFormatter?: string; // For custom format strings
-}
-
-export interface TableCustomization {
-  // Global table settings
-  id: string;
-  name: string;
-  description?: string;
-
-  // Typography
-  headerFont: FontSettings;
-  cellFont: FontSettings;
-
-  // Layout and alignment
-  defaultAlignment: TextAlignment;
-  headerAlignment: TextAlignment;
-
-  // Colors and themes
-  theme: "light" | "dark" | "auto";
-  colorScheme: ColorScheme;
-  headerColorScheme: ColorScheme;
-  alternateRowColors: boolean;
-
-  // Borders and spacing
-  borderSettings: BorderSettings;
-  spacing: SpacingSettings;
-
-  // Visual effects
-  showHoverEffects: boolean;
-  showShadows: boolean;
-  showStriping: boolean;
-  stripingInterval: number;
-
-  // Column-specific customizations
-  columnCustomizations: Record<string, ColumnCustomization>;
-
-  // Table behavior
-  stickyHeader: boolean;
-  virtualization: boolean;
-  virtualizationThreshold: number;
-
-  // Responsive settings
-  responsive: boolean;
-  breakpoints: {
-    mobile: number;
-    tablet: number;
-    desktop: number;
-  };
-
-  // Export settings
-  includeInExport: boolean;
-  exportFormat: "current" | "all";
-
-  // Metadata
-  createdAt: Date;
-  updatedAt: Date;
-  version: number;
-}
-
-export interface TableCustomizationPreset {
-  id: string;
-  name: string;
-  description: string;
-  category:
-    | "business"
-    | "creative"
-    | "minimal"
-    | "colorful"
-    | "classic"
-    | "modern"
-    | "custom";
-  customization: Partial<TableCustomization>;
-  thumbnail?: string;
-  tags: string[];
-}
-
 // Default presets
-export const DEFAULT_FONT_SETTINGS: FontSettings = {
+export const DEFAULT_FONT_SETTINGS = {
   family: "Inter, system-ui, sans-serif",
   size: 14,
   weight: "normal",
@@ -151,7 +7,7 @@ export const DEFAULT_FONT_SETTINGS: FontSettings = {
   lineHeight: 1.5,
 };
 
-export const DEFAULT_HEADER_FONT_SETTINGS: FontSettings = {
+export const DEFAULT_HEADER_FONT_SETTINGS = {
   family: "Inter, system-ui, sans-serif",
   size: 14,
   weight: "bold",
@@ -159,12 +15,12 @@ export const DEFAULT_HEADER_FONT_SETTINGS: FontSettings = {
   lineHeight: 1.4,
 };
 
-export const DEFAULT_ALIGNMENT: TextAlignment = {
+export const DEFAULT_ALIGNMENT = {
   horizontal: "left",
   vertical: "middle",
 };
 
-export const DEFAULT_COLOR_SCHEME: ColorScheme = {
+export const DEFAULT_COLOR_SCHEME = {
   background: "#ffffff",
   text: "#1f2937",
   border: "#e5e7eb",
@@ -173,7 +29,7 @@ export const DEFAULT_COLOR_SCHEME: ColorScheme = {
   striped: "#f8fafc",
 };
 
-export const DEFAULT_DARK_COLOR_SCHEME: ColorScheme = {
+export const DEFAULT_DARK_COLOR_SCHEME = {
   background: "#111827",
   text: "#f9fafb",
   border: "#374151",
@@ -182,14 +38,14 @@ export const DEFAULT_DARK_COLOR_SCHEME: ColorScheme = {
   striped: "#1f2937",
 };
 
-export const DEFAULT_BORDER_SETTINGS: BorderSettings = {
+export const DEFAULT_BORDER_SETTINGS = {
   style: "solid",
   width: 1,
   color: "#e5e7eb",
   radius: 4,
 };
 
-export const DEFAULT_SPACING_SETTINGS: SpacingSettings = {
+export const DEFAULT_SPACING_SETTINGS = {
   padding: {
     top: 12,
     right: 16,
@@ -205,7 +61,7 @@ export const DEFAULT_SPACING_SETTINGS: SpacingSettings = {
   gap: 0,
 };
 
-export const DEFAULT_COLUMN_CUSTOMIZATION: Partial<ColumnCustomization> = {
+export const DEFAULT_COLUMN_CUSTOMIZATION = {
   resizable: true,
   pinned: "none",
   visible: true,
@@ -214,7 +70,7 @@ export const DEFAULT_COLUMN_CUSTOMIZATION: Partial<ColumnCustomization> = {
   formatter: "default",
 };
 
-export const DEFAULT_TABLE_CUSTOMIZATION: TableCustomization = {
+export const DEFAULT_TABLE_CUSTOMIZATION = {
   id: "default",
   name: "Default Table Style",
   description: "Clean, professional table styling with good readability",
@@ -266,7 +122,7 @@ export const DEFAULT_TABLE_CUSTOMIZATION: TableCustomization = {
 };
 
 // Built-in presets
-export const BUILT_IN_PRESETS: TableCustomizationPreset[] = [
+export const BUILT_IN_PRESETS = [
   {
     id: "business-professional",
     name: "Business Professional",
@@ -422,17 +278,11 @@ export const BUILT_IN_PRESETS: TableCustomizationPreset[] = [
 ];
 
 // Utility functions
-export const applyCustomizationToColumn = (
-  baseCustomization: ColumnCustomization,
-  overrides: Partial<ColumnCustomization>,
-): ColumnCustomization => {
+export const applyCustomizationToColumn = (baseCustomization, overrides) => {
   return { ...baseCustomization, ...overrides };
 };
 
-export const getColumnCustomization = (
-  tableCustomization: TableCustomization,
-  columnKey: string,
-): ColumnCustomization => {
+export const getColumnCustomization = (tableCustomization, columnKey) => {
   return {
     ...DEFAULT_COLUMN_CUSTOMIZATION,
     columnKey,
@@ -441,10 +291,10 @@ export const getColumnCustomization = (
     colorScheme: tableCustomization.colorScheme,
     borderSettings: tableCustomization.borderSettings,
     ...tableCustomization.columnCustomizations[columnKey],
-  } as ColumnCustomization;
+  };
 };
 
-export const generateTableStyles = (customization: TableCustomization) => {
+export const generateTableStyles = (customization) => {
   const {
     colorScheme,
     headerColorScheme,

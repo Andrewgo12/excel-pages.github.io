@@ -5,11 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { TableStylesControl } from "@/components/TableStylesControl";
 import { CustomizableTable } from "@/components/CustomizableTable";
 import {
-  TableCustomization,
   DEFAULT_TABLE_CUSTOMIZATION,
   generateTableStyles,
 } from "@shared/table-customization";
-import { ExcelColumn } from "@shared/excel-types";
 import {
   Sparkles,
   CheckCircle,
@@ -18,7 +16,7 @@ import {
 } from "lucide-react";
 
 // Datos de prueba
-const TEST_COLUMNS: ExcelColumn[] = [
+const TEST_COLUMNS = [
   { key: "id", label: "ID", type: "number" },
   { key: "name", label: "Nombre Completo", type: "text" },
   { key: "email", label: "Correo Electrónico", type: "text" },
@@ -131,10 +129,10 @@ const TEST_DATA = [
 ];
 
 export default function TableStylesTest() {
-  const [customization, setCustomization] = useState<TableCustomization>(
+  const [customization, setCustomization] = useState(
     DEFAULT_TABLE_CUSTOMIZATION,
   );
-  const [selectedColumns, setSelectedColumns] = useState<string[]>([
+  const [selectedColumns, setSelectedColumns] = useState([
     "name",
     "email",
     "department",
@@ -142,16 +140,14 @@ export default function TableStylesTest() {
     "active",
     "performance",
   ]);
-  const [testResults, setTestResults] = useState<{ [key: string]: boolean }>(
-    {},
-  );
+  const [testResults, setTestResults] = useState({});
 
-  const handleColumnResize = (columnKey: string, width: number) => {
+  const handleColumnResize = (columnKey, width) => {
     console.log(`Column ${columnKey} resized to ${width}px`);
     setTestResults((prev) => ({ ...prev, columnResize: true }));
   };
 
-  const handleColumnReorder = (fromIndex: number, toIndex: number) => {
+  const handleColumnReorder = (fromIndex, toIndex) => {
     console.log(`Column moved from ${fromIndex} to ${toIndex}`);
     const newSelectedColumns = [...selectedColumns];
     const [removed] = newSelectedColumns.splice(fromIndex, 1);
@@ -160,7 +156,7 @@ export default function TableStylesTest() {
     setTestResults((prev) => ({ ...prev, columnReorder: true }));
   };
 
-  const handleColumnToggle = (columnKey: string, visible: boolean) => {
+  const handleColumnToggle = (columnKey, visible) => {
     if (visible && !selectedColumns.includes(columnKey)) {
       setSelectedColumns([...selectedColumns, columnKey]);
     } else if (!visible) {
@@ -169,7 +165,7 @@ export default function TableStylesTest() {
     setTestResults((prev) => ({ ...prev, columnToggle: true }));
   };
 
-  const handleCustomizationChange = (newCustomization: TableCustomization) => {
+  const handleCustomizationChange = (newCustomization) => {
     setCustomization(newCustomization);
     setTestResults((prev) => ({ ...prev, customizationChange: true }));
   };

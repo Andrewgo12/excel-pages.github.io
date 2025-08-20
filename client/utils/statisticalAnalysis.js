@@ -1,44 +1,4 @@
-import { ExcelColumn } from "@shared/excel-types";
-
-export interface ColumnStats {
-  column: string;
-  type: string;
-  count: number;
-  nullCount: number;
-  uniqueCount: number;
-  // For numeric columns
-  sum?: number;
-  mean?: number;
-  median?: number;
-  mode?: any;
-  min?: number;
-  max?: number;
-  stdDev?: number;
-  variance?: number;
-  // For text columns
-  avgLength?: number;
-  maxLength?: number;
-  minLength?: number;
-  // For date columns
-  minDate?: Date;
-  maxDate?: Date;
-  dateRange?: number; // days
-  // Top values
-  topValues: Array<{ value: any; count: number; percentage: number }>;
-}
-
-export interface DatasetStats {
-  totalRows: number;
-  totalColumns: number;
-  completenessScore: number; // Percentage of non-null values
-  duplicateRows: number;
-  columnStats: ColumnStats[];
-}
-
-export const calculateColumnStats = (
-  data: Record<string, any>[],
-  column: ExcelColumn,
-): ColumnStats => {
+export const calculateColumnStats = (data, column) => {
   const values = data
     .map((row) => row[column.key])
     .filter((val) => val !== null && val !== undefined && val !== "");
@@ -50,7 +10,7 @@ export const calculateColumnStats = (
   const uniqueCount = uniqueValues.length;
 
   // Calculate frequency distribution
-  const frequency: Record<string, number> = {};
+  const frequency = {};
   values.forEach((val) => {
     const key = String(val);
     frequency[key] = (frequency[key] || 0) + 1;
@@ -65,7 +25,7 @@ export const calculateColumnStats = (
       percentage: Math.round((count / values.length) * 100 * 10) / 10,
     }));
 
-  const stats: ColumnStats = {
+  const stats = {
     column: column.key,
     type: column.type,
     count,
@@ -131,7 +91,7 @@ export const calculateColumnStats = (
         const parsed = new Date(val);
         return isNaN(parsed.getTime()) ? null : parsed;
       })
-      .filter((date) => date !== null) as Date[];
+      .filter((date) => date !== null);
 
     if (dateValues.length > 0) {
       const sortedDates = [...dateValues].sort(
@@ -149,10 +109,7 @@ export const calculateColumnStats = (
   return stats;
 };
 
-export const calculateDatasetStats = (
-  data: Record<string, any>[],
-  columns: ExcelColumn[],
-): DatasetStats => {
+export const calculateDatasetStats = (data, columns) => {
   const totalRows = data.length;
   const totalColumns = columns.length;
 
@@ -194,7 +151,7 @@ export const calculateDatasetStats = (
   };
 };
 
-export const formatStatValue = (value: any, type?: string): string => {
+export const formatStatValue = (value, type) => {
   if (value === null || value === undefined) return "N/A";
 
   if (type === "number") {
@@ -214,8 +171,8 @@ export const formatStatValue = (value: any, type?: string): string => {
   return String(value);
 };
 
-export const generateColumnSummary = (stats: ColumnStats): string => {
-  const summaryParts: string[] = [];
+export const generateColumnSummary = (stats) => {
+  const summaryParts = [];
 
   summaryParts.push(`${stats.count} valores`);
 
