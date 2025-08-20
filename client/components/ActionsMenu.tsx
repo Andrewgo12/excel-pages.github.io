@@ -73,6 +73,7 @@ export function ActionsMenu({
   onCloudSyncOpen,
   onAIInsightsOpen,
   onAdvancedAnalyticsOpen,
+  onMachineLearningOpen,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu>
