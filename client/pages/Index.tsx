@@ -284,7 +284,7 @@ export default function Index() {
     }
 
     return filtered;
-  }, [excelData, filterGroups, sortColumn, sortDirection]);
+  }, [excelData, filterGroups, sortColumn, sortDirection, globalSearch, columnFilters]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (pagination.page - 1) * pagination.pageSize;
