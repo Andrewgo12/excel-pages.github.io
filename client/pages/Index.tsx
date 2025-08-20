@@ -2217,110 +2217,76 @@ export default function Index() {
                 ) : (
                   <>
                     <div className="relative">
-                      <div className="w-full overflow-x-auto overflow-y-visible table-responsive">
-                        <Table className="table-responsive">
-                          <TableHeader>
-                            <TableRow>
-                              {selectedColumns.map((columnKey) => {
-                                const column = excelData.columns.find(
-                                  (c) => c.key === columnKey,
-                                );
-                                return (
-                                  <TableHead
-                                    key={columnKey}
-                                    className="p-0 min-w-[12em]"
-                                  >
-                                    <div className="p-responsive-sm">
-                                      <div
-                                        className="flex items-center gap-responsive-sm cursor-pointer hover:text-primary"
-                                        onClick={() => handleSort(columnKey)}
-                                      >
-                                        <span className="font-medium text-responsive-sm">
-                                          {column?.label}
-                                        </span>
-                                        <Badge
-                                          variant="secondary"
-                                          className="text-responsive-xs"
-                                        >
-                                          {column?.type}
-                                        </Badge>
-                                        {sortColumn === columnKey && (
-                                          <span className="text-responsive-xs text-primary">
-                                            {sortDirection === "asc"
-                                              ? "↑"
-                                              : "↓"}
-                                          </span>
-                                        )}
-                                      </div>
-                                      <Input
-                                        placeholder={`Filtrar ${column?.label}...`}
-                                        value={columnFilters[columnKey] || ""}
-                                        className="control-responsive mt-responsive-sm"
-                                        onChange={(e) => {
-                                          e.stopPropagation();
-                                          setColumnFilters((prev) => ({
-                                            ...prev,
-                                            [columnKey]: e.target.value,
-                                          }));
-                                        }}
-                                        onClick={(e) => e.stopPropagation()}
-                                        className="h-7 text-xs mt-2"
-                                      />
-                                    </div>
-                                  </TableHead>
-                                );
-                              })}
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {paginatedData.map((row, index) => (
-                              <TableRow
-                                key={row._id || index}
-                                className="hover:bg-muted/50"
+                      <CustomizableTable
+                        data={paginatedData}
+                        columns={excelData.columns}
+                        selectedColumns={selectedColumns}
+                        customization={tableCustomization}
+                        sortColumn={sortColumn}
+                        sortDirection={sortDirection}
+                        onSort={handleSort}
+                        renderHeader={(column) => (
+                          <div className="p-responsive-sm">
+                            <div
+                              className="flex items-center gap-responsive-sm cursor-pointer hover:text-primary"
+                              onClick={() => handleSort(column.key)}
+                            >
+                              <span className="font-medium text-responsive-sm">
+                                {column.label}
+                              </span>
+                              <Badge
+                                variant="secondary"
+                                className="text-responsive-xs"
                               >
-                                {selectedColumns.map((columnKey) => {
-                                  const column = excelData.columns.find(
-                                    (c) => c.key === columnKey,
-                                  );
-                                  const value = row[columnKey];
-
-                                  return (
-                                    <TableCell
-                                      key={columnKey}
-                                      className="max-w-48 min-w-[12em]"
-                                    >
-                                      <div className="truncate text-responsive-sm">
-                                        {column?.type === "boolean" ? (
-                                          <Badge
-                                            variant={
-                                              value ? "default" : "secondary"
-                                            }
-                                            className="text-responsive-xs"
-                                          >
-                                            {value ? "Sí" : "No"}
-                                          </Badge>
-                                        ) : column?.type === "number" ? (
-                                          <span className="font-mono text-responsive-sm">
-                                            {typeof value === "number"
-                                              ? value.toLocaleString("es-ES")
-                                              : value}
-                                          </span>
-                                        ) : column?.type === "date" ? (
-                                          <span className="text-sm">
-                                            {value || ""}
-                                          </span>
-                                        ) : (
-                                          <span>{String(value || "")}</span>
-                                        )}
-                                      </div>
-                                    </TableCell>
-                                  );
-                                })}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
+                                {column.type}
+                              </Badge>
+                              {sortColumn === column.key && (
+                                <span className="text-responsive-xs text-primary">
+                                  {sortDirection === "asc" ? "↑" : "↓"}
+                                </span>
+                              )}
+                            </div>
+                            <Input
+                              placeholder={`Filtrar ${column.label}...`}
+                              value={columnFilters[column.key] || ""}
+                              className="control-responsive mt-responsive-sm h-7 text-xs mt-2"
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                setColumnFilters((prev) => ({
+                                  ...prev,
+                                  [column.key]: e.target.value,
+                                }));
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          </div>
+                        )}
+                        renderCell={(value, column) => (
+                          <div className="truncate text-responsive-sm">
+                            {column.type === "boolean" ? (
+                              <Badge
+                                variant={value ? "default" : "secondary"}
+                                className="text-responsive-xs"
+                              >
+                                {value ? "Sí" : "No"}
+                              </Badge>
+                            ) : column.type === "number" ? (
+                              <span className="font-mono text-responsive-sm">
+                                {typeof value === "number"
+                                  ? value.toLocaleString("es-ES")
+                                  : value}
+                              </span>
+                            ) : column.type === "date" ? (
+                              <span className="text-sm">
+                                {value || ""}
+                              </span>
+                            ) : (
+                              <span>{String(value || "")}</span>
+                            )}
+                          </div>
+                        )}
+                        className="table-responsive"
+                      />
                     </div>
 
                     {/* Pagination */}
