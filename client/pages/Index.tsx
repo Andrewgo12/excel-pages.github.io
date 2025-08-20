@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRight, Download, Columns, X, Plus, Search, Database } from 'lucide-react';
+import { AlertCircle, FileSpreadsheet, Filter, Settings, ChevronLeft, ChevronRight, Download, Columns, X, Plus, Search, Database, BarChart3, TrendingUp } from 'lucide-react';
 import { ExcelData, ExcelColumn, FilterCondition, FilterGroup, PaginationConfig } from '@shared/excel-types';
 import { generateSampleData } from '@/utils/sampleDataGenerator';
 import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
