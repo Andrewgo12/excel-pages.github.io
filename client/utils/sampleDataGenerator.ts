@@ -192,8 +192,8 @@ export const generateSampleData = (): ExcelData => {
     { key: 'comentarios_manager', label: 'Comentarios del Manager', type: 'text' }
   ];
 
-  // Generate 100 rows of data
-  const rows = Array.from({ length: 100 }, (_, index) => {
+  // Generate 500 rows of data
+  const rows = Array.from({ length: 500 }, (_, index) => {
     const firstName = randomElement(FIRST_NAMES);
     const lastName = randomElement(LAST_NAMES);
     const birthDate = randomDate(new Date('1970-01-01'), new Date('2000-12-31'));
