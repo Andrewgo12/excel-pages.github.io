@@ -64,6 +64,8 @@ const ConfigurationManager = lazy(() => import("@/components/ConfigurationManage
 const BulkOperations = lazy(() => import("@/components/BulkOperations").then(m => ({ default: m.BulkOperations })));
 const EnhancedExport = lazy(() => import("@/components/EnhancedExport").then(m => ({ default: m.EnhancedExport })));
 const DataValidation = lazy(() => import("@/components/DataValidation").then(m => ({ default: m.DataValidation })));
+const DynamicDataForm = lazy(() => import("@/components/DynamicDataForm").then(m => ({ default: m.DynamicDataForm })));
+const RealTimeAnalytics = lazy(() => import("@/components/RealTimeAnalytics").then(m => ({ default: m.RealTimeAnalytics })));
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 
