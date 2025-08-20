@@ -323,31 +323,32 @@ export default function Index() {
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                <FileSpreadsheet className="h-6 w-6 text-primary" />
+              <h1 className="text-xl lg:text-2xl font-bold text-foreground flex items-center gap-2">
+                <FileSpreadsheet className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-sm lg:text-base text-muted-foreground mt-1">
                 {excelData.rows.length.toLocaleString()} filas • {excelData.columns.length} columnas • Hoja: {excelData.activeSheet}
               </p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
                 <Columns className="h-4 w-4 mr-2" />
-                Columnas ({selectedColumns.length})
+                <span className="hidden sm:inline">Columnas</span> ({selectedColumns.length})
               </Button>
-              <Button variant="outline" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+              <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
                 <Filter className="h-4 w-4 mr-2" />
-                Filtros ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
+                <span className="hidden sm:inline">Filtros</span> ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
               </Button>
-              <Button variant="outline" onClick={exportFilteredData}>
+              <Button variant="outline" size="sm" onClick={exportFilteredData}>
                 <Download className="h-4 w-4 mr-2" />
-                Exportar
+                <span className="hidden sm:inline">Exportar</span>
               </Button>
-              <Button variant="outline" onClick={() => setExcelData(null)}>
-                Nuevo Archivo
+              <Button variant="outline" size="sm" onClick={() => setExcelData(null)}>
+                <span className="hidden sm:inline">Nuevo Archivo</span>
+                <span className="sm:hidden">Nuevo</span>
               </Button>
             </div>
           </div>
