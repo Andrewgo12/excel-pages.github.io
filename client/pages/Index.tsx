@@ -18,6 +18,7 @@ import { generateMultiSheetData } from '@/utils/multiSheetGenerator';
 import { calculateDatasetStats, calculateColumnStats, formatStatValue, generateColumnSummary, DatasetStats, ColumnStats } from '@/utils/statisticalAnalysis';
 import { DataVisualization } from '@/components/DataVisualization';
 import { DataAggregation } from '@/components/DataAggregation';
+import { ConfigurationManager } from '@/components/ConfigurationManager';
 
 const OPERATORS = [
   { value: 'equals', label: 'Igual a' },
