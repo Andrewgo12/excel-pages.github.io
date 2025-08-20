@@ -325,7 +325,7 @@ export const generateSampleData = (): ExcelData => {
   return {
     columns,
     rows,
-    sheetNames: ['Datos de Empleados'],
-    activeSheet: 'Datos de Empleados'
+    sheetNames: ['Base de Datos Completa'],
+    activeSheet: 'Base de Datos Completa'
   };
 };
