@@ -829,9 +829,7 @@ export default function Index() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() =>
-                      setIsAdvancedSearchOpen(!isAdvancedSearchOpen)
-                    }
+                    onClick={() => togglePanel('advancedSearch')}
                     className="h-7 text-xs"
                   >
                     <Settings className="h-3 w-3 mr-1" />
@@ -863,7 +861,7 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}
+                  onClick={() => togglePanel('columnSelector')}
                 >
                   <Columns className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Columnas</span> (
@@ -872,7 +870,7 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setIsFilterOpen(!isFilterOpen)}
+                  onClick={() => togglePanel('filter')}
                 >
                   <Filter className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
@@ -883,13 +881,13 @@ export default function Index() {
                   )
                 </Button>
                 <ActionsMenu
-                  onValidationOpen={() => setIsDataValidationOpen(!isDataValidationOpen)}
-                  onConfigurationOpen={() => setIsConfigurationOpen(!isConfigurationOpen)}
-                  onAggregationOpen={() => setIsAggregationOpen(!isAggregationOpen)}
-                  onBulkOperationsOpen={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}
-                  onExportOpen={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}
-                  onStatsOpen={() => setIsStatsOpen(!isStatsOpen)}
-                  onVisualizationOpen={() => setIsVisualizationOpen(!isVisualizationOpen)}
+                  onValidationOpen={() => togglePanel('dataValidation')}
+                  onConfigurationOpen={() => togglePanel('configuration')}
+                  onAggregationOpen={() => togglePanel('aggregation')}
+                  onBulkOperationsOpen={() => togglePanel('bulkOperations')}
+                  onExportOpen={() => togglePanel('enhancedExport')}
+                  onStatsOpen={() => togglePanel('stats')}
+                  onVisualizationOpen={() => togglePanel('visualization')}
                 />
                 <Button
                   variant="outline"
@@ -926,7 +924,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsColumnSelectorOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1002,7 +1000,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsFilterOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1185,7 +1183,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsStatsOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -1358,7 +1356,7 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsAdvancedSearchOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
