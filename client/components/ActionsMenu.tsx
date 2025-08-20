@@ -60,6 +60,7 @@ interface ActionsMenuProps {
   onSecurityOpen: () => void;
   onCloudSyncOpen: () => void;
   onAIInsightsOpen: () => void;
+  onTableCustomizationOpen: () => void;
 }
 
 export function ActionsMenu({
