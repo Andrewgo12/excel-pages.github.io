@@ -161,6 +161,7 @@ export default function Index() {
   const isAdvancedSearchOpen = activePanel === "advancedSearch";
   const isDataFormOpen = activePanel === "dataForm";
   const isRealTimeAnalyticsOpen = activePanel === "realTimeAnalytics";
+  const isAdvancedAnalyticsOpen = activePanel === "advancedAnalytics";
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
