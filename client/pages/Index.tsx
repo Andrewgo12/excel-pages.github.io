@@ -420,7 +420,7 @@ export default function Index() {
             {isFilterOpen && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
                     Constructor de Filtros
                     <Button variant="ghost" size="sm" onClick={() => setIsFilterOpen(false)}>
                       <X className="h-4 w-4" />
