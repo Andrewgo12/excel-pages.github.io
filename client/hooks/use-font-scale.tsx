@@ -13,12 +13,12 @@ const FontScaleContext = createContext<FontScaleContextType | undefined>(
 );
 
 const FONT_SCALE_VALUES = {
-  xs: 0.75,
-  sm: 0.85,
-  base: 0.9,
-  lg: 1.0,
-  xl: 1.15,
-  "2xl": 1.3,
+  "font-scale-xs": 0.75,
+  "font-scale-sm": 0.85,
+  "font-scale-base": 0.9,
+  "font-scale-lg": 1.0,
+  "font-scale-xl": 1.15,
+  "font-scale-2xl": 1.3,
 };
 
 export function FontScaleProvider({ children }: { children: React.ReactNode }) {
