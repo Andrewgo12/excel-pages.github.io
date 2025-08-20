@@ -466,23 +466,36 @@ export default function Index() {
                 {excelData.rows.length.toLocaleString()} filas • {excelData.columns.length} columnas • Hoja: {excelData.activeSheet}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
-                <Columns className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Columnas</span> ({selectedColumns.length})
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                <Filter className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Filtros</span> ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
-              </Button>
-              <Button variant="outline" size="sm" onClick={exportFilteredData}>
-                <Download className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Exportar</span>
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setExcelData(null)}>
-                <span className="hidden sm:inline">Nuevo Archivo</span>
-                <span className="sm:hidden">Nuevo</span>
-              </Button>
+            <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
+              <div className="flex-1 max-w-md">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Buscar en todos los datos..."
+                    value={globalSearch}
+                    onChange={(e) => setGlobalSearch(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={() => setIsColumnSelectorOpen(!isColumnSelectorOpen)}>
+                  <Columns className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Columnas</span> ({selectedColumns.length})
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                  <Filter className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Filtros</span> ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportFilteredData}>
+                  <Download className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Exportar</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setExcelData(null)}>
+                  <span className="hidden sm:inline">Nuevo Archivo</span>
+                  <span className="sm:hidden">Nuevo</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
