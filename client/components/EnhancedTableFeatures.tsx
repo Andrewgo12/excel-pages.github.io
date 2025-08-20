@@ -42,11 +42,8 @@ import {
   Calculator,
   Palette,
   Type,
-  BorderAll,
-  Mouse,
   Layers,
   Target,
-  BookOpen,
   Accessibility,
 } from "lucide-react";
 import { ExcelColumn } from "@shared/excel-types";
