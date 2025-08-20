@@ -668,111 +668,119 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
 
           {/* Column List */}
           <ScrollArea className="h-64">
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="columns">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                    {filteredColumns.map((column, index) => {
-                      const config = columnConfigs[column.key];
-                      if (!config) return null;
+            <div className="space-y-2">
+              {filteredColumns
+                .sort((a, b) => (columnConfigs[a.key]?.order || 0) - (columnConfigs[b.key]?.order || 0))
+                .map((column, index) => {
+                  const config = columnConfigs[column.key];
+                  if (!config) return null;
 
-                      return (
-                        <Draggable key={column.key} draggableId={column.key} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              className={`border rounded-lg p-3 space-y-3 transition-colors ${
-                                snapshot.isDragging ? 'bg-muted' : 'bg-background'
-                              }`}
+                  return (
+                    <div
+                      key={column.key}
+                      className="border rounded-lg p-3 space-y-3 bg-background hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex flex-col gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveColumn(column.key, 'up')}
+                              disabled={config.order === 0}
+                              className="h-6 w-6 p-0"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <div {...provided.dragHandleProps}>
-                                    <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
-                                  </div>
-                                  <div>
-                                    <div className="font-medium text-sm">{column.label}</div>
-                                    <div className="flex items-center gap-2">
-                                      <Badge variant="outline" className="text-xs">
-                                        {column.type}
-                                      </Badge>
-                                      {config.pinned !== 'none' && (
-                                        <Badge variant="secondary" className="text-xs">
-                                          {config.pinned === 'left' ? 'Izq' : 'Der'}
-                                        </Badge>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => updateColumnConfig(column.key, { visible: !config.visible })}
-                                  >
-                                    {config.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => updateColumnConfig(column.key, {
-                                      pinned: config.pinned === 'left' ? 'none' : 'left'
-                                    })}
-                                  >
-                                    {config.pinned === 'left' ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
-                                  </Button>
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-2">
-                                  <Label className="text-xs">Ancho: {config.width}px</Label>
-                                  <Slider
-                                    value={[config.width]}
-                                    onValueChange={([value]) => {
-                                      updateColumnConfig(column.key, { width: value });
-                                      onColumnResize?.(column.key, value);
-                                    }}
-                                    min={config.minWidth}
-                                    max={config.maxWidth}
-                                    step={10}
-                                    className="w-full"
-                                  />
-                                </div>
-                                
-                                <div className="space-y-2">
-                                  <Label className="text-xs">Alineación</Label>
-                                  <div className="flex gap-1">
-                                    {[
-                                      { value: 'left', icon: AlignLeft },
-                                      { value: 'center', icon: AlignCenter },
-                                      { value: 'right', icon: AlignRight },
-                                    ].map(({ value, icon: Icon }) => (
-                                      <Button
-                                        key={value}
-                                        variant={config.alignment === value ? 'default' : 'outline'}
-                                        size="sm"
-                                        onClick={() => updateColumnConfig(column.key, { alignment: value as any })}
-                                        className="flex-1 p-1"
-                                      >
-                                        <Icon className="h-3 w-3" />
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
+                              ↑
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => moveColumn(column.key, 'down')}
+                              disabled={config.order === filteredColumns.length - 1}
+                              className="h-6 w-6 p-0"
+                            >
+                              ↓
+                            </Button>
+                          </div>
+                          <div>
+                            <div className="font-medium text-sm">{column.label}</div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {column.type}
+                              </Badge>
+                              <Badge variant="secondary" className="text-xs">
+                                #{config.order + 1}
+                              </Badge>
+                              {config.pinned !== 'none' && (
+                                <Badge variant="secondary" className="text-xs">
+                                  {config.pinned === 'left' ? 'Izq' : 'Der'}
+                                </Badge>
+                              )}
                             </div>
-                          )}
-                        </Draggable>
-                      );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateColumnConfig(column.key, { visible: !config.visible })}
+                          >
+                            {config.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => updateColumnConfig(column.key, {
+                              pinned: config.pinned === 'left' ? 'none' : 'left'
+                            })}
+                          >
+                            {config.pinned === 'left' ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label className="text-xs">Ancho: {config.width}px</Label>
+                          <Slider
+                            value={[config.width]}
+                            onValueChange={([value]) => {
+                              updateColumnConfig(column.key, { width: value });
+                              onColumnResize?.(column.key, value);
+                            }}
+                            min={config.minWidth}
+                            max={config.maxWidth}
+                            step={10}
+                            className="w-full"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-xs">Alineación</Label>
+                          <div className="flex gap-1">
+                            {[
+                              { value: 'left', icon: AlignLeft },
+                              { value: 'center', icon: AlignCenter },
+                              { value: 'right', icon: AlignRight },
+                            ].map(({ value, icon: Icon }) => (
+                              <Button
+                                key={value}
+                                variant={config.alignment === value ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => updateColumnConfig(column.key, { alignment: value as any })}
+                                className="flex-1 p-1"
+                              >
+                                <Icon className="h-3 w-3" />
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
           </ScrollArea>
         </CardContent>
       </Card>
