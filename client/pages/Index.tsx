@@ -989,6 +989,125 @@ export default function Index() {
               </Card>
             )}
 
+            {/* Advanced Search Panel */}
+            {isAdvancedSearchOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Búsqueda Avanzada
+                    <Button variant="ghost" size="sm" onClick={() => setIsAdvancedSearchOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-medium mb-2">Modo de Búsqueda</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="p-3 border rounded-lg">
+                          <div className="font-medium">Normal</div>
+                          <div className="text-muted-foreground">Búsqueda simple de texto, no sensible a mayúsculas</div>
+                          <div className="text-xs text-muted-foreground mt-1">Ejemplo: "madrid" encuentra "Madrid", "MADRID", etc.</div>
+                        </div>
+
+                        <div className="p-3 border rounded-lg">
+                          <div className="font-medium">Patrones</div>
+                          <div className="text-muted-foreground">Utiliza comodines: * (cualquier texto) y ? (un carácter)</div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Ejemplos: "mad*" encuentra "madrid", "madreña" | "m?drid" encuentra "madrid", "midrid"
+                          </div>
+                        </div>
+
+                        <div className="p-3 border rounded-lg">
+                          <div className="font-medium">Regex (Expresiones Regulares)</div>
+                          <div className="text-muted-foreground">Búsqueda avanzada con patrones complejos</div>
+                          <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                            <div>• "^[A-Z]" - Comienza con mayúscula</div>
+                            <div>• "\d{4}" - Exactamente 4 dígitos</div>
+                            <div>• "(gmail|hotmail)" - Contiene gmail o hotmail</div>
+                            <div>• "\w+@\w+\.\w+" - Formato de email</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium mb-2">Patrones Comunes</h4>
+                      <div className="grid grid-cols-1 gap-2 text-xs">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setGlobalSearch('^\\d+$')}
+                          className="justify-start h-auto p-2"
+                        >
+                          <div>
+                            <div className="font-medium">^\\d+$</div>
+                            <div className="text-muted-foreground">Solo números</div>
+                          </div>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setGlobalSearch('\\w+@\\w+\\.\\w+')}
+                          className="justify-start h-auto p-2"
+                        >
+                          <div>
+                            <div className="font-medium">\\w+@\\w+\\.\\w+</div>
+                            <div className="text-muted-foreground">Formato de email</div>
+                          </div>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setGlobalSearch('^[A-Z][a-z]+')}
+                          className="justify-start h-auto p-2"
+                        >
+                          <div>
+                            <div className="font-medium">^[A-Z][a-z]+</div>
+                            <div className="text-muted-foreground">Comienza con mayúscula</div>
+                          </div>
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setGlobalSearch('\\d{2}/\\d{2}/\\d{4}')}
+                          className="justify-start h-auto p-2"
+                        >
+                          <div>
+                            <div className="font-medium">\\d{2}/\\d{2}/\\d{4}</div>
+                            <div className="text-muted-foreground">Formato de fecha DD/MM/YYYY</div>
+                          </div>
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium mb-2">Opciones Adicionales</h4>
+                      <div className="space-y-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setGlobalSearch('');
+                            setColumnFilters({});
+                            setFilterGroups([]);
+                          }}
+                          className="w-full"
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Limpiar Todas las Búsquedas y Filtros
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Data Visualization Panel */}
             {isVisualizationOpen && currentStats && (
               <Card>
