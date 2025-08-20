@@ -1195,6 +1195,27 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Configuration Manager Panel */}
+            {isConfigurationOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Gestión de Configuraciones
+                    <Button variant="ghost" size="sm" onClick={() => setIsConfigurationOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ConfigurationManager
+                    currentConfig={getCurrentConfiguration()}
+                    onLoadConfiguration={loadConfiguration}
+                    onPreferencesChange={handlePreferencesChange}
+                  />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Main Content */}
