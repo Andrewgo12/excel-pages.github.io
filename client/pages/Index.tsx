@@ -659,6 +659,10 @@ export default function Index() {
                   <TrendingUp className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Gráficos</span>
                 </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsAggregationOpen(!isAggregationOpen)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Agregaciones</span>
+                </Button>
                 <Button variant="outline" size="sm" onClick={exportFilteredData}>
                   <Download className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Exportar</span>
