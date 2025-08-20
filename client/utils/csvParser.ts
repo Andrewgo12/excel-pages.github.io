@@ -23,7 +23,7 @@ export interface CSVParseResult {
 // Simple CSV parser without external dependencies
 export const parseCSV = async (
   file: File,
-  options: CSVParseOptions = {}
+  options: CSVParseOptions = {},
 ): Promise<CSVParseResult> => {
   const startTime = Date.now();
   const {
@@ -49,14 +49,14 @@ export const parseCSV = async (
         // Parse CSV content
         const lines = text.split(/\r?\n/);
         let rows: string[][] = [];
-        
+
         // Simple CSV parsing with quote handling
         for (const line of lines) {
           if (skipEmptyLines && line.trim() === "") continue;
-          
+
           const row = parseCSVLine(line, delimiter);
           rows.push(row);
-          
+
           if (maxRows && rows.length >= maxRows) {
             warnings.push(`Archivo limitado a ${maxRows} filas`);
             break;
@@ -73,20 +73,23 @@ export const parseCSV = async (
         let dataRows: string[][] = [];
 
         if (hasHeader && rows.length > 0) {
-          headers = rows[0].map((header, index) => 
-            header.trim() || `Columna_${index + 1}`
+          headers = rows[0].map(
+            (header, index) => header.trim() || `Columna_${index + 1}`,
           );
           dataRows = rows.slice(1);
         } else {
           // Generate column names
-          const maxColumns = Math.max(...rows.map(row => row.length));
-          headers = Array.from({ length: maxColumns }, (_, i) => `Columna_${i + 1}`);
+          const maxColumns = Math.max(...rows.map((row) => row.length));
+          headers = Array.from(
+            { length: maxColumns },
+            (_, i) => `Columna_${i + 1}`,
+          );
           dataRows = rows;
         }
 
         // Ensure all rows have the same number of columns
         const columnCount = headers.length;
-        dataRows = dataRows.map(row => {
+        dataRows = dataRows.map((row) => {
           const normalizedRow = [...row];
           while (normalizedRow.length < columnCount) {
             normalizedRow.push("");
@@ -98,11 +101,11 @@ export const parseCSV = async (
         const columns: ExcelColumn[] = headers.map((header, index) => {
           const sampleValues = dataRows
             .slice(0, sampleSize)
-            .map(row => row[index])
-            .filter(val => val && val.trim() !== "");
+            .map((row) => row[index])
+            .filter((val) => val && val.trim() !== "");
 
           const type = inferColumnType(sampleValues);
-          
+
           return {
             key: `col_${index}`,
             label: header,
@@ -113,7 +116,7 @@ export const parseCSV = async (
         // Convert to ExcelData format
         const dataObjects = dataRows.map((row, rowIndex) => {
           const obj: Record<string, any> = {};
-          
+
           columns.forEach((column, colIndex) => {
             const rawValue = row[colIndex] || "";
             obj[column.key] = convertValue(rawValue, column.type);
@@ -123,8 +126,8 @@ export const parseCSV = async (
         });
 
         // Calculate stats
-        const emptyRows = dataRows.filter(row => 
-          row.every(cell => !cell || cell.trim() === "")
+        const emptyRows = dataRows.filter((row) =>
+          row.every((cell) => !cell || cell.trim() === ""),
         ).length;
 
         const result: CSVParseResult = {
@@ -137,8 +140,8 @@ export const parseCSV = async (
               "CSV Data": {
                 columns,
                 rows: dataObjects,
-              }
-            }
+              },
+            },
           },
           warnings,
           stats: {
@@ -146,7 +149,7 @@ export const parseCSV = async (
             totalColumns: columns.length,
             emptyRows,
             processingTime: Date.now() - startTime,
-          }
+          },
         };
 
         resolve(result);
@@ -169,7 +172,7 @@ const parseCSVLine = (line: string, delimiter: string): string[] => {
 
   while (i < line.length) {
     const char = line[i];
-    
+
     if (char === '"') {
       if (inQuotes && line[i + 1] === '"') {
         // Escaped quote
@@ -190,48 +193,56 @@ const parseCSVLine = (line: string, delimiter: string): string[] => {
       i++;
     }
   }
-  
+
   // Add the last field
   result.push(current);
-  
+
   return result;
 };
 
 // Infer column type from sample values
-const inferColumnType = (values: string[]): "text" | "number" | "date" | "boolean" => {
+const inferColumnType = (
+  values: string[],
+): "text" | "number" | "date" | "boolean" => {
   if (values.length === 0) return "text";
 
   // Check for boolean
   const booleanPattern = /^(true|false|yes|no|si|no|verdadero|falso|1|0)$/i;
-  if (values.every(val => booleanPattern.test(val.trim()))) {
+  if (values.every((val) => booleanPattern.test(val.trim()))) {
     return "boolean";
   }
 
   // Check for numbers
   const numberPattern = /^-?(\d{1,3}(,\d{3})*|\d+)(\.\d+)?$/;
   const euroNumberPattern = /^-?(\d{1,3}(.\d{3})*|\d+)(,\d+)?$/; // European format
-  
-  if (values.every(val => {
-    const trimmed = val.trim().replace(/[$€£¥]/g, ""); // Remove currency symbols
-    return numberPattern.test(trimmed) || euroNumberPattern.test(trimmed);
-  })) {
+
+  if (
+    values.every((val) => {
+      const trimmed = val.trim().replace(/[$€£¥]/g, ""); // Remove currency symbols
+      return numberPattern.test(trimmed) || euroNumberPattern.test(trimmed);
+    })
+  ) {
     return "number";
   }
 
   // Check for dates
-  if (values.every(val => {
-    const trimmed = val.trim();
-    // Common date patterns
-    const datePatterns = [
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/, // MM/DD/YYYY or DD/MM/YYYY
-      /^\d{1,2}-\d{1,2}-\d{4}$/, // MM-DD-YYYY or DD-MM-YYYY
-      /^\d{4}-\d{1,2}-\d{1,2}$/, // YYYY-MM-DD
-      /^\d{1,2}\/\d{1,2}\/\d{2}$/, // MM/DD/YY
-    ];
-    
-    return datePatterns.some(pattern => pattern.test(trimmed)) || 
-           !isNaN(Date.parse(trimmed));
-  })) {
+  if (
+    values.every((val) => {
+      const trimmed = val.trim();
+      // Common date patterns
+      const datePatterns = [
+        /^\d{1,2}\/\d{1,2}\/\d{4}$/, // MM/DD/YYYY or DD/MM/YYYY
+        /^\d{1,2}-\d{1,2}-\d{4}$/, // MM-DD-YYYY or DD-MM-YYYY
+        /^\d{4}-\d{1,2}-\d{1,2}$/, // YYYY-MM-DD
+        /^\d{1,2}\/\d{1,2}\/\d{2}$/, // MM/DD/YY
+      ];
+
+      return (
+        datePatterns.some((pattern) => pattern.test(trimmed)) ||
+        !isNaN(Date.parse(trimmed))
+      );
+    })
+  ) {
     return "date";
   }
 
@@ -239,7 +250,10 @@ const inferColumnType = (values: string[]): "text" | "number" | "date" | "boolea
 };
 
 // Convert string value to appropriate type
-const convertValue = (value: string, type: "text" | "number" | "date" | "boolean"): any => {
+const convertValue = (
+  value: string,
+  type: "text" | "number" | "date" | "boolean",
+): any => {
   if (!value || value.trim() === "") return null;
 
   const trimmed = value.trim();
@@ -248,29 +262,33 @@ const convertValue = (value: string, type: "text" | "number" | "date" | "boolean
     case "number":
       // Handle different number formats
       let cleaned = trimmed.replace(/[$€£¥]/g, ""); // Remove currency
-      
+
       // European format (1.234,56)
-      if (cleaned.includes(".") && cleaned.includes(",") && 
-          cleaned.lastIndexOf(",") > cleaned.lastIndexOf(".")) {
+      if (
+        cleaned.includes(".") &&
+        cleaned.includes(",") &&
+        cleaned.lastIndexOf(",") > cleaned.lastIndexOf(".")
+      ) {
         cleaned = cleaned.replace(/\./g, "").replace(",", ".");
       }
       // US format with commas (1,234.56)
       else if (cleaned.includes(",")) {
         cleaned = cleaned.replace(/,/g, "");
       }
-      
+
       const num = parseFloat(cleaned);
       return isNaN(num) ? trimmed : num;
 
     case "boolean":
       const lowerValue = trimmed.toLowerCase();
-      if (["true", "yes", "si", "verdadero", "1"].includes(lowerValue)) return true;
+      if (["true", "yes", "si", "verdadero", "1"].includes(lowerValue))
+        return true;
       if (["false", "no", "falso", "0"].includes(lowerValue)) return false;
       return trimmed;
 
     case "date":
       const date = new Date(trimmed);
-      return isNaN(date.getTime()) ? trimmed : date.toISOString().split('T')[0];
+      return isNaN(date.getTime()) ? trimmed : date.toISOString().split("T")[0];
 
     default:
       return trimmed;
@@ -278,10 +296,13 @@ const convertValue = (value: string, type: "text" | "number" | "date" | "boolean
 };
 
 // Auto-detect CSV delimiter
-export const detectCSVDelimiter = (text: string, sampleLines: number = 5): string => {
+export const detectCSVDelimiter = (
+  text: string,
+  sampleLines: number = 5,
+): string => {
   const delimiters = [",", ";", "\t", "|"];
   const lines = text.split(/\r?\n/).slice(0, sampleLines);
-  
+
   let bestDelimiter = ",";
   let maxScore = 0;
 
@@ -301,12 +322,14 @@ export const detectCSVDelimiter = (text: string, sampleLines: number = 5): strin
     // Check consistency (all lines should have similar column count)
     if (columnCounts.length > 1) {
       const avg = columnCounts.reduce((a, b) => a + b, 0) / columnCounts.length;
-      const variance = columnCounts.reduce((sum, count) => sum + Math.pow(count - avg, 2), 0) / columnCounts.length;
+      const variance =
+        columnCounts.reduce((sum, count) => sum + Math.pow(count - avg, 2), 0) /
+        columnCounts.length;
       consistency = 1 / (1 + variance); // Lower variance = higher consistency
     }
 
     const finalScore = score * consistency;
-    
+
     if (finalScore > maxScore) {
       maxScore = finalScore;
       bestDelimiter = delimiter;

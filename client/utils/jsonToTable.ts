@@ -23,7 +23,7 @@ export interface JSONToTableResult {
 
 export const convertJSONToTable = async (
   file: File,
-  options: JSONToTableOptions = {}
+  options: JSONToTableOptions = {},
 ): Promise<JSONToTableResult> => {
   const startTime = Date.now();
   const {
@@ -37,7 +37,7 @@ export const convertJSONToTable = async (
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string;
@@ -92,26 +92,36 @@ export const convertJSONToTable = async (
           if (typeof item !== "object" || item === null) {
             return { value: item };
           }
-          
-          return flattenObject(item, "", maxDepth, pathSeparator, objectHandling, arrayHandling, stats);
+
+          return flattenObject(
+            item,
+            "",
+            maxDepth,
+            pathSeparator,
+            objectHandling,
+            arrayHandling,
+            stats,
+          );
         });
 
         // Collect all possible column keys
         const allKeys = new Set<string>();
-        processedData.forEach(item => {
-          Object.keys(item).forEach(key => allKeys.add(key));
+        processedData.forEach((item) => {
+          Object.keys(item).forEach((key) => allKeys.add(key));
         });
 
         const columnKeys = Array.from(allKeys).sort();
 
         // Create columns with type inference
-        const columns: ExcelColumn[] = columnKeys.map(key => {
+        const columns: ExcelColumn[] = columnKeys.map((key) => {
           const sampleValues = processedData
             .slice(0, 100) // Sample first 100 rows for type inference
-            .map(item => item[key])
-            .filter(val => val !== null && val !== undefined && val !== "");
+            .map((item) => item[key])
+            .filter((val) => val !== null && val !== undefined && val !== "");
 
-          const type = inferTypes ? inferColumnTypeFromValues(sampleValues) : "text";
+          const type = inferTypes
+            ? inferColumnTypeFromValues(sampleValues)
+            : "text";
 
           return {
             key: sanitizeColumnKey(key),
@@ -121,10 +131,12 @@ export const convertJSONToTable = async (
         });
 
         // Normalize data rows
-        const rows = processedData.map(item => {
+        const rows = processedData.map((item) => {
           const row: Record<string, any> = {};
-          columns.forEach(column => {
-            const originalKey = columnKeys.find(k => sanitizeColumnKey(k) === column.key);
+          columns.forEach((column) => {
+            const originalKey = columnKeys.find(
+              (k) => sanitizeColumnKey(k) === column.key,
+            );
             if (originalKey) {
               row[column.key] = item[originalKey] ?? null;
             }
@@ -146,8 +158,8 @@ export const convertJSONToTable = async (
               "JSON Data": {
                 columns,
                 rows,
-              }
-            }
+              },
+            },
           },
           warnings,
           stats,
@@ -173,7 +185,7 @@ const flattenObject = (
   objectHandling: string,
   arrayHandling: string,
   stats: any,
-  currentDepth: number = 0
+  currentDepth: number = 0,
 ): Record<string, any> => {
   const result: Record<string, any> = {};
 
@@ -190,34 +202,34 @@ const flattenObject = (
       result[newKey] = null;
     } else if (Array.isArray(value)) {
       stats.arrays++;
-      
+
       switch (arrayHandling) {
         case "join_string":
-          result[newKey] = value.map(v => 
-            typeof v === "object" ? JSON.stringify(v) : String(v)
-          ).join(", ");
+          result[newKey] = value
+            .map((v) => (typeof v === "object" ? JSON.stringify(v) : String(v)))
+            .join(", ");
           break;
-          
+
         case "count_only":
           result[newKey] = value.length;
           break;
-          
+
         case "separate_rows":
         default:
           // For now, join as string (separate_rows would require restructuring data)
-          result[newKey] = value.map(v => 
-            typeof v === "object" ? JSON.stringify(v) : String(v)
-          ).join(", ");
+          result[newKey] = value
+            .map((v) => (typeof v === "object" ? JSON.stringify(v) : String(v)))
+            .join(", ");
           break;
       }
     } else if (typeof value === "object") {
       stats.nestedObjects++;
-      
+
       switch (objectHandling) {
         case "stringify":
           result[newKey] = JSON.stringify(value);
           break;
-          
+
         case "separate_columns":
         case "flatten":
         default:
@@ -230,7 +242,7 @@ const flattenObject = (
             objectHandling,
             arrayHandling,
             stats,
-            currentDepth + 1
+            currentDepth + 1,
           );
           Object.assign(result, flattened);
           break;
@@ -244,29 +256,43 @@ const flattenObject = (
 };
 
 // Infer column type from sample values
-const inferColumnTypeFromValues = (values: any[]): "text" | "number" | "date" | "boolean" => {
+const inferColumnTypeFromValues = (
+  values: any[],
+): "text" | "number" | "date" | "boolean" => {
   if (values.length === 0) return "text";
 
   // Check for boolean
-  if (values.every(val => typeof val === "boolean" || 
-    (typeof val === "string" && /^(true|false)$/i.test(val)))) {
+  if (
+    values.every(
+      (val) =>
+        typeof val === "boolean" ||
+        (typeof val === "string" && /^(true|false)$/i.test(val)),
+    )
+  ) {
     return "boolean";
   }
 
   // Check for numbers
-  if (values.every(val => typeof val === "number" || 
-    (typeof val === "string" && !isNaN(Number(val)) && val.trim() !== ""))) {
+  if (
+    values.every(
+      (val) =>
+        typeof val === "number" ||
+        (typeof val === "string" && !isNaN(Number(val)) && val.trim() !== ""),
+    )
+  ) {
     return "number";
   }
 
   // Check for dates
-  if (values.every(val => {
-    if (typeof val === "string") {
-      const date = new Date(val);
-      return !isNaN(date.getTime());
-    }
-    return false;
-  })) {
+  if (
+    values.every((val) => {
+      if (typeof val === "string") {
+        const date = new Date(val);
+        return !isNaN(date.getTime());
+      }
+      return false;
+    })
+  ) {
     return "date";
   }
 
@@ -285,20 +311,20 @@ const sanitizeColumnKey = (key: string): string => {
 const formatColumnLabel = (key: string): string => {
   return key
     .split(/[._-]/)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
 };
 
 // Parse JSON Lines format (JSONL)
 export const parseJSONLines = async (
   file: File,
-  options: JSONToTableOptions = {}
+  options: JSONToTableOptions = {},
 ): Promise<JSONToTableResult> => {
   const startTime = Date.now();
-  
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const text = e.target?.result as string;
@@ -307,7 +333,7 @@ export const parseJSONLines = async (
           return;
         }
 
-        const lines = text.split(/\r?\n/).filter(line => line.trim());
+        const lines = text.split(/\r?\n/).filter((line) => line.trim());
         const jsonObjects: any[] = [];
         const warnings: string[] = [];
 
@@ -315,7 +341,7 @@ export const parseJSONLines = async (
           try {
             const obj = JSON.parse(lines[i]);
             jsonObjects.push(obj);
-            
+
             if (options.maxRows && jsonObjects.length >= options.maxRows) {
               warnings.push(`Limitado a ${options.maxRows} líneas`);
               break;
@@ -332,14 +358,17 @@ export const parseJSONLines = async (
 
         // Convert array to table using existing logic
         convertJSONToTable(
-          new File([JSON.stringify(jsonObjects)], "jsonl-data.json", { type: "application/json" }),
-          options
-        ).then(result => {
-          result.warnings = [...result.warnings, ...warnings];
-          result.stats.processingTime = Date.now() - startTime;
-          resolve(result);
-        }).catch(reject);
-
+          new File([JSON.stringify(jsonObjects)], "jsonl-data.json", {
+            type: "application/json",
+          }),
+          options,
+        )
+          .then((result) => {
+            result.warnings = [...result.warnings, ...warnings];
+            result.stats.processingTime = Date.now() - startTime;
+            resolve(result);
+          })
+          .catch(reject);
       } catch (error) {
         reject(new Error(`Error procesando JSONL: ${error}`));
       }
@@ -351,9 +380,11 @@ export const parseJSONLines = async (
 };
 
 // Detect JSON format (regular JSON vs JSON Lines)
-export const detectJSONFormat = (text: string): "json" | "jsonl" | "unknown" => {
-  const lines = text.split(/\r?\n/).filter(line => line.trim());
-  
+export const detectJSONFormat = (
+  text: string,
+): "json" | "jsonl" | "unknown" => {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim());
+
   // Try to parse as regular JSON first
   try {
     JSON.parse(text);
@@ -362,7 +393,8 @@ export const detectJSONFormat = (text: string): "json" | "jsonl" | "unknown" => 
     // Not valid JSON, check if it's JSONL
     if (lines.length > 1) {
       let validLines = 0;
-      for (const line of lines.slice(0, 5)) { // Check first 5 lines
+      for (const line of lines.slice(0, 5)) {
+        // Check first 5 lines
         try {
           JSON.parse(line);
           validLines++;
@@ -370,12 +402,12 @@ export const detectJSONFormat = (text: string): "json" | "jsonl" | "unknown" => 
           // Invalid line
         }
       }
-      
+
       if (validLines >= Math.min(3, lines.length)) {
         return "jsonl";
       }
     }
   }
-  
+
   return "unknown";
 };

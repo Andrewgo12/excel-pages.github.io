@@ -1,8 +1,18 @@
 import { ExcelData } from "@shared/excel-types";
 import { loadCompleteExcelFile, MultiSheetAnalysis } from "./multiSheetExcel";
 import { parseCSV, detectCSVDelimiter, CSVParseResult } from "./csvParser";
-import { convertJSONToTable, parseJSONLines, detectJSONFormat, JSONToTableResult } from "./jsonToTable";
-import { parseTextFile, parseTSV, parsePipeDelimited, TextParseResult } from "./textParser";
+import {
+  convertJSONToTable,
+  parseJSONLines,
+  detectJSONFormat,
+  JSONToTableResult,
+} from "./jsonToTable";
+import {
+  parseTextFile,
+  parseTSV,
+  parsePipeDelimited,
+  TextParseResult,
+} from "./textParser";
 
 export interface FileProcessorResult {
   data: ExcelData;
@@ -39,16 +49,16 @@ export interface ProcessingOptions {
 // Main file processor function
 export const processFile = async (
   file: File,
-  options: ProcessingOptions = {}
+  options: ProcessingOptions = {},
 ): Promise<FileProcessorResult> => {
   const startTime = Date.now();
-  
+
   try {
     // Detect file format
     const format = detectFileFormat(file);
-    
+
     let result: FileProcessorResult;
-    
+
     switch (format) {
       case "excel":
         result = await processExcelFile(file, options);
@@ -97,8 +107,12 @@ const detectFileFormat = (file: File): string => {
   const mimeType = file.type.toLowerCase();
 
   // Excel files
-  if (filename.endsWith(".xlsx") || filename.endsWith(".xls") ||
-      mimeType.includes("spreadsheet") || mimeType.includes("excel")) {
+  if (
+    filename.endsWith(".xlsx") ||
+    filename.endsWith(".xls") ||
+    mimeType.includes("spreadsheet") ||
+    mimeType.includes("excel")
+  ) {
     return "excel";
   }
 
@@ -118,7 +132,11 @@ const detectFileFormat = (file: File): string => {
   }
 
   // JSON Lines
-  if (filename.endsWith(".jsonl") || filename.endsWith(".ndjson") || filename.endsWith(".ldjson")) {
+  if (
+    filename.endsWith(".jsonl") ||
+    filename.endsWith(".ndjson") ||
+    filename.endsWith(".ldjson")
+  ) {
     return "jsonl";
   }
 
@@ -128,8 +146,12 @@ const detectFileFormat = (file: File): string => {
   }
 
   // Generic text files
-  if (filename.endsWith(".txt") || filename.endsWith(".dat") || 
-      mimeType.startsWith("text/") || mimeType === "application/octet-stream") {
+  if (
+    filename.endsWith(".txt") ||
+    filename.endsWith(".dat") ||
+    mimeType.startsWith("text/") ||
+    mimeType === "application/octet-stream"
+  ) {
     return "txt";
   }
 
@@ -140,10 +162,10 @@ const detectFileFormat = (file: File): string => {
 // Process Excel files
 const processExcelFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const { data, analysis } = await loadCompleteExcelFile(file);
-  
+
   // Apply row limit if specified
   if (options.maxRows && data.rows.length > options.maxRows) {
     data.rows = data.rows.slice(0, options.maxRows);
@@ -173,7 +195,7 @@ const processExcelFile = async (
 // Process CSV files
 const processCSVFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   // Auto-detect delimiter if needed
   let delimiter = options.delimiter;
@@ -211,7 +233,7 @@ const processCSVFile = async (
 // Process JSON files
 const processJSONFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const result = await convertJSONToTable(file, {
     maxRows: options.maxRows,
@@ -238,7 +260,7 @@ const processJSONFile = async (
 // Process JSON Lines files
 const processJSONLFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const result = await parseJSONLines(file, {
     maxRows: options.maxRows,
@@ -265,7 +287,7 @@ const processJSONLFile = async (
 // Process TSV files
 const processTSVFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const result = await parseTSV(file, {
     hasHeader: options.hasHeader,
@@ -295,7 +317,7 @@ const processTSVFile = async (
 // Process generic text files
 const processTextFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const result = await parseTextFile(file, {
     delimiter: options.delimiter,
@@ -326,7 +348,7 @@ const processTextFile = async (
 // Process pipe-delimited files
 const processPipeDelimitedFile = async (
   file: File,
-  options: ProcessingOptions
+  options: ProcessingOptions,
 ): Promise<FileProcessorResult> => {
   const result = await parsePipeDelimited(file, {
     hasHeader: options.hasHeader,
@@ -354,15 +376,18 @@ const processPipeDelimitedFile = async (
 };
 
 // Helper function to read file sample
-const readFileSample = (file: File, sampleSize: number = 1024): Promise<string> => {
+const readFileSample = (
+  file: File,
+  sampleSize: number = 1024,
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     const blob = file.slice(0, sampleSize);
-    
+
     reader.onload = (e) => {
-      resolve(e.target?.result as string || "");
+      resolve((e.target?.result as string) || "");
     };
-    
+
     reader.onerror = () => reject(new Error("Error reading file sample"));
     reader.readAsText(blob, "UTF-8");
   });
@@ -378,12 +403,16 @@ export const getSupportedFormats = () => [
         extensions: [".xlsx", ".xls"],
         mimeTypes: [
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "application/vnd.ms-excel"
+          "application/vnd.ms-excel",
         ],
         description: "Archivos de Microsoft Excel con soporte multi-hoja",
-        features: ["Múltiples hojas", "Tipos detectados", "Relaciones entre hojas"],
-      }
-    ]
+        features: [
+          "Múltiples hojas",
+          "Tipos detectados",
+          "Relaciones entre hojas",
+        ],
+      },
+    ],
   },
   {
     category: "Texto Delimitado",
@@ -393,23 +422,35 @@ export const getSupportedFormats = () => [
         extensions: [".csv"],
         mimeTypes: ["text/csv"],
         description: "Valores separados por comas",
-        features: ["Auto-detección de delimitador", "Tipos inferidos", "Codificación flexible"],
+        features: [
+          "Auto-detección de delimitador",
+          "Tipos inferidos",
+          "Codificación flexible",
+        ],
       },
       {
         name: "TSV",
         extensions: [".tsv", ".tab"],
         mimeTypes: ["text/tab-separated-values"],
         description: "Valores separados por tabulaciones",
-        features: ["Formato estándar", "Headers automáticos", "Tipos inferidos"],
+        features: [
+          "Formato estándar",
+          "Headers automáticos",
+          "Tipos inferidos",
+        ],
       },
       {
         name: "Texto Delimitado",
         extensions: [".txt", ".dat"],
         mimeTypes: ["text/plain"],
         description: "Archivos de texto con delimitadores personalizados",
-        features: ["Auto-detección de formato", "Ancho fijo soportado", "Delimitadores múltiples"],
-      }
-    ]
+        features: [
+          "Auto-detección de formato",
+          "Ancho fijo soportado",
+          "Delimitadores múltiples",
+        ],
+      },
+    ],
   },
   {
     category: "Datos Estructurados",
@@ -419,79 +460,96 @@ export const getSupportedFormats = () => [
         extensions: [".json"],
         mimeTypes: ["application/json"],
         description: "JavaScript Object Notation",
-        features: ["Objetos anidados", "Arrays manejados", "Metadatos preservados"],
+        features: [
+          "Objetos anidados",
+          "Arrays manejados",
+          "Metadatos preservados",
+        ],
       },
       {
         name: "JSON Lines",
         extensions: [".jsonl", ".ndjson", ".ldjson"],
         mimeTypes: ["application/x-ndjson"],
         description: "JSON delimitado por líneas",
-        features: ["Streaming eficiente", "Una entrada por línea", "Gran volumen"],
-      }
-    ]
-  }
+        features: [
+          "Streaming eficiente",
+          "Una entrada por línea",
+          "Gran volumen",
+        ],
+      },
+    ],
+  },
 ];
 
 // Validate file before processing
-export const validateFile = (file: File): { valid: boolean; errors: string[] } => {
+export const validateFile = (
+  file: File,
+): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
+
   // Check file size (100MB limit)
   if (file.size > 100 * 1024 * 1024) {
     errors.push("El archivo es demasiado grande (máximo 100MB)");
   }
-  
+
   // Check if file is empty
   if (file.size === 0) {
     errors.push("El archivo está vacío");
   }
-  
+
   // Check if format is supported
   const format = detectFileFormat(file);
   const supportedFormats = getSupportedFormats()
-    .flatMap(cat => cat.formats)
-    .flatMap(fmt => fmt.extensions);
-  
+    .flatMap((cat) => cat.formats)
+    .flatMap((fmt) => fmt.extensions);
+
   const fileExtension = "." + file.name.split(".").pop()?.toLowerCase();
   if (!supportedFormats.includes(fileExtension) && format === "txt") {
     // Allow text files but warn about potential issues
-    errors.push("Formato de archivo no reconocido, se intentará procesar como texto");
+    errors.push(
+      "Formato de archivo no reconocido, se intentará procesar como texto",
+    );
   }
-  
+
   return {
-    valid: errors.length === 0 || (errors.length === 1 && errors[0].includes("no reconocido")),
-    errors
+    valid:
+      errors.length === 0 ||
+      (errors.length === 1 && errors[0].includes("no reconocido")),
+    errors,
   };
 };
 
 // Batch processing for multiple files
 export const processMultipleFiles = async (
   files: File[],
-  options: ProcessingOptions = {}
-): Promise<{ results: FileProcessorResult[]; errors: { file: string; error: string }[] }> => {
+  options: ProcessingOptions = {},
+): Promise<{
+  results: FileProcessorResult[];
+  errors: { file: string; error: string }[];
+}> => {
   const results: FileProcessorResult[] = [];
   const errors: { file: string; error: string }[] = [];
-  
+
   for (const file of files) {
     try {
       const validation = validateFile(file);
       if (!validation.valid) {
-        errors.push({ 
-          file: file.name, 
-          error: validation.errors.join(", ")
+        errors.push({
+          file: file.name,
+          error: validation.errors.join(", "),
         });
         continue;
       }
-      
+
       const result = await processFile(file, options);
       results.push(result);
     } catch (error) {
-      errors.push({ 
-        file: file.name, 
-        error: String(error)
+      errors.push({
+        file: file.name,
+        error: String(error),
       });
     }
   }
-  
+
   return { results, errors };
 };

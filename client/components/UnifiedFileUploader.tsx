@@ -6,23 +6,23 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  FileSpreadsheet, 
-  FileText, 
-  File as FileIcon, 
-  Database, 
+import {
+  FileSpreadsheet,
+  FileText,
+  File as FileIcon,
+  Database,
   Upload,
   CheckCircle,
   AlertCircle,
   X,
   Settings,
-  Info
+  Info,
 } from "lucide-react";
-import { 
-  processFile, 
-  getSupportedFormats, 
-  validateFile, 
-  FileProcessorResult 
+import {
+  processFile,
+  getSupportedFormats,
+  validateFile,
+  FileProcessorResult,
 } from "@/utils/fileProcessor";
 import { ExcelData } from "@shared/excel-types";
 import { generateSampleData } from "@/utils/sampleDataGenerator";
@@ -55,69 +55,71 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
   });
   const [showFormats, setShowFormats] = useState(false);
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return;
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
 
-    const file = acceptedFiles[0];
-    
-    setUploadState({
-      isUploading: true,
-      progress: 10,
-      currentFile: file.name,
-      errors: [],
-      warnings: [],
-    });
+      const file = acceptedFiles[0];
 
-    try {
-      // Validate file
-      const validation = validateFile(file);
-      if (!validation.valid) {
-        throw new Error(validation.errors.join(", "));
-      }
-
-      setUploadState(prev => ({ ...prev, progress: 30 }));
-
-      // Process file
-      const result = await processFile(file, {
-        maxRows: 50000, // Reasonable limit for browser processing
-        sampleSize: 1000,
-        autoDetectDelimiter: true,
-      });
-
-      setUploadState(prev => ({ ...prev, progress: 80 }));
-
-      // Success
-      setUploadState(prev => ({ 
-        ...prev, 
-        progress: 100,
-        warnings: result.warnings,
-        isUploading: false,
-      }));
-
-      // Pass data to parent
-      onDataLoaded(result.data, result.metadata);
-
-      // Clear success state after delay
-      setTimeout(() => {
-        setUploadState(prev => ({ 
-          ...prev, 
-          progress: 0, 
-          currentFile: undefined,
-          warnings: [],
-        }));
-      }, 3000);
-
-    } catch (error) {
       setUploadState({
-        isUploading: false,
-        progress: 0,
-        currentFile: undefined,
-        errors: [String(error)],
+        isUploading: true,
+        progress: 10,
+        currentFile: file.name,
+        errors: [],
         warnings: [],
       });
-      onError(String(error));
-    }
-  }, [onDataLoaded, onError]);
+
+      try {
+        // Validate file
+        const validation = validateFile(file);
+        if (!validation.valid) {
+          throw new Error(validation.errors.join(", "));
+        }
+
+        setUploadState((prev) => ({ ...prev, progress: 30 }));
+
+        // Process file
+        const result = await processFile(file, {
+          maxRows: 50000, // Reasonable limit for browser processing
+          sampleSize: 1000,
+          autoDetectDelimiter: true,
+        });
+
+        setUploadState((prev) => ({ ...prev, progress: 80 }));
+
+        // Success
+        setUploadState((prev) => ({
+          ...prev,
+          progress: 100,
+          warnings: result.warnings,
+          isUploading: false,
+        }));
+
+        // Pass data to parent
+        onDataLoaded(result.data, result.metadata);
+
+        // Clear success state after delay
+        setTimeout(() => {
+          setUploadState((prev) => ({
+            ...prev,
+            progress: 0,
+            currentFile: undefined,
+            warnings: [],
+          }));
+        }, 3000);
+      } catch (error) {
+        setUploadState({
+          isUploading: false,
+          progress: 0,
+          currentFile: undefined,
+          errors: [String(error)],
+          warnings: [],
+        });
+        onError(String(error));
+      }
+    },
+    [onDataLoaded, onError],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -125,7 +127,9 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
     disabled: uploadState.isUploading,
     accept: {
       // Excel files
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
       "application/vnd.ms-excel": [".xls"],
       // Text files
       "text/csv": [".csv"],
@@ -139,7 +143,8 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
 
   const loadSampleData = (type: "basic" | "complex") => {
     try {
-      const data = type === "basic" ? generateSampleData() : generateMultiSheetData();
+      const data =
+        type === "basic" ? generateSampleData() : generateMultiSheetData();
       onDataLoaded(data, {
         originalFilename: `datos_${type === "basic" ? "basicos" : "completos"}.xlsx`,
         detectedFormat: "sample",
@@ -190,15 +195,16 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
-              ${isDragActive 
-                ? "border-primary bg-primary/5 scale-105" 
-                : uploadState.isUploading 
-                  ? "border-muted bg-muted/20 cursor-not-allowed" 
-                  : "border-border hover:border-primary/50 hover:bg-accent/20"
+              ${
+                isDragActive
+                  ? "border-primary bg-primary/5 scale-105"
+                  : uploadState.isUploading
+                    ? "border-muted bg-muted/20 cursor-not-allowed"
+                    : "border-border hover:border-primary/50 hover:bg-accent/20"
               }`}
           >
             <input {...getInputProps()} disabled={uploadState.isUploading} />
-            
+
             <div className="flex flex-col items-center space-y-4">
               {uploadState.isUploading ? (
                 <>
@@ -206,7 +212,8 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                   <div className="w-full max-w-xs">
                     <Progress value={uploadState.progress} className="w-full" />
                     <p className="text-sm text-muted-foreground mt-2">
-                      {uploadState.currentFile && `Procesando: ${uploadState.currentFile}`}
+                      {uploadState.currentFile &&
+                        `Procesando: ${uploadState.currentFile}`}
                     </p>
                   </div>
                 </>
@@ -238,7 +245,8 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                   ) : (
                     <div className="space-y-2">
                       <p className="font-medium">
-                        Arrastra y suelta tu archivo aquí o haz clic para seleccionar
+                        Arrastra y suelta tu archivo aquí o haz clic para
+                        seleccionar
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Excel (.xlsx, .xls), CSV, TSV, JSON, JSONL, TXT
@@ -310,7 +318,7 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                   </h4>
                   <div className="grid gap-4">
                     {category.formats.map((format, formatIndex) => (
-                      <div 
+                      <div
                         key={formatIndex}
                         className="border rounded-lg p-4 space-y-2"
                       >
@@ -319,17 +327,24 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                             {format.name === "Excel" && (
                               <FileSpreadsheet className="h-5 w-5 text-green-600" />
                             )}
-                            {(format.name === "CSV" || format.name === "TSV" || format.name === "Texto Delimitado") && (
+                            {(format.name === "CSV" ||
+                              format.name === "TSV" ||
+                              format.name === "Texto Delimitado") && (
                               <FileText className="h-5 w-5 text-blue-600" />
                             )}
-                            {(format.name === "JSON" || format.name === "JSON Lines") && (
+                            {(format.name === "JSON" ||
+                              format.name === "JSON Lines") && (
                               <Database className="h-5 w-5 text-purple-600" />
                             )}
                             <span className="font-medium">{format.name}</span>
                           </div>
                           <div className="flex gap-1">
                             {format.extensions.map((ext) => (
-                              <Badge key={ext} variant="outline" className="text-xs">
+                              <Badge
+                                key={ext}
+                                variant="outline"
+                                className="text-xs"
+                              >
                                 {ext}
                               </Badge>
                             ))}
@@ -340,7 +355,11 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                         </p>
                         <div className="flex flex-wrap gap-1">
                           {format.features.map((feature) => (
-                            <Badge key={feature} variant="secondary" className="text-xs">
+                            <Badge
+                              key={feature}
+                              variant="secondary"
+                              className="text-xs"
+                            >
                               {feature}
                             </Badge>
                           ))}
@@ -378,7 +397,7 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
                 </div>
               </div>
             </Button>
-            
+
             <Button
               onClick={() => loadSampleData("complex")}
               className="h-auto p-4 flex flex-col items-center space-y-2"
@@ -393,10 +412,11 @@ export const UnifiedFileUploader: React.FC<UnifiedFileUploaderProps> = ({
               </div>
             </Button>
           </div>
-          
+
           <div className="text-center mt-4">
             <p className="text-xs text-muted-foreground">
-              Los datos de ejemplo te permiten explorar todas las funcionalidades
+              Los datos de ejemplo te permiten explorar todas las
+              funcionalidades
             </p>
           </div>
         </CardContent>

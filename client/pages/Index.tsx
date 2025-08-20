@@ -256,7 +256,6 @@ export default function Index() {
     setIsFileLoading(false);
   }, []);
 
-
   const filteredAndSortedData = useMemo(() => {
     if (!excelData) return [];
 
@@ -572,14 +571,14 @@ export default function Index() {
     });
 
     // Create CSV for quick export
-    const headers = selectedColumns.map(col =>
-      excelData.columns.find(c => c.key === col)?.label || col
+    const headers = selectedColumns.map(
+      (col) => excelData.columns.find((c) => c.key === col)?.label || col,
     );
     const csvContent = [
       headers.join(","),
-      ...exportData.map(row =>
-        selectedColumns.map(col => `"${String(row[col] || "")}"`).join(",")
-      )
+      ...exportData.map((row) =>
+        selectedColumns.map((col) => `"${String(row[col] || "")}"`).join(","),
+      ),
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -592,7 +591,6 @@ export default function Index() {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
-
 
   const switchSheet = async (sheetName: string) => {
     if (!excelData?.sheetsData) return;
@@ -711,14 +709,18 @@ export default function Index() {
 
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            <Suspense fallback={
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                  <p className="text-muted-foreground">Cargando interfaz...</p>
-                </CardContent>
-              </Card>
-            }>
+            <Suspense
+              fallback={
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-muted-foreground">
+                      Cargando interfaz...
+                    </p>
+                  </CardContent>
+                </Card>
+              }
+            >
               <UnifiedFileUploader
                 onDataLoaded={handleDataLoaded}
                 onError={handleFileError}
