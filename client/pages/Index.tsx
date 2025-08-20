@@ -795,7 +795,7 @@ export default function Index() {
 
               {/* Sheet Tabs */}
               {excelData.sheetsData && excelData.sheetNames.length > 1 && (
-                <div className="flex gap-1 mt-3">
+                <div className="flex gap-responsive-sm mt-responsive">
                   {excelData.sheetNames.map((sheetName) => (
                     <Button
                       key={sheetName}
@@ -806,12 +806,12 @@ export default function Index() {
                       }
                       size="sm"
                       onClick={() => switchSheet(sheetName)}
-                      className="h-7 text-xs"
+                      className="button-responsive text-responsive-xs"
                     >
                       {sheetName}
                       {excelData.sheetsData &&
                         excelData.sheetsData[sheetName] && (
-                          <Badge variant="secondary" className="ml-2 text-xs">
+                          <Badge variant="secondary" className="ml-2 text-responsive-xs">
                             {excelData.sheetsData[sheetName].rows.length}
                           </Badge>
                         )}
