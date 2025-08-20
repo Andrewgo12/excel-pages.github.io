@@ -703,9 +703,16 @@ export default function Index() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>
-                    Datos ({filteredAndSortedData.length.toLocaleString()} filas)
-                  </CardTitle>
+                  <div>
+                    <CardTitle>
+                      Datos ({filteredAndSortedData.length.toLocaleString()} filas)
+                    </CardTitle>
+                    {filteredAndSortedData.length !== excelData.rows.length && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Filtrado de {excelData.rows.length.toLocaleString()} filas totales
+                      </p>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <Select
                       value={pagination.pageSize.toString()}
