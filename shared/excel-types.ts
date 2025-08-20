@@ -4,11 +4,17 @@ export interface ExcelColumn {
   type: 'text' | 'number' | 'date' | 'boolean';
 }
 
+export interface SheetData {
+  columns: ExcelColumn[];
+  rows: Record<string, any>[];
+}
+
 export interface ExcelData {
   columns: ExcelColumn[];
   rows: Record<string, any>[];
   sheetNames: string[];
   activeSheet: string;
+  sheetsData?: Record<string, SheetData>;
 }
 
 export interface FilterCondition {
