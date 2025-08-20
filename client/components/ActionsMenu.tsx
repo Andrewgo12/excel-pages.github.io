@@ -95,7 +95,11 @@ export function ActionsMenu({
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onStatsOpen} className="text-xs">
             <BarChart3 className="h-3 w-3 mr-2" />
-            Estadísticas Avanzadas
+            Estadísticas Básicas
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={onAdvancedAnalyticsOpen} className="text-xs">
+            <Target className="h-3 w-3 mr-2" />
+            Análisis Avanzado
           </DropdownMenuItem>
           <DropdownMenuItem onClick={onVisualizationOpen} className="text-xs">
             <TrendingUp className="h-3 w-3 mr-2" />
