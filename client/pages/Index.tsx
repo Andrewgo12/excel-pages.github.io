@@ -1238,6 +1238,71 @@ export default function Index() {
               </Card>
             )}
 
+            {/* Bulk Operations Panel */}
+            {isBulkOperationsOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Operaciones Masivas y Transformaciones
+                    <Button variant="ghost" size="sm" onClick={() => setIsBulkOperationsOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <BulkOperations
+                    data={filteredAndSortedData}
+                    columns={excelData.columns}
+                    selectedColumns={selectedColumns}
+                    onDataChange={handleDataChange}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Enhanced Export Panel */}
+            {isEnhancedExportOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Exportación Avanzada
+                    <Button variant="ghost" size="sm" onClick={() => setIsEnhancedExportOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <EnhancedExport
+                    data={filteredAndSortedData}
+                    columns={excelData.columns}
+                    selectedColumns={selectedColumns}
+                    filename={`${excelData.activeSheet}-export`}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Data Validation Panel */}
+            {isDataValidationOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Validación y Calidad de Datos
+                    <Button variant="ghost" size="sm" onClick={() => setIsDataValidationOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DataValidation
+                    data={filteredAndSortedData}
+                    columns={excelData.columns}
+                    selectedColumns={selectedColumns}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
             {/* Configuration Manager Panel */}
             {isConfigurationOpen && (
               <Card>
