@@ -191,52 +191,33 @@ export default function Index() {
   const [regexError, setRegexError] = useState<string | null>(null);
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const fileData = e.target?.result;
-        const workbook = XLSX.read(fileData, { type: "binary" });
-        const sheetNames = workbook.SheetNames;
-        const activeSheet = sheetNames[0];
-        const worksheet = workbook.Sheets[activeSheet];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    try {
+      // Show loading state
+      setIsFileLoading(true);
 
-        if (jsonData.length === 0) return;
+      // Use advanced multi-sheet loader
+      const { data, analysis } = await loadCompleteExcelFile(file);
 
-        const headers = jsonData[0] as string[];
-        const rows = jsonData.slice(1).map((row: any[], index) => {
-          const rowData: Record<string, any> = { _id: index };
-          headers.forEach((header, colIndex) => {
-            rowData[header] = row[colIndex] || "";
-          });
-          return rowData;
-        });
+      setExcelData(data);
+      setMultiSheetAnalysis(analysis);
+      setSelectedColumns(data.columns.slice(0, 8).map(c => c.key)); // Show first 8 columns by default
+      setPagination((prev) => ({ ...prev, totalRows: data.rows.length, page: 1 }));
 
-        const columns: ExcelColumn[] = headers.map((header) => ({
-          key: header,
-          label: header,
-          type: inferColumnType(rows, header),
-        }));
+      // Reset filters and search when new file is loaded
+      setGlobalSearch("");
+      setColumnFilters({});
+      setFilterGroups([]);
 
-        const data: ExcelData = {
-          columns,
-          rows,
-          sheetNames,
-          activeSheet,
-        };
-
-        setExcelData(data);
-        setSelectedColumns(headers.slice(0, 8)); // Show first 8 columns by default
-        setPagination((prev) => ({ ...prev, totalRows: rows.length, page: 1 }));
-      } catch (error) {
-        console.error("Error reading Excel file:", error);
-      }
-    };
-    reader.readAsBinaryString(file);
+    } catch (error) {
+      console.error("Error reading Excel file:", error);
+      setFileError("Error al cargar el archivo Excel. Verifique que el archivo no esté corrupto.");
+    } finally {
+      setIsFileLoading(false);
+    }
   }, []);
 
   const inferColumnType = (
