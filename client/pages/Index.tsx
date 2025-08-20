@@ -63,6 +63,7 @@ import { ConfigurationManager } from "@/components/ConfigurationManager";
 import { BulkOperations } from "@/components/BulkOperations";
 import { EnhancedExport } from "@/components/EnhancedExport";
 import { DataValidation } from "@/components/DataValidation";
+import { ActionsMenu } from "@/components/ActionsMenu";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
@@ -872,69 +873,22 @@ export default function Index() {
                   )}
                   )
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsStatsOpen(!isStatsOpen)}
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Estadísticas</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsVisualizationOpen(!isVisualizationOpen)}
-                >
-                  <TrendingUp className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Gráficos</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsAggregationOpen(!isAggregationOpen)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Agregaciones</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Operaciones</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsDataValidationOpen(!isDataValidationOpen)}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Validación</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsConfigurationOpen(!isConfigurationOpen)}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Configuración</span>
-                </Button>
+                <ActionsMenu
+                  onValidationOpen={() => setIsDataValidationOpen(!isDataValidationOpen)}
+                  onConfigurationOpen={() => setIsConfigurationOpen(!isConfigurationOpen)}
+                  onAggregationOpen={() => setIsAggregationOpen(!isAggregationOpen)}
+                  onBulkOperationsOpen={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}
+                  onExportOpen={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}
+                  onStatsOpen={() => setIsStatsOpen(!isStatsOpen)}
+                  onVisualizationOpen={() => setIsVisualizationOpen(!isVisualizationOpen)}
+                />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={exportFilteredData}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Exportar</span>
+                  <span className="hidden sm:inline">Exportar Rápido</span>
                 </Button>
                 <Button
                   variant="outline"
