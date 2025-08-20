@@ -895,13 +895,15 @@ export default function Index() {
                   Avanzado
                 </Button>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-responsive-sm">
+                <FontScaleControl />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => togglePanel("columnSelector")}
+                  className="button-responsive"
                 >
-                  <Columns className="h-4 w-4 mr-2" />
+                  <Columns className="h-responsive-input w-responsive-input mr-2" />
                   <span className="hidden sm:inline">Columnas</span> (
                   {selectedColumns.length})
                 </Button>
@@ -909,8 +911,9 @@ export default function Index() {
                   variant="outline"
                   size="sm"
                   onClick={() => togglePanel("filter")}
+                  className="button-responsive"
                 >
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="h-responsive-input w-responsive-input mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
                   {filterGroups.reduce(
                     (sum, group) => sum + group.conditions.length,
