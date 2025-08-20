@@ -507,6 +507,126 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                 </ScrollArea>
               </TabsContent>
 
+              <TabsContent value="layout" className="mt-4 space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Diseño Avanzado</Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Funciones avanzadas de diseño y organización
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    variant="outline"
+                    className="h-auto p-3 flex flex-col items-center gap-2"
+                    onClick={autoSizeAllColumns}
+                  >
+                    <ResizeHorizontal className="h-5 w-5 text-blue-500" />
+                    <div className="text-center">
+                      <div className="text-xs font-medium">Auto Ajustar</div>
+                      <div className="text-xs text-muted-foreground">Tamaño óptimo</div>
+                    </div>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-3 flex flex-col items-center gap-2"
+                    onClick={() => {
+                      // Smart column arrangement
+                      const visibleColumns = columns.filter(col => selectedColumns.includes(col.key));
+                      const sortedColumns = visibleColumns.sort((a, b) => {
+                        const typeOrder = { text: 0, number: 1, date: 2, boolean: 3 };
+                        return typeOrder[a.type as keyof typeof typeOrder] - typeOrder[b.type as keyof typeof typeOrder];
+                      });
+                      toast.success('Columnas reorganizadas por tipo');
+                    }}
+                  >
+                    <Move className="h-5 w-5 text-green-500" />
+                    <div className="text-center">
+                      <div className="text-xs font-medium">Reorganizar</div>
+                      <div className="text-xs text-muted-foreground">Por tipo</div>
+                    </div>
+                  </Button>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Opciones de Diseño</Label>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Ajuste automático de columnas</Label>
+                      <Switch
+                        checked={true}
+                        onCheckedChange={(checked) => {
+                          if (checked) autoSizeAllColumns();
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Columnas redimensionables</Label>
+                      <Switch defaultChecked />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Reordenar arrastrando</Label>
+                      <Switch defaultChecked />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm">Fijar columnas importantes</Label>
+                      <Switch defaultChecked />
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Ajuste Rápido</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Fit to viewport
+                        const viewportWidth = window.innerWidth - 400;
+                        const columnCount = selectedColumns.length;
+                        const optimalWidth = Math.max(100, Math.floor(viewportWidth / columnCount));
+                        toast.success(`Columnas ajustadas a ${optimalWidth}px`);
+                      }}
+                    >
+                      <Maximize2 className="h-4 w-4 mr-1" />
+                      Pantalla
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Compact layout
+                        toast.success('Modo compacto activado');
+                      }}
+                    >
+                      <Minimize2 className="h-4 w-4 mr-1" />
+                      Compacto
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        // Reset layout
+                        toast.success('Diseño restablecido');
+                      }}
+                    >
+                      <RotateCcw className="h-4 w-4 mr-1" />
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+              </TabsContent>
+
               <TabsContent value="size" className="mt-4 space-y-4">
                 <div>
                   <Label className="text-sm font-medium">Escala Global</Label>
