@@ -49,6 +49,7 @@ interface ActionsMenuProps {
   onPerformanceOpen: () => void;
   onCollaborationOpen: () => void;
   onAdvancedAnalyticsOpen: () => void;
+  onMachineLearningOpen: () => void;
   onSecurityOpen: () => void;
   onCloudSyncOpen: () => void;
   onAIInsightsOpen: () => void;
