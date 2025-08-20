@@ -78,10 +78,10 @@ export function useFontScale() {
 }
 
 export const FONT_SCALE_OPTIONS = [
-  { value: "xs" as FontScale, label: "Extra Peque��o", percentage: "75%" },
-  { value: "sm" as FontScale, label: "Pequeño", percentage: "85%" },
-  { value: "base" as FontScale, label: "Compacto (Base)", percentage: "90%" },
-  { value: "lg" as FontScale, label: "Normal", percentage: "100%" },
-  { value: "xl" as FontScale, label: "Grande", percentage: "115%" },
-  { value: "2xl" as FontScale, label: "Extra Grande", percentage: "130%" },
+  { value: "font-scale-xs" as FontScale, label: "Extra Pequeño", percentage: "75%" },
+  { value: "font-scale-sm" as FontScale, label: "Pequeño", percentage: "85%" },
+  { value: "font-scale-base" as FontScale, label: "Compacto (Base)", percentage: "90%" },
+  { value: "font-scale-lg" as FontScale, label: "Normal", percentage: "100%" },
+  { value: "font-scale-xl" as FontScale, label: "Grande", percentage: "115%" },
+  { value: "font-scale-2xl" as FontScale, label: "Extra Grande", percentage: "130%" },
 ];
