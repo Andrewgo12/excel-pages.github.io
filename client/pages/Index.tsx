@@ -704,6 +704,9 @@ export default function Index() {
             <p className="text-muted-foreground mt-1">
               Herramienta interactiva para visualización y exploración de datos
             </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Desarrollado por <span className="font-medium">Kevin Andrés González Dinas</span>
+            </p>
           </div>
         </div>
 
