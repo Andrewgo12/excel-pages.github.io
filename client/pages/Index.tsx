@@ -46,8 +46,8 @@ export default function Index() {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const data = e.target?.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
+        const fileData = e.target?.result;
+        const workbook = XLSX.read(fileData, { type: 'binary' });
         const sheetNames = workbook.SheetNames;
         const activeSheet = sheetNames[0];
         const worksheet = workbook.Sheets[activeSheet];
