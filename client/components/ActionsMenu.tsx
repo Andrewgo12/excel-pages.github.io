@@ -201,6 +201,10 @@ export function ActionsMenu({
             <Cloud className="h-3 w-3 mr-2" />
             Sincronización en la Nube
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={onFontSettingsOpen} className="text-xs">
+            <Type className="h-3 w-3 mr-2" />
+            Configuración de Fuentes
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={onConfigurationOpen} className="text-xs">
             <Settings className="h-3 w-3 mr-2" />
             Configuración Avanzada
