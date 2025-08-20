@@ -103,6 +103,11 @@ const AdvancedAnalytics = lazy(() =>
     default: m.AdvancedAnalytics,
   })),
 );
+const MachineLearning = lazy(() =>
+  import("@/components/MachineLearning").then((m) => ({
+    default: m.MachineLearning,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { FontScaleControl } from "@/components/FontScaleControl";
