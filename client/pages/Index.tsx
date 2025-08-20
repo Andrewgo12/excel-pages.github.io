@@ -1568,7 +1568,7 @@ export default function Index() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
-                    Visualización de Datos
+                    Visualizaci��n de Datos
                     <Button
                       variant="ghost"
                       size="sm"
@@ -1867,6 +1867,28 @@ export default function Index() {
                 />
               </Suspense>
             )}
+
+            {/* Machine Learning Panel */}
+            {isMachineLearningOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando Machine Learning...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <MachineLearning
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
@@ -1955,7 +1977,7 @@ export default function Index() {
                                           <span className="text-responsive-xs text-primary">
                                             {sortDirection === "asc"
                                               ? "↑"
-                                              : "↓"}
+                                              : "��"}
                                           </span>
                                         )}
                                       </div>
