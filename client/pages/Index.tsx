@@ -100,6 +100,7 @@ const RealTimeAnalytics = lazy(() =>
 );
 
 import { ActionsMenu } from "@/components/ActionsMenu";
+import { FontScaleControl } from "@/components/FontScaleControl";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
