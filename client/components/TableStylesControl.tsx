@@ -63,7 +63,7 @@ import {
   Sparkles,
   Zap,
   Layout,
-  ResizeHorizontal,
+  MoveHorizontal,
   MoreHorizontal,
   X,
   Plus,
