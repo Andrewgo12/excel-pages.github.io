@@ -952,7 +952,7 @@ export default function Index() {
                     togglePanel("realTimeAnalytics")
                   }
                   onAdvancedSearchOpen={() => togglePanel("advancedSearch")}
-                  onDataCleaningOpen={() => togglePanel("bulkOperations")}
+                  onDataCleaningOpen={() => togglePanel("dataCleaning")}
                   onPerformanceOpen={() => togglePanel("stats")}
                   onCollaborationOpen={() => togglePanel("configuration")}
                   onSecurityOpen={() => togglePanel("dataValidation")}
