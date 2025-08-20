@@ -58,6 +58,9 @@ export default function Index() {
   const [isVisualizationOpen, setIsVisualizationOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
+  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
+  const [searchMode, setSearchMode] = useState<'normal' | 'regex' | 'pattern'>('normal');
+  const [regexError, setRegexError] = useState<string | null>(null);
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
