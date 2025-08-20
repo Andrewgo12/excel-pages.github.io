@@ -385,6 +385,37 @@ export default function Index() {
     setFilterGroups([]);
   };
 
+  const loadMultiSheetData = () => {
+    const multiData = generateMultiSheetData();
+    setExcelData(multiData);
+    setSelectedColumns(multiData.columns.slice(0, 8).map(c => c.key));
+    setPagination(prev => ({ ...prev, totalRows: multiData.rows.length, page: 1 }));
+    setGlobalSearch('');
+    setColumnFilters({});
+    setFilterGroups([]);
+  };
+
+  const switchSheet = (sheetName: string) => {
+    if (!excelData?.sheetsData) return;
+
+    const sheetData = excelData.sheetsData[sheetName];
+    if (!sheetData) return;
+
+    const newData = {
+      ...excelData,
+      activeSheet: sheetName,
+      columns: sheetData.columns,
+      rows: sheetData.rows
+    };
+
+    setExcelData(newData);
+    setSelectedColumns(sheetData.columns.slice(0, 8).map(c => c.key));
+    setPagination(prev => ({ ...prev, totalRows: sheetData.rows.length, page: 1 }));
+    setGlobalSearch('');
+    setColumnFilters({});
+    setFilterGroups([]);
+  };
+
   if (!excelData) {
     return (
       <div className="min-h-screen bg-background">
@@ -395,7 +426,7 @@ export default function Index() {
               Excel Data Explorer
             </h1>
             <p className="text-muted-foreground mt-1">
-              Herramienta interactiva para visualizaci��n y exploración de datos Excel
+              Herramienta interactiva para visualización y exploración de datos Excel
             </p>
           </div>
         </div>
