@@ -469,6 +469,39 @@ export default function Index() {
     setFilterGroups([]);
   };
 
+  const getCurrentConfiguration = () => ({
+    selectedColumns,
+    filterGroups,
+    globalSearch,
+    searchMode,
+    columnFilters,
+    sortColumn,
+    sortDirection,
+    pagination
+  });
+
+  const loadConfiguration = (config: any) => {
+    setSelectedColumns(config.config.selectedColumns || []);
+    setFilterGroups(config.config.filterGroups || []);
+    setGlobalSearch(config.config.globalSearch || '');
+    setSearchMode(config.config.searchMode || 'normal');
+    setColumnFilters(config.config.columnFilters || {});
+    setSortColumn(config.config.sortColumn || null);
+    setSortDirection(config.config.sortDirection || 'asc');
+    setPagination(prev => ({ ...prev, ...config.config.pagination }));
+  };
+
+  const handlePreferencesChange = (preferences: any) => {
+    // Apply preferences to current state
+    if (preferences.defaultPageSize !== pagination.pageSize) {
+      setPagination(prev => ({ ...prev, pageSize: preferences.defaultPageSize, page: 1 }));
+    }
+
+    if (preferences.defaultSearchMode !== searchMode) {
+      setSearchMode(preferences.defaultSearchMode);
+    }
+  };
+
   if (!excelData) {
     return (
       <div className="min-h-screen bg-background">
