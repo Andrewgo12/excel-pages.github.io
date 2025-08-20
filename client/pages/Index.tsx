@@ -132,7 +132,7 @@ const SheetNavigator = lazy(() =>
 );
 
 import { ActionsMenu } from "@/components/ActionsMenu";
-import { FontScaleControl } from "@/components/FontScaleControl";
+import { TableStylesControl } from "@/components/TableStylesControl";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
@@ -1077,7 +1077,10 @@ export default function Index() {
                 </Button>
               </div>
               <div className="flex flex-wrap gap-responsive-sm">
-                <FontScaleControl />
+                <TableStylesControl
+                  columns={excelData.columns}
+                  selectedColumns={selectedColumns}
+                />
                 <Button
                   variant="outline"
                   size="sm"
@@ -1126,6 +1129,9 @@ export default function Index() {
                   }
                   onMachineLearningOpen={() => togglePanel("machineLearning")}
                   onFontSettingsOpen={() => togglePanel("fontSettings")}
+                  onTableCustomizationOpen={() =>
+                    togglePanel("tableCustomization")
+                  }
                 />
                 <Button
                   variant="outline"

@@ -60,6 +60,7 @@ interface ActionsMenuProps {
   onSecurityOpen: () => void;
   onCloudSyncOpen: () => void;
   onAIInsightsOpen: () => void;
+  onTableCustomizationOpen: () => void;
 }
 
 export function ActionsMenu({
@@ -82,6 +83,7 @@ export function ActionsMenu({
   onAdvancedAnalyticsOpen,
   onMachineLearningOpen,
   onFontSettingsOpen,
+  onTableCustomizationOpen,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu>
@@ -234,6 +236,13 @@ export function ActionsMenu({
             ⚙️ Configuración
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-48">
+            <DropdownMenuItem
+              onClick={onTableCustomizationOpen}
+              className="text-xs"
+            >
+              <Sparkles className="h-3 w-3 mr-2" />
+              Personalizar Tabla
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={onFontSettingsOpen} className="text-xs">
               <Type className="h-3 w-3 mr-2" />
               Configuración de Fuentes
