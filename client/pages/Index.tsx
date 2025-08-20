@@ -745,18 +745,35 @@ export default function Index() {
                             {selectedColumns.map(columnKey => {
                               const column = excelData.columns.find(c => c.key === columnKey);
                               return (
-                                <TableHead
-                                  key={columnKey}
-                                  className="cursor-pointer hover:bg-muted/50"
-                                  onClick={() => handleSort(columnKey)}
-                                >
-                                  <div className="flex items-center gap-1">
-                                    {column?.label}
-                                    {sortColumn === columnKey && (
-                                      <span className="text-xs">
-                                        {sortDirection === 'asc' ? '↑' : '↓'}
-                                      </span>
-                                    )}
+                                <TableHead key={columnKey} className="p-0">
+                                  <div className="p-3">
+                                    <div
+                                      className="flex items-center gap-1 cursor-pointer hover:text-primary"
+                                      onClick={() => handleSort(columnKey)}
+                                    >
+                                      <span className="font-medium">{column?.label}</span>
+                                      <Badge variant="secondary" className="text-xs">
+                                        {column?.type}
+                                      </Badge>
+                                      {sortColumn === columnKey && (
+                                        <span className="text-xs text-primary">
+                                          {sortDirection === 'asc' ? '↑' : '↓'}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <Input
+                                      placeholder={`Filtrar ${column?.label}...`}
+                                      value={columnFilters[columnKey] || ''}
+                                      onChange={(e) => {
+                                        e.stopPropagation();
+                                        setColumnFilters(prev => ({
+                                          ...prev,
+                                          [columnKey]: e.target.value
+                                        }));
+                                      }}
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="h-7 text-xs mt-2"
+                                    />
                                   </div>
                                 </TableHead>
                               );
