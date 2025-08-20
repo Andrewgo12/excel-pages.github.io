@@ -132,7 +132,7 @@ const SheetNavigator = lazy(() =>
 );
 
 import { ActionsMenu } from "@/components/ActionsMenu";
-import { FontScaleControl } from "@/components/FontScaleControl";
+import { TableStylesControl } from "@/components/TableStylesControl";
 
 const OPERATORS = [
   { value: "equals", label: "Igual a" },
