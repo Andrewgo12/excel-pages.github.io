@@ -580,10 +580,14 @@ export default function Index() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Buscar en todos los datos..."
+                    placeholder={
+                      searchMode === 'regex' ? 'Buscar con regex...' :
+                      searchMode === 'pattern' ? 'Buscar con patrones (* ?)...' :
+                      'Buscar en todos los datos...'
+                    }
                     value={globalSearch}
                     onChange={(e) => setGlobalSearch(e.target.value)}
-                    className="pl-10 pr-8"
+                    className={`pl-10 pr-8 ${regexError ? 'border-destructive' : ''}`}
                   />
                   {globalSearch && (
                     <Button
@@ -596,6 +600,34 @@ export default function Index() {
                     </Button>
                   )}
                 </div>
+
+                <div className="flex gap-2 mt-2">
+                  <Select value={searchMode} onValueChange={(value: 'normal' | 'regex' | 'pattern') => setSearchMode(value)}>
+                    <SelectTrigger className="w-32 h-7 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="normal">Normal</SelectItem>
+                      <SelectItem value="pattern">Patrones</SelectItem>
+                      <SelectItem value="regex">Regex</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsAdvancedSearchOpen(!isAdvancedSearchOpen)}
+                    className="h-7 text-xs"
+                  >
+                    <Settings className="h-3 w-3 mr-1" />
+                    Avanzado
+                  </Button>
+                </div>
+
+                {regexError && (
+                  <div className="text-xs text-destructive mt-1">{regexError}</div>
+                )}
+
                 {Object.keys(columnFilters).some(key => columnFilters[key]) && (
                   <Button
                     variant="ghost"
