@@ -521,7 +521,7 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     className="h-auto p-3 flex flex-col items-center gap-2"
                     onClick={autoSizeAllColumns}
                   >
-                    <ResizeHorizontal className="h-5 w-5 text-blue-500" />
+                    <MoveHorizontal className="h-5 w-5 text-blue-500" />
                     <div className="text-center">
                       <div className="text-xs font-medium">Auto Ajustar</div>
                       <div className="text-xs text-muted-foreground">Tamaño óptimo</div>
