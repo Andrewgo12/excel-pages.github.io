@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { FontScaleProvider } from "@/hooks/use-font-scale";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import TableStylesTest from "./pages/TableStylesTest";
 
 const queryClient = new QueryClient();
 
