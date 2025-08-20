@@ -503,6 +503,28 @@ export default function Index() {
               <p className="text-sm lg:text-base text-muted-foreground mt-1">
                 {excelData.rows.length.toLocaleString()} filas • {excelData.columns.length} columnas • Hoja: {excelData.activeSheet}
               </p>
+
+              {/* Sheet Tabs */}
+              {excelData.sheetsData && excelData.sheetNames.length > 1 && (
+                <div className="flex gap-1 mt-3">
+                  {excelData.sheetNames.map(sheetName => (
+                    <Button
+                      key={sheetName}
+                      variant={excelData.activeSheet === sheetName ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => switchSheet(sheetName)}
+                      className="h-7 text-xs"
+                    >
+                      {sheetName}
+                      {excelData.sheetsData && excelData.sheetsData[sheetName] && (
+                        <Badge variant="secondary" className="ml-2 text-xs">
+                          {excelData.sheetsData[sheetName].rows.length}
+                        </Badge>
+                      )}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex flex-col lg:flex-row gap-4 lg:items-center">
               <div className="flex-1 max-w-md">
