@@ -27,20 +27,8 @@ export interface FilterCondition {
     | "less"
     | "between"
     | "not_equals"
-    | "not_contains"
     | "starts_with"
-    | "ends_with"
-    | "greater_equal"
-    | "less_equal"
-    | "is_empty"
-    | "is_not_empty"
-    | "date_today"
-    | "date_yesterday"
-    | "date_this_week"
-    | "date_this_month"
-    | "date_this_year"
-    | "date_last_7_days"
-    | "date_last_30_days";
+    | "ends_with";
   value: string | number | Date;
   secondValue?: string | number | Date; // For 'between' operator
 }
