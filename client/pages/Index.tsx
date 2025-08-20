@@ -98,6 +98,11 @@ const RealTimeAnalytics = lazy(() =>
     default: m.RealTimeAnalytics,
   })),
 );
+const AdvancedAnalytics = lazy(() =>
+  import("@/components/AdvancedAnalytics").then((m) => ({
+    default: m.AdvancedAnalytics,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { FontScaleControl } from "@/components/FontScaleControl";
