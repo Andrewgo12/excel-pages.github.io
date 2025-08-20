@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-type FontScale = "xs" | "sm" | "base" | "lg" | "xl" | "2xl";
+type FontScale =
+  | "font-scale-xs"
+  | "font-scale-sm"
+  | "font-scale-base"
+  | "font-scale-lg"
+  | "font-scale-xl"
+  | "font-scale-2xl";
 
 interface FontScaleContextType {
   fontScale: FontScale;
@@ -13,20 +19,21 @@ const FontScaleContext = createContext<FontScaleContextType | undefined>(
 );
 
 const FONT_SCALE_VALUES = {
-  xs: 0.75,
-  sm: 0.85,
-  base: 0.9,
-  lg: 1.0,
-  xl: 1.15,
-  "2xl": 1.3,
+  "font-scale-xs": 0.75,
+  "font-scale-sm": 0.85,
+  "font-scale-base": 0.9,
+  "font-scale-lg": 1.0,
+  "font-scale-xl": 1.15,
+  "font-scale-2xl": 1.3,
 };
 
 export function FontScaleProvider({ children }: { children: React.ReactNode }) {
-  const [fontScale, setFontScaleState] = useState<FontScale>("base");
+  const [fontScale, setFontScaleState] = useState<FontScale>("font-scale-base");
 
   const applyScale = (element?: HTMLElement) => {
     const target = element || document.documentElement;
-    const scaleValue = FONT_SCALE_VALUES[fontScale];
+    const scaleValue =
+      FONT_SCALE_VALUES[fontScale] || FONT_SCALE_VALUES["font-scale-base"];
     const spacingScale = scaleValue;
 
     target.style.setProperty("--font-scale", scaleValue.toString());
@@ -37,7 +44,7 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
       /font-scale-\w+/g,
       "",
     );
-    document.body.classList.add(`font-scale-${fontScale}`);
+    document.body.classList.add(fontScale || "font-scale-base");
   };
 
   const setFontScale = (scale: FontScale) => {
@@ -57,7 +64,9 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    applyScale();
+    if (fontScale) {
+      applyScale();
+    }
   }, [fontScale]);
 
   return (
@@ -76,10 +85,22 @@ export function useFontScale() {
 }
 
 export const FONT_SCALE_OPTIONS = [
-  { value: "xs" as FontScale, label: "Extra Peque��o", percentage: "75%" },
-  { value: "sm" as FontScale, label: "Pequeño", percentage: "85%" },
-  { value: "base" as FontScale, label: "Compacto (Base)", percentage: "90%" },
-  { value: "lg" as FontScale, label: "Normal", percentage: "100%" },
-  { value: "xl" as FontScale, label: "Grande", percentage: "115%" },
-  { value: "2xl" as FontScale, label: "Extra Grande", percentage: "130%" },
+  {
+    value: "font-scale-xs" as FontScale,
+    label: "Extra Pequeño",
+    percentage: "75%",
+  },
+  { value: "font-scale-sm" as FontScale, label: "Pequeño", percentage: "85%" },
+  {
+    value: "font-scale-base" as FontScale,
+    label: "Compacto (Base)",
+    percentage: "90%",
+  },
+  { value: "font-scale-lg" as FontScale, label: "Normal", percentage: "100%" },
+  { value: "font-scale-xl" as FontScale, label: "Grande", percentage: "115%" },
+  {
+    value: "font-scale-2xl" as FontScale,
+    label: "Extra Grande",
+    percentage: "130%",
+  },
 ];
