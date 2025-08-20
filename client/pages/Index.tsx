@@ -1925,6 +1925,23 @@ export default function Index() {
                 />
               </Suspense>
             )}
+
+            {/* Font Settings Panel */}
+            {isFontSettingsOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando configuración de fuentes...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <FontSettings onClose={() => setActivePanel(null)} />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
