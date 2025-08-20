@@ -1089,6 +1089,27 @@ export default function Index() {
                 <TableStylesControl
                   columns={excelData.columns}
                   selectedColumns={selectedColumns}
+                  onCustomizationChange={(customization) => {
+                    setTableCustomization(customization);
+                  }}
+                  onColumnResize={(columnKey, width) => {
+                    // Handle column resize - we can extend this later if needed
+                    console.log("Column resized:", columnKey, width);
+                  }}
+                  onColumnReorder={(fromIndex, toIndex) => {
+                    // Handle column reorder
+                    const newSelectedColumns = [...selectedColumns];
+                    const [removed] = newSelectedColumns.splice(fromIndex, 1);
+                    newSelectedColumns.splice(toIndex, 0, removed);
+                    setSelectedColumns(newSelectedColumns);
+                  }}
+                  onColumnToggle={(columnKey, visible) => {
+                    if (visible && !selectedColumns.includes(columnKey)) {
+                      setSelectedColumns([...selectedColumns, columnKey]);
+                    } else if (!visible && selectedColumns.includes(columnKey)) {
+                      setSelectedColumns(selectedColumns.filter(col => col !== columnKey));
+                    }
+                  }}
                 />
                 <Button
                   variant="outline"
