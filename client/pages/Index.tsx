@@ -57,12 +57,14 @@ import {
   DatasetStats,
   ColumnStats,
 } from "@/utils/statisticalAnalysis";
-import { DataVisualization } from "@/components/DataVisualization";
-import { DataAggregation } from "@/components/DataAggregation";
-import { ConfigurationManager } from "@/components/ConfigurationManager";
-import { BulkOperations } from "@/components/BulkOperations";
-import { EnhancedExport } from "@/components/EnhancedExport";
-import { DataValidation } from "@/components/DataValidation";
+// Lazy loaded components for performance optimization
+const DataVisualization = lazy(() => import("@/components/DataVisualization").then(m => ({ default: m.DataVisualization })));
+const DataAggregation = lazy(() => import("@/components/DataAggregation").then(m => ({ default: m.DataAggregation })));
+const ConfigurationManager = lazy(() => import("@/components/ConfigurationManager").then(m => ({ default: m.ConfigurationManager })));
+const BulkOperations = lazy(() => import("@/components/BulkOperations").then(m => ({ default: m.BulkOperations })));
+const EnhancedExport = lazy(() => import("@/components/EnhancedExport").then(m => ({ default: m.EnhancedExport })));
+const DataValidation = lazy(() => import("@/components/DataValidation").then(m => ({ default: m.DataValidation })));
+
 import { ActionsMenu } from "@/components/ActionsMenu";
 
 const OPERATORS = [
