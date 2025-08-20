@@ -57,6 +57,7 @@ export default function Index() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [isVisualizationOpen, setIsVisualizationOpen] = useState(false);
+  const [isAggregationOpen, setIsAggregationOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
