@@ -574,10 +574,22 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Button onClick={addFilterGroup} className="w-full mb-4">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Agregar Grupo de Filtros
-                  </Button>
+                  <div className="flex gap-2 mb-4">
+                    <Button onClick={addFilterGroup} className="flex-1">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Grupo
+                    </Button>
+                    {filterGroups.length > 0 && (
+                      <Button
+                        variant="outline"
+                        onClick={() => setFilterGroups([])}
+                        className="flex-1"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Limpiar Todo
+                      </Button>
+                    )}
+                  </div>
                   
                   <ScrollArea className="h-96">
                     <div className="space-y-4">
