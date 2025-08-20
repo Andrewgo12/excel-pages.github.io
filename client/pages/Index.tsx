@@ -1674,6 +1674,66 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Dynamic Data Form Panel */}
+            {isDataFormOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm lg:text-base flex items-center justify-between">
+                    Formulario Dinámico
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando formulario...</div>}>
+                    <DynamicDataForm
+                      columns={excelData.columns}
+                      onAddData={handleDataChange ? (newRow) => {
+                        const updatedData = [...filteredAndSortedData, newRow];
+                        handleDataChange(updatedData);
+                      } : () => {}}
+                      onBulkAdd={(newRows) => {
+                        const updatedData = [...filteredAndSortedData, ...newRows];
+                        handleDataChange && handleDataChange(updatedData);
+                      }}
+                    />
+                  </Suspense>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Real-time Analytics Panel */}
+            {isRealTimeAnalyticsOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm lg:text-base flex items-center justify-between">
+                    Análisis en Tiempo Real
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setActivePanel(null)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando análisis...</div>}>
+                    <RealTimeAnalytics
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Main Content */}
