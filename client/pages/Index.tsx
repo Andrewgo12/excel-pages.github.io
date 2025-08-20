@@ -1818,25 +1818,6 @@ export default function Index() {
                           </TableBody>
                         </Table>
                       </div>
-
-                      {/* Bottom horizontal scrollbar for additional navigation */}
-                      <div className="w-full overflow-x-auto mt-2 bg-muted/20 rounded border">
-                        <div
-                          className="h-4 bg-gradient-to-r from-primary/5 to-primary/10"
-                          style={{ width: `${selectedColumns.length * 200}px`, minWidth: '100%' }}
-                          onScroll={(e) => {
-                            // Sync with main table
-                            const tableContainer = e.currentTarget.parentElement?.previousElementSibling as HTMLElement;
-                            if (tableContainer) {
-                              tableContainer.scrollLeft = e.currentTarget.parentElement!.scrollLeft;
-                            }
-                          }}
-                        >
-                          <div className="text-xs text-center text-muted-foreground leading-4">
-                            ← Scroll adicional para navegación →
-                          </div>
-                        </div>
-                      </div>
                     </div>
 
                     {/* Pagination */}
