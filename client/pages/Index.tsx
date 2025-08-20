@@ -430,6 +430,19 @@ export default function Index() {
                     </div>
                   )}
                 </div>
+
+                <div className="mt-6 text-center">
+                  <div className="text-sm text-muted-foreground mb-3">
+                    ¿Quieres ver todas las funcionalidades?
+                  </div>
+                  <Button onClick={loadSampleData} variant="outline" className="gap-2">
+                    <Database className="h-4 w-4" />
+                    Cargar Datos de Demostración
+                  </Button>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    40 columnas • 100 filas • Datos variados para pruebas
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
