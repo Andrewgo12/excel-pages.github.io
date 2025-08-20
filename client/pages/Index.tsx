@@ -29,7 +29,7 @@ const OPERATORS = [
   { value: 'less', label: 'Menor que' },
   { value: 'less_equal', label: 'Menor o igual que' },
   { value: 'between', label: 'Entre' },
-  { value: 'is_empty', label: 'Está vacío' },
+  { value: 'is_empty', label: 'Está vac��o' },
   { value: 'is_not_empty', label: 'No está vacío' },
   { value: 'date_today', label: 'Es hoy' },
   { value: 'date_yesterday', label: 'Es ayer' },
@@ -576,6 +576,10 @@ export default function Index() {
                 <Button variant="outline" size="sm" onClick={() => setIsFilterOpen(!isFilterOpen)}>
                   <Filter className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Filtros</span> ({filterGroups.reduce((sum, group) => sum + group.conditions.length, 0)})
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsStatsOpen(!isStatsOpen)}>
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Estadísticas</span>
                 </Button>
                 <Button variant="outline" size="sm" onClick={exportFilteredData}>
                   <Download className="h-4 w-4 mr-2" />
