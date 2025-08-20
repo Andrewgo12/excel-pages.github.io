@@ -37,7 +37,7 @@ interface ColorStylingControlsProps {
   showShadows: boolean;
   showStriping: boolean;
   stripingInterval: number;
-  theme: 'light' | 'dark' | 'auto';
+  theme: "light" | "dark" | "auto";
   onColorSchemeChange: (colorScheme: ColorScheme) => void;
   onHeaderColorSchemeChange: (colorScheme: ColorScheme) => void;
   onAlternateRowColorsChange: (enabled: boolean) => void;
@@ -45,141 +45,197 @@ interface ColorStylingControlsProps {
   onShowShadowsChange: (enabled: boolean) => void;
   onShowStripingChange: (enabled: boolean) => void;
   onStripingIntervalChange: (interval: number) => void;
-  onThemeChange: (theme: 'light' | 'dark' | 'auto') => void;
+  onThemeChange: (theme: "light" | "dark" | "auto") => void;
 }
 
 const PRESET_COLOR_SCHEMES = [
   {
-    name: 'Clásico',
-    description: 'Colores neutros y profesionales',
+    name: "Clásico",
+    description: "Colores neutros y profesionales",
     scheme: {
-      background: '#ffffff',
-      text: '#1f2937',
-      border: '#e5e7eb',
-      hover: '#f9fafb',
-      selected: '#e0f2fe',
-      striped: '#f8fafc',
+      background: "#ffffff",
+      text: "#1f2937",
+      border: "#e5e7eb",
+      hover: "#f9fafb",
+      selected: "#e0f2fe",
+      striped: "#f8fafc",
     },
     headerScheme: {
-      background: '#f9fafb',
-      text: '#374151',
-      border: '#e5e7eb',
-      hover: '#f3f4f6',
-      selected: '#e0f2fe',
+      background: "#f9fafb",
+      text: "#374151",
+      border: "#e5e7eb",
+      hover: "#f3f4f6",
+      selected: "#e0f2fe",
     },
   },
   {
-    name: 'Azul Océano',
-    description: 'Tonos azules relajantes',
+    name: "Azul Océano",
+    description: "Tonos azules relajantes",
     scheme: {
-      background: '#ffffff',
-      text: '#1e3a8a',
-      border: '#bfdbfe',
-      hover: '#dbeafe',
-      selected: '#93c5fd',
-      striped: '#f0f9ff',
+      background: "#ffffff",
+      text: "#1e3a8a",
+      border: "#bfdbfe",
+      hover: "#dbeafe",
+      selected: "#93c5fd",
+      striped: "#f0f9ff",
     },
     headerScheme: {
-      background: '#1e40af',
-      text: '#ffffff',
-      border: '#3b82f6',
-      hover: '#2563eb',
-      selected: '#1d4ed8',
+      background: "#1e40af",
+      text: "#ffffff",
+      border: "#3b82f6",
+      hover: "#2563eb",
+      selected: "#1d4ed8",
     },
   },
   {
-    name: 'Verde Natura',
-    description: 'Inspirado en la naturaleza',
+    name: "Verde Natura",
+    description: "Inspirado en la naturaleza",
     scheme: {
-      background: '#ffffff',
-      text: '#14532d',
-      border: '#bbf7d0',
-      hover: '#dcfce7',
-      selected: '#86efac',
-      striped: '#f0fdf4',
+      background: "#ffffff",
+      text: "#14532d",
+      border: "#bbf7d0",
+      hover: "#dcfce7",
+      selected: "#86efac",
+      striped: "#f0fdf4",
     },
     headerScheme: {
-      background: '#16a34a',
-      text: '#ffffff',
-      border: '#22c55e',
-      hover: '#15803d',
-      selected: '#166534',
+      background: "#16a34a",
+      text: "#ffffff",
+      border: "#22c55e",
+      hover: "#15803d",
+      selected: "#166534",
     },
   },
   {
-    name: 'Púrpura Elegante',
-    description: 'Sofisticado y moderno',
+    name: "Púrpura Elegante",
+    description: "Sofisticado y moderno",
     scheme: {
-      background: '#ffffff',
-      text: '#581c87',
-      border: '#d8b4fe',
-      hover: '#e9d5ff',
-      selected: '#c4b5fd',
-      striped: '#faf5ff',
+      background: "#ffffff",
+      text: "#581c87",
+      border: "#d8b4fe",
+      hover: "#e9d5ff",
+      selected: "#c4b5fd",
+      striped: "#faf5ff",
     },
     headerScheme: {
-      background: '#7c3aed',
-      text: '#ffffff',
-      border: '#8b5cf6',
-      hover: '#6d28d9',
-      selected: '#5b21b6',
+      background: "#7c3aed",
+      text: "#ffffff",
+      border: "#8b5cf6",
+      hover: "#6d28d9",
+      selected: "#5b21b6",
     },
   },
   {
-    name: 'Naranja Vibrante',
-    description: 'Energético y llamativo',
+    name: "Naranja Vibrante",
+    description: "Energético y llamativo",
     scheme: {
-      background: '#ffffff',
-      text: '#9a3412',
-      border: '#fed7aa',
-      hover: '#ffedd5',
-      selected: '#fdba74',
-      striped: '#fff7ed',
+      background: "#ffffff",
+      text: "#9a3412",
+      border: "#fed7aa",
+      hover: "#ffedd5",
+      selected: "#fdba74",
+      striped: "#fff7ed",
     },
     headerScheme: {
-      background: '#ea580c',
-      text: '#ffffff',
-      border: '#f97316',
-      hover: '#dc2626',
-      selected: '#c2410c',
+      background: "#ea580c",
+      text: "#ffffff",
+      border: "#f97316",
+      hover: "#dc2626",
+      selected: "#c2410c",
     },
   },
   {
-    name: 'Modo Oscuro',
-    description: 'Optimizado para poca luz',
+    name: "Modo Oscuro",
+    description: "Optimizado para poca luz",
     scheme: {
-      background: '#111827',
-      text: '#f9fafb',
-      border: '#374151',
-      hover: '#1f2937',
-      selected: '#1e40af',
-      striped: '#1f2937',
+      background: "#111827",
+      text: "#f9fafb",
+      border: "#374151",
+      hover: "#1f2937",
+      selected: "#1e40af",
+      striped: "#1f2937",
     },
     headerScheme: {
-      background: '#1f2937',
-      text: '#f9fafb',
-      border: '#4b5563',
-      hover: '#374151',
-      selected: '#1e40af',
+      background: "#1f2937",
+      text: "#f9fafb",
+      border: "#4b5563",
+      hover: "#374151",
+      selected: "#1e40af",
     },
   },
 ];
 
 const COLOR_SUGGESTIONS = [
-  '#ffffff', '#f8fafc', '#f1f5f9', '#e2e8f0', '#cbd5e1',
-  '#94a3b8', '#64748b', '#475569', '#334155', '#1e293b',
-  '#fef2f2', '#fee2e2', '#fecaca', '#f87171', '#ef4444',
-  '#dc2626', '#b91c1c', '#991b1b', '#7f1d1d', '#450a0a',
-  '#fff7ed', '#ffedd5', '#fed7aa', '#fdba74', '#fb923c',
-  '#f97316', '#ea580c', '#dc2626', '#c2410c', '#9a3412',
-  '#fefce8', '#fef3c7', '#fde68a', '#fcd34d', '#fbbf24',
-  '#f59e0b', '#d97706', '#b45309', '#92400e', '#78350f',
-  '#f0fdf4', '#dcfce7', '#bbf7d0', '#86efac', '#4ade80',
-  '#22c55e', '#16a34a', '#15803d', '#166534', '#14532d',
-  '#f0f9ff', '#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8',
-  '#0ea5e9', '#0284c7', '#0369a1', '#075985', '#0c4a6e',
-  '#faf5ff', '#f3e8ff', '#e9d5ff', '#d8b4fe', '#c4b5fd',
-  '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9', '#5b21b6',
+  "#ffffff",
+  "#f8fafc",
+  "#f1f5f9",
+  "#e2e8f0",
+  "#cbd5e1",
+  "#94a3b8",
+  "#64748b",
+  "#475569",
+  "#334155",
+  "#1e293b",
+  "#fef2f2",
+  "#fee2e2",
+  "#fecaca",
+  "#f87171",
+  "#ef4444",
+  "#dc2626",
+  "#b91c1c",
+  "#991b1b",
+  "#7f1d1d",
+  "#450a0a",
+  "#fff7ed",
+  "#ffedd5",
+  "#fed7aa",
+  "#fdba74",
+  "#fb923c",
+  "#f97316",
+  "#ea580c",
+  "#dc2626",
+  "#c2410c",
+  "#9a3412",
+  "#fefce8",
+  "#fef3c7",
+  "#fde68a",
+  "#fcd34d",
+  "#fbbf24",
+  "#f59e0b",
+  "#d97706",
+  "#b45309",
+  "#92400e",
+  "#78350f",
+  "#f0fdf4",
+  "#dcfce7",
+  "#bbf7d0",
+  "#86efac",
+  "#4ade80",
+  "#22c55e",
+  "#16a34a",
+  "#15803d",
+  "#166534",
+  "#14532d",
+  "#f0f9ff",
+  "#e0f2fe",
+  "#bae6fd",
+  "#7dd3fc",
+  "#38bdf8",
+  "#0ea5e9",
+  "#0284c7",
+  "#0369a1",
+  "#075985",
+  "#0c4a6e",
+  "#faf5ff",
+  "#f3e8ff",
+  "#e9d5ff",
+  "#d8b4fe",
+  "#c4b5fd",
+  "#a78bfa",
+  "#8b5cf6",
+  "#7c3aed",
+  "#6d28d9",
+  "#5b21b6",
 ];
 
 export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
@@ -200,10 +256,12 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
   onStripingIntervalChange,
   onThemeChange,
 }) => {
-  const [activeSection, setActiveSection] = React.useState<'presets' | 'cells' | 'headers' | 'effects'>('presets');
-  const [customColor, setCustomColor] = React.useState('#ffffff');
+  const [activeSection, setActiveSection] = React.useState<
+    "presets" | "cells" | "headers" | "effects"
+  >("presets");
+  const [customColor, setCustomColor] = React.useState("#ffffff");
 
-  const applyPreset = (preset: typeof PRESET_COLOR_SCHEMES[0]) => {
+  const applyPreset = (preset: (typeof PRESET_COLOR_SCHEMES)[0]) => {
     onColorSchemeChange(preset.scheme);
     onHeaderColorSchemeChange(preset.headerScheme);
   };
@@ -217,11 +275,12 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
   };
 
   const generateRandomColors = () => {
-    const getRandomColor = () => COLOR_SUGGESTIONS[Math.floor(Math.random() * COLOR_SUGGESTIONS.length)];
-    
+    const getRandomColor = () =>
+      COLOR_SUGGESTIONS[Math.floor(Math.random() * COLOR_SUGGESTIONS.length)];
+
     const newColorScheme: ColorScheme = {
-      background: '#ffffff',
-      text: '#1f2937',
+      background: "#ffffff",
+      text: "#1f2937",
       border: getRandomColor(),
       hover: getRandomColor(),
       selected: getRandomColor(),
@@ -230,7 +289,7 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
 
     const newHeaderScheme: ColorScheme = {
       background: getRandomColor(),
-      text: '#ffffff',
+      text: "#ffffff",
       border: getRandomColor(),
       hover: getRandomColor(),
       selected: getRandomColor(),
@@ -242,20 +301,20 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
 
   const resetToDefaults = () => {
     const defaultScheme: ColorScheme = {
-      background: '#ffffff',
-      text: '#1f2937',
-      border: '#e5e7eb',
-      hover: '#f9fafb',
-      selected: '#e0f2fe',
-      striped: '#f8fafc',
+      background: "#ffffff",
+      text: "#1f2937",
+      border: "#e5e7eb",
+      hover: "#f9fafb",
+      selected: "#e0f2fe",
+      striped: "#f8fafc",
     };
 
     const defaultHeaderScheme: ColorScheme = {
-      background: '#f9fafb',
-      text: '#374151',
-      border: '#e5e7eb',
-      hover: '#f3f4f6',
-      selected: '#e0f2fe',
+      background: "#f9fafb",
+      text: "#374151",
+      border: "#e5e7eb",
+      hover: "#f3f4f6",
+      selected: "#e0f2fe",
     };
 
     onColorSchemeChange(defaultScheme);
@@ -288,10 +347,11 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
           className="w-8 h-8 rounded border border-border cursor-pointer"
           style={{ backgroundColor: value }}
           onClick={() => {
-            const input = document.createElement('input');
-            input.type = 'color';
+            const input = document.createElement("input");
+            input.type = "color";
             input.value = value;
-            input.onchange = (e) => onChange((e.target as HTMLInputElement).value);
+            input.onchange = (e) =>
+              onChange((e.target as HTMLInputElement).value);
             input.click();
           }}
         />
@@ -330,16 +390,17 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
       >
         Encabezado de Ejemplo
       </div>
-      
+
       {/* Rows */}
       {[1, 2, 3].map((row) => (
         <div
           key={row}
-          className={`px-4 py-3 ${row < 3 ? 'border-b' : ''} transition-colors`}
+          className={`px-4 py-3 ${row < 3 ? "border-b" : ""} transition-colors`}
           style={{
-            backgroundColor: row % 2 === 0 && showStriping && alternateRowColors
-              ? colorScheme.striped
-              : colorScheme.background,
+            backgroundColor:
+              row % 2 === 0 && showStriping && alternateRowColors
+                ? colorScheme.striped
+                : colorScheme.background,
             color: colorScheme.text,
             borderColor: colorScheme.border,
           }}
@@ -349,7 +410,7 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
             }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 
+            e.currentTarget.style.backgroundColor =
               row % 2 === 0 && showStriping && alternateRowColors
                 ? colorScheme.striped
                 : colorScheme.background;
@@ -366,36 +427,36 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
       {/* Tab Navigation */}
       <div className="flex space-x-1 bg-muted p-1 rounded-lg">
         <Button
-          variant={activeSection === 'presets' ? 'default' : 'ghost'}
+          variant={activeSection === "presets" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('presets')}
+          onClick={() => setActiveSection("presets")}
           className="flex-1"
         >
           <Palette className="h-4 w-4 mr-2" />
           Presets
         </Button>
         <Button
-          variant={activeSection === 'cells' ? 'default' : 'ghost'}
+          variant={activeSection === "cells" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('cells')}
+          onClick={() => setActiveSection("cells")}
           className="flex-1"
         >
           <Grid className="h-4 w-4 mr-2" />
           Celdas
         </Button>
         <Button
-          variant={activeSection === 'headers' ? 'default' : 'ghost'}
+          variant={activeSection === "headers" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('headers')}
+          onClick={() => setActiveSection("headers")}
           className="flex-1"
         >
           <Layers className="h-4 w-4 mr-2" />
           Encabezados
         </Button>
         <Button
-          variant={activeSection === 'effects' ? 'default' : 'ghost'}
+          variant={activeSection === "effects" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('effects')}
+          onClick={() => setActiveSection("effects")}
           className="flex-1"
         >
           <Eye className="h-4 w-4 mr-2" />
@@ -421,27 +482,27 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
         <CardContent>
           <div className="flex space-x-2">
             <Button
-              variant={theme === 'light' ? 'default' : 'outline'}
+              variant={theme === "light" ? "default" : "outline"}
               size="sm"
-              onClick={() => onThemeChange('light')}
+              onClick={() => onThemeChange("light")}
               className="flex-1"
             >
               <Sun className="h-4 w-4 mr-2" />
               Claro
             </Button>
             <Button
-              variant={theme === 'dark' ? 'default' : 'ghost'}
+              variant={theme === "dark" ? "default" : "ghost"}
               size="sm"
-              onClick={() => onThemeChange('dark')}
+              onClick={() => onThemeChange("dark")}
               className="flex-1"
             >
               <Moon className="h-4 w-4 mr-2" />
               Oscuro
             </Button>
             <Button
-              variant={theme === 'auto' ? 'default' : 'outline'}
+              variant={theme === "auto" ? "default" : "outline"}
               size="sm"
-              onClick={() => onThemeChange('auto')}
+              onClick={() => onThemeChange("auto")}
               className="flex-1"
             >
               <Contrast className="h-4 w-4 mr-2" />
@@ -452,11 +513,13 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
       </Card>
 
       {/* Content based on active section */}
-      {activeSection === 'presets' && (
+      {activeSection === "presets" && (
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Esquemas de Color Predefinidos</CardTitle>
+              <CardTitle className="text-lg">
+                Esquemas de Color Predefinidos
+              </CardTitle>
               <p className="text-sm text-muted-foreground">
                 Selecciona un esquema completo o úsalo como punto de partida
               </p>
@@ -472,16 +535,20 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium">{preset.name}</h4>
                       <div className="flex space-x-1">
-                        {Object.values(preset.scheme).slice(0, 4).map((color, i) => (
-                          <div
-                            key={i}
-                            className="w-4 h-4 rounded border"
-                            style={{ backgroundColor: color }}
-                          />
-                        ))}
+                        {Object.values(preset.scheme)
+                          .slice(0, 4)
+                          .map((color, i) => (
+                            <div
+                              key={i}
+                              className="w-4 h-4 rounded border"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">{preset.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {preset.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -489,11 +556,19 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
               <Separator className="my-6" />
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={generateRandomColors} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={generateRandomColors}
+                  className="flex-1"
+                >
                   <Shuffle className="h-4 w-4 mr-2" />
                   Generar Aleatorio
                 </Button>
-                <Button variant="outline" onClick={resetToDefaults} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={resetToDefaults}
+                  className="flex-1"
+                >
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Restablecer
                 </Button>
@@ -503,7 +578,7 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
         </div>
       )}
 
-      {activeSection === 'cells' && (
+      {activeSection === "cells" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Colores de Celdas</CardTitle>
@@ -515,35 +590,35 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
             <ColorPicker
               label="Fondo"
               value={colorScheme.background}
-              onChange={(color) => updateCellColor('background', color)}
+              onChange={(color) => updateCellColor("background", color)}
               description="Color de fondo principal de las celdas"
             />
 
             <ColorPicker
               label="Texto"
               value={colorScheme.text}
-              onChange={(color) => updateCellColor('text', color)}
+              onChange={(color) => updateCellColor("text", color)}
               description="Color del texto en las celdas"
             />
 
             <ColorPicker
               label="Bordes"
               value={colorScheme.border}
-              onChange={(color) => updateCellColor('border', color)}
+              onChange={(color) => updateCellColor("border", color)}
               description="Color de los bordes entre celdas"
             />
 
             <ColorPicker
               label="Hover"
               value={colorScheme.hover}
-              onChange={(color) => updateCellColor('hover', color)}
+              onChange={(color) => updateCellColor("hover", color)}
               description="Color al pasar el cursor sobre una fila"
             />
 
             <ColorPicker
               label="Selección"
               value={colorScheme.selected}
-              onChange={(color) => updateCellColor('selected', color)}
+              onChange={(color) => updateCellColor("selected", color)}
               description="Color de fondo para filas seleccionadas"
             />
 
@@ -551,7 +626,7 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
               <ColorPicker
                 label="Filas Alternadas"
                 value={colorScheme.striped}
-                onChange={(color) => updateCellColor('striped', color)}
+                onChange={(color) => updateCellColor("striped", color)}
                 description="Color para el efecto zebra (filas intercaladas)"
               />
             )}
@@ -559,7 +634,7 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
         </Card>
       )}
 
-      {activeSection === 'headers' && (
+      {activeSection === "headers" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Colores de Encabezados</CardTitle>
@@ -571,42 +646,42 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
             <ColorPicker
               label="Fondo"
               value={headerColorScheme.background}
-              onChange={(color) => updateHeaderColor('background', color)}
+              onChange={(color) => updateHeaderColor("background", color)}
               description="Color de fondo de los encabezados"
             />
 
             <ColorPicker
               label="Texto"
               value={headerColorScheme.text}
-              onChange={(color) => updateHeaderColor('text', color)}
+              onChange={(color) => updateHeaderColor("text", color)}
               description="Color del texto en los encabezados"
             />
 
             <ColorPicker
               label="Bordes"
               value={headerColorScheme.border}
-              onChange={(color) => updateHeaderColor('border', color)}
+              onChange={(color) => updateHeaderColor("border", color)}
               description="Color de los bordes de encabezados"
             />
 
             <ColorPicker
               label="Hover"
               value={headerColorScheme.hover}
-              onChange={(color) => updateHeaderColor('hover', color)}
+              onChange={(color) => updateHeaderColor("hover", color)}
               description="Color al interactuar con encabezados"
             />
 
             <ColorPicker
               label="Selección"
               value={headerColorScheme.selected}
-              onChange={(color) => updateHeaderColor('selected', color)}
+              onChange={(color) => updateHeaderColor("selected", color)}
               description="Color para encabezados seleccionados"
             />
           </CardContent>
         </Card>
       )}
 
-      {activeSection === 'effects' && (
+      {activeSection === "effects" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Efectos Visuales</CardTitle>
@@ -619,7 +694,9 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-medium">Filas alternadas</Label>
+                  <Label className="text-sm font-medium">
+                    Filas alternadas
+                  </Label>
                   <p className="text-xs text-muted-foreground">
                     Alternar colores de fondo para mejorar la lectura
                   </p>
@@ -672,9 +749,12 @@ export const ColorStylingControls: React.FC<ColorStylingControlsProps> = ({
               {showStriping && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">Intervalo de rayas</Label>
+                    <Label className="text-sm font-medium">
+                      Intervalo de rayas
+                    </Label>
                     <Badge variant="secondary" className="text-xs">
-                      Cada {stripingInterval} fila{stripingInterval > 1 ? 's' : ''}
+                      Cada {stripingInterval} fila
+                      {stripingInterval > 1 ? "s" : ""}
                     </Badge>
                   </div>
                   <Slider

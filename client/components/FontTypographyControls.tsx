@@ -15,7 +15,15 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { FontSettings, TextAlignment } from "@shared/table-customization";
-import { Type, Bold, Italic, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
+import {
+  Type,
+  Bold,
+  Italic,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+} from "lucide-react";
 
 interface FontTypographyControlsProps {
   cellFont: FontSettings;
@@ -30,49 +38,49 @@ interface FontTypographyControlsProps {
 }
 
 const FONT_FAMILIES = [
-  { value: 'Inter, system-ui, sans-serif', label: 'Inter (Recomendado)' },
-  { value: 'system-ui, sans-serif', label: 'System UI' },
-  { value: 'Arial, sans-serif', label: 'Arial' },
-  { value: 'Helvetica, sans-serif', label: 'Helvetica' },
-  { value: 'Georgia, serif', label: 'Georgia' },
-  { value: 'Times New Roman, serif', label: 'Times New Roman' },
-  { value: 'Courier New, monospace', label: 'Courier New' },
-  { value: 'Monaco, monospace', label: 'Monaco' },
-  { value: 'Verdana, sans-serif', label: 'Verdana' },
-  { value: 'Tahoma, sans-serif', label: 'Tahoma' },
-  { value: 'Comic Sans MS, cursive', label: 'Comic Sans MS' },
-  { value: 'Impact, sans-serif', label: 'Impact' },
+  { value: "Inter, system-ui, sans-serif", label: "Inter (Recomendado)" },
+  { value: "system-ui, sans-serif", label: "System UI" },
+  { value: "Arial, sans-serif", label: "Arial" },
+  { value: "Helvetica, sans-serif", label: "Helvetica" },
+  { value: "Georgia, serif", label: "Georgia" },
+  { value: "Times New Roman, serif", label: "Times New Roman" },
+  { value: "Courier New, monospace", label: "Courier New" },
+  { value: "Monaco, monospace", label: "Monaco" },
+  { value: "Verdana, sans-serif", label: "Verdana" },
+  { value: "Tahoma, sans-serif", label: "Tahoma" },
+  { value: "Comic Sans MS, cursive", label: "Comic Sans MS" },
+  { value: "Impact, sans-serif", label: "Impact" },
 ];
 
 const FONT_WEIGHTS = [
-  { value: 100, label: 'Thin (100)' },
-  { value: 200, label: 'Extra Light (200)' },
-  { value: 300, label: 'Light (300)' },
-  { value: 'normal', label: 'Normal (400)' },
-  { value: 500, label: 'Medium (500)' },
-  { value: 600, label: 'Semi Bold (600)' },
-  { value: 'bold', label: 'Bold (700)' },
-  { value: 800, label: 'Extra Bold (800)' },
-  { value: 900, label: 'Black (900)' },
+  { value: 100, label: "Thin (100)" },
+  { value: 200, label: "Extra Light (200)" },
+  { value: 300, label: "Light (300)" },
+  { value: "normal", label: "Normal (400)" },
+  { value: 500, label: "Medium (500)" },
+  { value: 600, label: "Semi Bold (600)" },
+  { value: "bold", label: "Bold (700)" },
+  { value: 800, label: "Extra Bold (800)" },
+  { value: 900, label: "Black (900)" },
 ];
 
 const FONT_STYLES = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'italic', label: 'Cursiva' },
-  { value: 'oblique', label: 'Oblicua' },
+  { value: "normal", label: "Normal" },
+  { value: "italic", label: "Cursiva" },
+  { value: "oblique", label: "Oblicua" },
 ];
 
 const HORIZONTAL_ALIGNMENTS = [
-  { value: 'left', label: 'Izquierda', icon: AlignLeft },
-  { value: 'center', label: 'Centrado', icon: AlignCenter },
-  { value: 'right', label: 'Derecha', icon: AlignRight },
-  { value: 'justify', label: 'Justificado', icon: AlignJustify },
+  { value: "left", label: "Izquierda", icon: AlignLeft },
+  { value: "center", label: "Centrado", icon: AlignCenter },
+  { value: "right", label: "Derecha", icon: AlignRight },
+  { value: "justify", label: "Justificado", icon: AlignJustify },
 ];
 
 const VERTICAL_ALIGNMENTS = [
-  { value: 'top', label: 'Arriba' },
-  { value: 'middle', label: 'Centro' },
-  { value: 'bottom', label: 'Abajo' },
+  { value: "top", label: "Arriba" },
+  { value: "middle", label: "Centro" },
+  { value: "bottom", label: "Abajo" },
 ];
 
 export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
@@ -86,7 +94,9 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
   onHeaderAlignmentChange,
   previewText = "Ejemplo de texto",
 }) => {
-  const [activeSection, setActiveSection] = React.useState<'cells' | 'headers'>('cells');
+  const [activeSection, setActiveSection] = React.useState<"cells" | "headers">(
+    "cells",
+  );
 
   const updateCellFont = (updates: Partial<FontSettings>) => {
     onCellFontChange({ ...cellFont, ...updates });
@@ -105,49 +115,52 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
   };
 
   const resetToDefaults = () => {
-    if (activeSection === 'cells') {
+    if (activeSection === "cells") {
       onCellFontChange({
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 14,
-        weight: 'normal',
-        style: 'normal',
+        weight: "normal",
+        style: "normal",
         lineHeight: 1.5,
       });
-      onCellAlignmentChange({ horizontal: 'left', vertical: 'middle' });
+      onCellAlignmentChange({ horizontal: "left", vertical: "middle" });
     } else {
       onHeaderFontChange({
-        family: 'Inter, system-ui, sans-serif',
+        family: "Inter, system-ui, sans-serif",
         size: 14,
-        weight: 'bold',
-        style: 'normal',
+        weight: "bold",
+        style: "normal",
         lineHeight: 1.4,
       });
-      onHeaderAlignmentChange({ horizontal: 'left', vertical: 'middle' });
+      onHeaderAlignmentChange({ horizontal: "left", vertical: "middle" });
     }
   };
 
-  const currentFont = activeSection === 'cells' ? cellFont : headerFont;
-  const currentAlignment = activeSection === 'cells' ? cellAlignment : headerAlignment;
-  const updateFont = activeSection === 'cells' ? updateCellFont : updateHeaderFont;
-  const updateAlignment = activeSection === 'cells' ? updateCellAlignment : updateHeaderAlignment;
+  const currentFont = activeSection === "cells" ? cellFont : headerFont;
+  const currentAlignment =
+    activeSection === "cells" ? cellAlignment : headerAlignment;
+  const updateFont =
+    activeSection === "cells" ? updateCellFont : updateHeaderFont;
+  const updateAlignment =
+    activeSection === "cells" ? updateCellAlignment : updateHeaderAlignment;
 
   return (
     <div className="space-y-6">
       {/* Section Selector */}
       <div className="flex space-x-1 bg-muted p-1 rounded-lg">
         <Button
-          variant={activeSection === 'cells' ? 'default' : 'ghost'}
+          variant={activeSection === "cells" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('cells')}
+          onClick={() => setActiveSection("cells")}
           className="flex-1"
         >
           <Type className="h-4 w-4 mr-2" />
           Contenido de Celdas
         </Button>
         <Button
-          variant={activeSection === 'headers' ? 'default' : 'ghost'}
+          variant={activeSection === "headers" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveSection('headers')}
+          onClick={() => setActiveSection("headers")}
           className="flex-1"
         >
           <Bold className="h-4 w-4 mr-2" />
@@ -201,7 +214,9 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">
-              {activeSection === 'cells' ? 'Tipografía de Celdas' : 'Tipografía de Encabezados'}
+              {activeSection === "cells"
+                ? "Tipografía de Celdas"
+                : "Tipografía de Encabezados"}
             </CardTitle>
             <Button variant="outline" size="sm" onClick={resetToDefaults}>
               Restablecer
@@ -256,8 +271,10 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
             <Label className="text-sm font-medium">Peso de fuente</Label>
             <Select
               value={String(currentFont.weight)}
-              onValueChange={(value) => 
-                updateFont({ weight: isNaN(Number(value)) ? value as any : Number(value) })
+              onValueChange={(value) =>
+                updateFont({
+                  weight: isNaN(Number(value)) ? (value as any) : Number(value),
+                })
               }
             >
               <SelectTrigger>
@@ -266,7 +283,9 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               <SelectContent>
                 {FONT_WEIGHTS.map((weight) => (
                   <SelectItem key={weight.value} value={String(weight.value)}>
-                    <span style={{ fontWeight: weight.value }}>{weight.label}</span>
+                    <span style={{ fontWeight: weight.value }}>
+                      {weight.label}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -278,7 +297,7 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
             <Label className="text-sm font-medium">Estilo de fuente</Label>
             <Select
               value={currentFont.style}
-              onValueChange={(value: 'normal' | 'italic' | 'oblique') => 
+              onValueChange={(value: "normal" | "italic" | "oblique") =>
                 updateFont({ style: value })
               }
             >
@@ -288,7 +307,9 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               <SelectContent>
                 {FONT_STYLES.map((style) => (
                   <SelectItem key={style.value} value={style.value}>
-                    <span style={{ fontStyle: style.value }}>{style.label}</span>
+                    <span style={{ fontStyle: style.value }}>
+                      {style.label}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -305,7 +326,9 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
             </div>
             <Slider
               value={[currentFont.lineHeight]}
-              onValueChange={([value]) => updateFont({ lineHeight: Math.round(value * 10) / 10 })}
+              onValueChange={([value]) =>
+                updateFont({ lineHeight: Math.round(value * 10) / 10 })
+              }
               min={1.0}
               max={3.0}
               step={0.1}
@@ -323,7 +346,8 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm">
-            Alineación {activeSection === 'cells' ? 'de Celdas' : 'de Encabezados'}
+            Alineación{" "}
+            {activeSection === "cells" ? "de Celdas" : "de Encabezados"}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -336,9 +360,15 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
                 return (
                   <Button
                     key={align.value}
-                    variant={currentAlignment.horizontal === align.value ? 'default' : 'outline'}
+                    variant={
+                      currentAlignment.horizontal === align.value
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
-                    onClick={() => updateAlignment({ horizontal: align.value as any })}
+                    onClick={() =>
+                      updateAlignment({ horizontal: align.value as any })
+                    }
                     className="aspect-square"
                   >
                     <Icon className="h-4 w-4" />
@@ -353,7 +383,7 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
             <Label className="text-sm font-medium">Alineación vertical</Label>
             <Select
               value={currentAlignment.vertical}
-              onValueChange={(value: 'top' | 'middle' | 'bottom') => 
+              onValueChange={(value: "top" | "middle" | "bottom") =>
                 updateAlignment({ vertical: value })
               }
             >
@@ -383,8 +413,8 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               variant="outline"
               size="sm"
               onClick={() => {
-                updateFont({ family: 'system-ui, sans-serif', size: 12 });
-                updateAlignment({ horizontal: 'left', vertical: 'middle' });
+                updateFont({ family: "system-ui, sans-serif", size: 12 });
+                updateAlignment({ horizontal: "left", vertical: "middle" });
               }}
             >
               Compacto
@@ -393,8 +423,11 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               variant="outline"
               size="sm"
               onClick={() => {
-                updateFont({ family: 'Inter, system-ui, sans-serif', size: 16 });
-                updateAlignment({ horizontal: 'left', vertical: 'middle' });
+                updateFont({
+                  family: "Inter, system-ui, sans-serif",
+                  size: 16,
+                });
+                updateAlignment({ horizontal: "left", vertical: "middle" });
               }}
             >
               Legible
@@ -403,8 +436,12 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               variant="outline"
               size="sm"
               onClick={() => {
-                updateFont({ family: 'Georgia, serif', size: 14, style: 'normal' });
-                updateAlignment({ horizontal: 'left', vertical: 'middle' });
+                updateFont({
+                  family: "Georgia, serif",
+                  size: 14,
+                  style: "normal",
+                });
+                updateAlignment({ horizontal: "left", vertical: "middle" });
               }}
             >
               Elegante
@@ -413,8 +450,8 @@ export const FontTypographyControls: React.FC<FontTypographyControlsProps> = ({
               variant="outline"
               size="sm"
               onClick={() => {
-                updateFont({ family: 'Monaco, monospace', size: 13 });
-                updateAlignment({ horizontal: 'left', vertical: 'middle' });
+                updateFont({ family: "Monaco, monospace", size: 13 });
+                updateAlignment({ horizontal: "left", vertical: "middle" });
               }}
             >
               Técnico

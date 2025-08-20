@@ -87,7 +87,7 @@ interface ColumnLayout {
   minWidth: number;
   maxWidth: number;
   visible: boolean;
-  pinned: 'left' | 'right' | 'none';
+  pinned: "left" | "right" | "none";
   resizable: boolean;
   order: number;
 }
@@ -102,17 +102,40 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
   className,
 }) => {
   const { fontScale, setFontScale } = useFontScale();
-  const [tableCustomization, setTableCustomization] = useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
+  const [tableCustomization, setTableCustomization] =
+    useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("quick");
-  const [columnLayouts, setColumnLayouts] = useState<Record<string, ColumnLayout>>({});
+  const [columnLayouts, setColumnLayouts] = useState<
+    Record<string, ColumnLayout>
+  >({});
 
   // Quick style presets for the main popover
   const QUICK_PRESETS = [
-    { id: 'compact', name: 'Compacto', icon: Minimize2, description: 'Máximo espacio' },
-    { id: 'comfortable', name: 'Cómodo', icon: Maximize2, description: 'Fácil lectura' },
-    { id: 'minimal', name: 'Minimal', icon: Layout, description: 'Limpio y simple' },
-    { id: 'professional', name: 'Profesional', icon: Star, description: 'Corporativo' },
+    {
+      id: "compact",
+      name: "Compacto",
+      icon: Minimize2,
+      description: "Máximo espacio",
+    },
+    {
+      id: "comfortable",
+      name: "Cómodo",
+      icon: Maximize2,
+      description: "Fácil lectura",
+    },
+    {
+      id: "minimal",
+      name: "Minimal",
+      icon: Layout,
+      description: "Limpio y simple",
+    },
+    {
+      id: "professional",
+      name: "Profesional",
+      icon: Star,
+      description: "Corporativo",
+    },
   ];
 
   // Initialize column layouts
@@ -125,7 +148,7 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
         minWidth: 100,
         maxWidth: 400,
         visible: selectedColumns.includes(col.key),
-        pinned: 'none',
+        pinned: "none",
         resizable: true,
         order: index,
       };
@@ -135,74 +158,86 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
   // Load saved customization
   useEffect(() => {
-    const saved = localStorage.getItem('table-styles-customization');
+    const saved = localStorage.getItem("table-styles-customization");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         setTableCustomization({ ...DEFAULT_TABLE_CUSTOMIZATION, ...parsed });
       } catch (e) {
-        console.error('Error loading customization:', e);
+        console.error("Error loading customization:", e);
       }
     }
   }, []);
 
   // Save customization
   useEffect(() => {
-    localStorage.setItem('table-styles-customization', JSON.stringify(tableCustomization));
+    localStorage.setItem(
+      "table-styles-customization",
+      JSON.stringify(tableCustomization),
+    );
     onCustomizationChange?.(tableCustomization);
   }, [tableCustomization, onCustomizationChange]);
 
   const applyQuickPreset = (presetId: string) => {
     let newCustomization = { ...tableCustomization };
-    
+
     switch (presetId) {
-      case 'compact':
+      case "compact":
         newCustomization = {
           ...newCustomization,
           cellFont: { ...newCustomization.cellFont, size: 12 },
           headerFont: { ...newCustomization.headerFont, size: 13 },
           spacing: {
             ...newCustomization.spacing,
-            padding: { top: 6, right: 8, bottom: 6, left: 8 }
+            padding: { top: 6, right: 8, bottom: 6, left: 8 },
           },
           showStriping: true,
           stripingInterval: 1,
         };
-        setFontScale('font-scale-sm');
+        setFontScale("font-scale-sm");
         break;
-      case 'comfortable':
+      case "comfortable":
         newCustomization = {
           ...newCustomization,
           cellFont: { ...newCustomization.cellFont, size: 16 },
           headerFont: { ...newCustomization.headerFont, size: 17 },
           spacing: {
             ...newCustomization.spacing,
-            padding: { top: 16, right: 20, bottom: 16, left: 20 }
+            padding: { top: 16, right: 20, bottom: 16, left: 20 },
           },
           showStriping: false,
         };
-        setFontScale('font-scale-lg');
+        setFontScale("font-scale-lg");
         break;
-      case 'minimal':
-        newCustomization = BUILT_IN_PRESETS.find(p => p.id === 'minimal-clean')?.customization || newCustomization;
-        setFontScale('font-scale-base');
+      case "minimal":
+        newCustomization =
+          BUILT_IN_PRESETS.find((p) => p.id === "minimal-clean")
+            ?.customization || newCustomization;
+        setFontScale("font-scale-base");
         break;
-      case 'professional':
-        newCustomization = BUILT_IN_PRESETS.find(p => p.id === 'business-professional')?.customization || newCustomization;
-        setFontScale('font-scale-base');
+      case "professional":
+        newCustomization =
+          BUILT_IN_PRESETS.find((p) => p.id === "business-professional")
+            ?.customization || newCustomization;
+        setFontScale("font-scale-base");
         break;
     }
-    
+
     setTableCustomization(newCustomization);
-    toast.success(`Preset "${QUICK_PRESETS.find(p => p.id === presetId)?.name}" aplicado`);
+    toast.success(
+      `Preset "${QUICK_PRESETS.find((p) => p.id === presetId)?.name}" aplicado`,
+    );
   };
 
-  const updateColumnLayout = (columnKey: string, updates: Partial<ColumnLayout>) => {
-    setColumnLayouts(prev => ({
+  const updateColumnLayout = (
+    columnKey: string,
+    updates: Partial<ColumnLayout>,
+  ) => {
+    setColumnLayouts((prev) => ({
       ...prev,
-      [columnKey]: { ...prev[columnKey], ...updates }
+      [columnKey]: { ...prev[columnKey], ...updates },
     }));
-    
+
     if (updates.width) {
       onColumnResize?.(columnKey, updates.width);
     }
@@ -213,30 +248,33 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
   const autoSizeAllColumns = () => {
     const updatedLayouts = { ...columnLayouts };
-    Object.keys(updatedLayouts).forEach(key => {
-      const column = columns.find(c => c.key === key);
+    Object.keys(updatedLayouts).forEach((key) => {
+      const column = columns.find((c) => c.key === key);
       if (column) {
         // Auto-size based on column type and content
         let optimalWidth = 120;
         switch (column.type) {
-          case 'number':
+          case "number":
             optimalWidth = 100;
             break;
-          case 'boolean':
+          case "boolean":
             optimalWidth = 80;
             break;
-          case 'date':
+          case "date":
             optimalWidth = 120;
             break;
-          case 'text':
-            optimalWidth = Math.min(200, Math.max(120, column.label.length * 8));
+          case "text":
+            optimalWidth = Math.min(
+              200,
+              Math.max(120, column.label.length * 8),
+            );
             break;
         }
         updatedLayouts[key] = { ...updatedLayouts[key], width: optimalWidth };
       }
     });
     setColumnLayouts(updatedLayouts);
-    toast.success('Columnas ajustadas automáticamente');
+    toast.success("Columnas ajustadas automáticamente");
   };
 
   const exportConfiguration = () => {
@@ -246,14 +284,14 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
       fontScale,
     };
     const dataStr = JSON.stringify(config, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `table-styles-${Date.now()}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    toast.success('Configuración exportada');
+    toast.success("Configuración exportada");
   };
 
   const importConfiguration = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -273,9 +311,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
         if (config.fontScale) {
           setFontScale(config.fontScale);
         }
-        toast.success('Configuración importada');
+        toast.success("Configuración importada");
       } catch (error) {
-        toast.error('Error al importar la configuración');
+        toast.error("Error al importar la configuración");
       }
     };
     reader.readAsText(file);
@@ -283,12 +321,14 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
   const resetAll = () => {
     setTableCustomization(DEFAULT_TABLE_CUSTOMIZATION);
-    setFontScale('font-scale-base');
+    setFontScale("font-scale-base");
     autoSizeAllColumns();
-    toast.success('Todo restablecido');
+    toast.success("Todo restablecido");
   };
 
-  const currentFontOption = FONT_SCALE_OPTIONS.find(option => option.value === fontScale);
+  const currentFontOption = FONT_SCALE_OPTIONS.find(
+    (option) => option.value === fontScale,
+  );
 
   return (
     <>
@@ -307,7 +347,11 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
             <div className="flex items-center justify-between">
               <h3 className="font-medium">Estilos de Tabla</h3>
               <div className="flex items-center gap-1">
-                <Button variant="ghost" size="sm" onClick={() => setIsAdvancedOpen(true)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsAdvancedOpen(true)}
+                >
                   <Settings className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="sm" onClick={exportConfiguration}>
@@ -331,10 +375,18 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
           <div className="p-4">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="quick" className="text-xs">Rápido</TabsTrigger>
-                <TabsTrigger value="columns" className="text-xs">Columnas</TabsTrigger>
-                <TabsTrigger value="layout" className="text-xs">Diseño</TabsTrigger>
-                <TabsTrigger value="size" className="text-xs">Tamaño</TabsTrigger>
+                <TabsTrigger value="quick" className="text-xs">
+                  Rápido
+                </TabsTrigger>
+                <TabsTrigger value="columns" className="text-xs">
+                  Columnas
+                </TabsTrigger>
+                <TabsTrigger value="layout" className="text-xs">
+                  Diseño
+                </TabsTrigger>
+                <TabsTrigger value="size" className="text-xs">
+                  Tamaño
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="quick" className="mt-4 space-y-4">
@@ -352,8 +404,12 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                         >
                           <Icon className="h-5 w-5" />
                           <div className="text-center">
-                            <div className="text-xs font-medium">{preset.name}</div>
-                            <div className="text-xs text-muted-foreground">{preset.description}</div>
+                            <div className="text-xs font-medium">
+                              {preset.name}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {preset.description}
+                            </div>
                           </div>
                         </Button>
                       );
@@ -369,7 +425,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <Switch
                       checked={tableCustomization.showStriping}
                       onCheckedChange={(checked) =>
-                        setTableCustomization(prev => ({ ...prev, showStriping: checked }))
+                        setTableCustomization((prev) => ({
+                          ...prev,
+                          showStriping: checked,
+                        }))
                       }
                     />
                   </div>
@@ -379,7 +438,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <Switch
                       checked={tableCustomization.showHoverEffects}
                       onCheckedChange={(checked) =>
-                        setTableCustomization(prev => ({ ...prev, showHoverEffects: checked }))
+                        setTableCustomization((prev) => ({
+                          ...prev,
+                          showHoverEffects: checked,
+                        }))
                       }
                     />
                   </div>
@@ -389,7 +451,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <Switch
                       checked={tableCustomization.showShadows}
                       onCheckedChange={(checked) =>
-                        setTableCustomization(prev => ({ ...prev, showShadows: checked }))
+                        setTableCustomization((prev) => ({
+                          ...prev,
+                          showShadows: checked,
+                        }))
                       }
                     />
                   </div>
@@ -399,7 +464,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <Switch
                       checked={tableCustomization.stickyHeader}
                       onCheckedChange={(checked) =>
-                        setTableCustomization(prev => ({ ...prev, stickyHeader: checked }))
+                        setTableCustomization((prev) => ({
+                          ...prev,
+                          stickyHeader: checked,
+                        }))
                       }
                     />
                   </div>
@@ -413,8 +481,14 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
               <TabsContent value="columns" className="mt-4 space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium">Ajustar Columnas</Label>
-                  <Button variant="outline" size="sm" onClick={autoSizeAllColumns}>
+                  <Label className="text-sm font-medium">
+                    Ajustar Columnas
+                  </Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={autoSizeAllColumns}
+                  >
                     <Zap className="h-4 w-4 mr-1" />
                     Auto
                   </Button>
@@ -422,87 +496,118 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
 
                 <ScrollArea className="h-64">
                   <div className="space-y-3 pr-2">
-                    {columns.filter(col => selectedColumns.includes(col.key)).map((column) => {
-                      const layout = columnLayouts[column.key];
-                      if (!layout) return null;
+                    {columns
+                      .filter((col) => selectedColumns.includes(col.key))
+                      .map((column) => {
+                        const layout = columnLayouts[column.key];
+                        if (!layout) return null;
 
-                      return (
-                        <div key={column.key} className="border rounded-lg p-3 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div className="flex flex-col">
-                                <span className="text-sm font-medium">{column.label}</span>
-                                <Badge variant="outline" className="text-xs w-fit">
-                                  {column.type}
-                                </Badge>
+                        return (
+                          <div
+                            key={column.key}
+                            className="border rounded-lg p-3 space-y-2"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-medium">
+                                    {column.label}
+                                  </span>
+                                  <Badge
+                                    variant="outline"
+                                    className="text-xs w-fit"
+                                  >
+                                    {column.type}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {layout.pinned !== "none" && (
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-xs"
+                                  >
+                                    {layout.pinned === "left" ? "📌L" : "📌R"}
+                                  </Badge>
+                                )}
+                                <Switch
+                                  checked={layout.visible}
+                                  onCheckedChange={(checked) =>
+                                    updateColumnLayout(column.key, {
+                                      visible: checked,
+                                    })
+                                  }
+                                  size="sm"
+                                />
                               </div>
                             </div>
-                            <div className="flex items-center gap-1">
-                              {layout.pinned !== 'none' && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {layout.pinned === 'left' ? '📌L' : '📌R'}
+
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Label className="text-xs">Ancho:</Label>
+                                <Badge variant="outline" className="text-xs">
+                                  {layout.width}px
                                 </Badge>
-                              )}
-                              <Switch
-                                checked={layout.visible}
-                                onCheckedChange={(checked) =>
-                                  updateColumnLayout(column.key, { visible: checked })
+                              </div>
+                              <Slider
+                                value={[layout.width]}
+                                onValueChange={([value]) =>
+                                  updateColumnLayout(column.key, {
+                                    width: value,
+                                  })
                                 }
-                                size="sm"
+                                min={layout.minWidth}
+                                max={layout.maxWidth}
+                                step={10}
+                                className="w-full"
                               />
                             </div>
-                          </div>
 
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <Label className="text-xs">Ancho:</Label>
-                              <Badge variant="outline" className="text-xs">
-                                {layout.width}px
-                              </Badge>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  updateColumnLayout(column.key, {
+                                    pinned:
+                                      layout.pinned === "left"
+                                        ? "none"
+                                        : "left",
+                                  })
+                                }
+                                className="flex-1 text-xs"
+                              >
+                                {layout.pinned === "left" ? (
+                                  <Unlock className="h-3 w-3" />
+                                ) : (
+                                  <Lock className="h-3 w-3" />
+                                )}
+                                Izq
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  updateColumnLayout(column.key, {
+                                    pinned:
+                                      layout.pinned === "right"
+                                        ? "none"
+                                        : "right",
+                                  })
+                                }
+                                className="flex-1 text-xs"
+                              >
+                                {layout.pinned === "right" ? (
+                                  <Unlock className="h-3 w-3" />
+                                ) : (
+                                  <Lock className="h-3 w-3" />
+                                )}
+                                Der
+                              </Button>
                             </div>
-                            <Slider
-                              value={[layout.width]}
-                              onValueChange={([value]) =>
-                                updateColumnLayout(column.key, { width: value })
-                              }
-                              min={layout.minWidth}
-                              max={layout.maxWidth}
-                              step={10}
-                              className="w-full"
-                            />
                           </div>
-
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateColumnLayout(column.key, {
-                                  pinned: layout.pinned === 'left' ? 'none' : 'left'
-                                })
-                              }
-                              className="flex-1 text-xs"
-                            >
-                              {layout.pinned === 'left' ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
-                              Izq
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                updateColumnLayout(column.key, {
-                                  pinned: layout.pinned === 'right' ? 'none' : 'right'
-                                })
-                              }
-                              className="flex-1 text-xs"
-                            >
-                              {layout.pinned === 'right' ? <Unlock className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
-                              Der
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </ScrollArea>
               </TabsContent>
@@ -524,7 +629,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <MoveHorizontal className="h-5 w-5 text-blue-500" />
                     <div className="text-center">
                       <div className="text-xs font-medium">Auto Ajustar</div>
-                      <div className="text-xs text-muted-foreground">Tamaño óptimo</div>
+                      <div className="text-xs text-muted-foreground">
+                        Tamaño óptimo
+                      </div>
                     </div>
                   </Button>
 
@@ -533,18 +640,30 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     className="h-auto p-3 flex flex-col items-center gap-2"
                     onClick={() => {
                       // Smart column arrangement
-                      const visibleColumns = columns.filter(col => selectedColumns.includes(col.key));
+                      const visibleColumns = columns.filter((col) =>
+                        selectedColumns.includes(col.key),
+                      );
                       const sortedColumns = visibleColumns.sort((a, b) => {
-                        const typeOrder = { text: 0, number: 1, date: 2, boolean: 3 };
-                        return typeOrder[a.type as keyof typeof typeOrder] - typeOrder[b.type as keyof typeof typeOrder];
+                        const typeOrder = {
+                          text: 0,
+                          number: 1,
+                          date: 2,
+                          boolean: 3,
+                        };
+                        return (
+                          typeOrder[a.type as keyof typeof typeOrder] -
+                          typeOrder[b.type as keyof typeof typeOrder]
+                        );
                       });
-                      toast.success('Columnas reorganizadas por tipo');
+                      toast.success("Columnas reorganizadas por tipo");
                     }}
                   >
                     <Move className="h-5 w-5 text-green-500" />
                     <div className="text-center">
                       <div className="text-xs font-medium">Reorganizar</div>
-                      <div className="text-xs text-muted-foreground">Por tipo</div>
+                      <div className="text-xs text-muted-foreground">
+                        Por tipo
+                      </div>
                     </div>
                   </Button>
                 </div>
@@ -552,11 +671,15 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                 <Separator />
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Opciones de Diseño</Label>
+                  <Label className="text-sm font-medium">
+                    Opciones de Diseño
+                  </Label>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm">Ajuste automático de columnas</Label>
+                      <Label className="text-sm">
+                        Ajuste automático de columnas
+                      </Label>
                       <Switch
                         checked={true}
                         onCheckedChange={(checked) => {
@@ -566,7 +689,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm">Columnas redimensionables</Label>
+                      <Label className="text-sm">
+                        Columnas redimensionables
+                      </Label>
                       <Switch defaultChecked />
                     </div>
 
@@ -576,7 +701,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm">Fijar columnas importantes</Label>
+                      <Label className="text-sm">
+                        Fijar columnas importantes
+                      </Label>
                       <Switch defaultChecked />
                     </div>
                   </div>
@@ -594,7 +721,10 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                         // Fit to viewport
                         const viewportWidth = window.innerWidth - 400;
                         const columnCount = selectedColumns.length;
-                        const optimalWidth = Math.max(100, Math.floor(viewportWidth / columnCount));
+                        const optimalWidth = Math.max(
+                          100,
+                          Math.floor(viewportWidth / columnCount),
+                        );
                         toast.success(`Columnas ajustadas a ${optimalWidth}px`);
                       }}
                     >
@@ -606,7 +736,7 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                       size="sm"
                       onClick={() => {
                         // Compact layout
-                        toast.success('Modo compacto activado');
+                        toast.success("Modo compacto activado");
                       }}
                     >
                       <Minimize2 className="h-4 w-4 mr-1" />
@@ -617,7 +747,7 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                       size="sm"
                       onClick={() => {
                         // Reset layout
-                        toast.success('Diseño restablecido');
+                        toast.success("Diseño restablecido");
                       }}
                     >
                       <RotateCcw className="h-4 w-4 mr-1" />
@@ -655,11 +785,15 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                   </Select>
 
                   <div className="border rounded-lg p-3 bg-muted/30">
-                    <div className="text-xs text-muted-foreground mb-2">Vista Previa:</div>
+                    <div className="text-xs text-muted-foreground mb-2">
+                      Vista Previa:
+                    </div>
                     <div className="space-y-1">
                       <div className="text-responsive-sm">Texto pequeño</div>
                       <div className="text-responsive-base">Texto normal</div>
-                      <div className="text-responsive-lg font-medium">Título</div>
+                      <div className="text-responsive-lg font-medium">
+                        Título
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -667,7 +801,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                 <Separator />
 
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Espaciado de Celdas</Label>
+                  <Label className="text-sm font-medium">
+                    Espaciado de Celdas
+                  </Label>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs">Padding:</Label>
@@ -678,12 +814,17 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     <Slider
                       value={[tableCustomization.spacing.padding.top]}
                       onValueChange={([value]) =>
-                        setTableCustomization(prev => ({
+                        setTableCustomization((prev) => ({
                           ...prev,
                           spacing: {
                             ...prev.spacing,
-                            padding: { top: value, right: value, bottom: value, left: value }
-                          }
+                            padding: {
+                              top: value,
+                              right: value,
+                              bottom: value,
+                              left: value,
+                            },
+                          },
                         }))
                       }
                       min={4}
@@ -730,16 +871,28 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     cellAlignment={tableCustomization.defaultAlignment}
                     headerAlignment={tableCustomization.headerAlignment}
                     onCellFontChange={(font) =>
-                      setTableCustomization(prev => ({ ...prev, cellFont: font }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        cellFont: font,
+                      }))
                     }
                     onHeaderFontChange={(font) =>
-                      setTableCustomization(prev => ({ ...prev, headerFont: font }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        headerFont: font,
+                      }))
                     }
                     onCellAlignmentChange={(alignment) =>
-                      setTableCustomization(prev => ({ ...prev, defaultAlignment: alignment }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        defaultAlignment: alignment,
+                      }))
                     }
                     onHeaderAlignmentChange={(alignment) =>
-                      setTableCustomization(prev => ({ ...prev, headerAlignment: alignment }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        headerAlignment: alignment,
+                      }))
                     }
                   />
                 </TabsContent>
@@ -755,28 +908,49 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     stripingInterval={tableCustomization.stripingInterval}
                     theme={tableCustomization.theme}
                     onColorSchemeChange={(colorScheme) =>
-                      setTableCustomization(prev => ({ ...prev, colorScheme }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        colorScheme,
+                      }))
                     }
                     onHeaderColorSchemeChange={(headerColorScheme) =>
-                      setTableCustomization(prev => ({ ...prev, headerColorScheme }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        headerColorScheme,
+                      }))
                     }
                     onAlternateRowColorsChange={(alternateRowColors) =>
-                      setTableCustomization(prev => ({ ...prev, alternateRowColors }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        alternateRowColors,
+                      }))
                     }
                     onShowHoverEffectsChange={(showHoverEffects) =>
-                      setTableCustomization(prev => ({ ...prev, showHoverEffects }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showHoverEffects,
+                      }))
                     }
                     onShowShadowsChange={(showShadows) =>
-                      setTableCustomization(prev => ({ ...prev, showShadows }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showShadows,
+                      }))
                     }
                     onShowStripingChange={(showStriping) =>
-                      setTableCustomization(prev => ({ ...prev, showStriping }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showStriping,
+                      }))
                     }
                     onStripingIntervalChange={(stripingInterval) =>
-                      setTableCustomization(prev => ({ ...prev, stripingInterval }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        stripingInterval,
+                      }))
                     }
                     onThemeChange={(theme) =>
-                      setTableCustomization(prev => ({ ...prev, theme }))
+                      setTableCustomization((prev) => ({ ...prev, theme }))
                     }
                   />
                 </TabsContent>
@@ -786,10 +960,13 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     borderSettings={tableCustomization.borderSettings}
                     spacingSettings={tableCustomization.spacing}
                     onBorderSettingsChange={(borderSettings) =>
-                      setTableCustomization(prev => ({ ...prev, borderSettings }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        borderSettings,
+                      }))
                     }
                     onSpacingSettingsChange={(spacing) =>
-                      setTableCustomization(prev => ({ ...prev, spacing }))
+                      setTableCustomization((prev) => ({ ...prev, spacing }))
                     }
                   />
                 </TabsContent>
@@ -801,19 +978,27 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     globalAlignment={tableCustomization.defaultAlignment}
                     headerAlignment={tableCustomization.headerAlignment}
                     columnAlignments={Object.fromEntries(
-                      Object.entries(tableCustomization.columnCustomizations).map(([key, config]) => [
+                      Object.entries(
+                        tableCustomization.columnCustomizations,
+                      ).map(([key, config]) => [
                         key,
                         config.alignment || tableCustomization.defaultAlignment,
-                      ])
+                      ]),
                     )}
                     onGlobalAlignmentChange={(alignment) =>
-                      setTableCustomization(prev => ({ ...prev, defaultAlignment: alignment }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        defaultAlignment: alignment,
+                      }))
                     }
                     onHeaderAlignmentChange={(alignment) =>
-                      setTableCustomization(prev => ({ ...prev, headerAlignment: alignment }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        headerAlignment: alignment,
+                      }))
                     }
                     onColumnAlignmentChange={(columnKey, alignment) =>
-                      setTableCustomization(prev => ({
+                      setTableCustomization((prev) => ({
                         ...prev,
                         columnCustomizations: {
                           ...prev.columnCustomizations,
@@ -826,7 +1011,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                       }))
                     }
                     onApplyToAllColumns={(alignment) => {
-                      const newColumnCustomizations = { ...tableCustomization.columnCustomizations };
+                      const newColumnCustomizations = {
+                        ...tableCustomization.columnCustomizations,
+                      };
                       selectedColumns.forEach((columnKey) => {
                         newColumnCustomizations[columnKey] = {
                           ...newColumnCustomizations[columnKey],
@@ -834,16 +1021,22 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                           alignment,
                         };
                       });
-                      setTableCustomization(prev => ({
+                      setTableCustomization((prev) => ({
                         ...prev,
                         columnCustomizations: newColumnCustomizations,
                       }));
                     }}
                     onResetAlignments={() => {
-                      setTableCustomization(prev => ({
+                      setTableCustomization((prev) => ({
                         ...prev,
-                        defaultAlignment: { horizontal: 'left', vertical: 'middle' },
-                        headerAlignment: { horizontal: 'left', vertical: 'middle' },
+                        defaultAlignment: {
+                          horizontal: "left",
+                          vertical: "middle",
+                        },
+                        headerAlignment: {
+                          horizontal: "left",
+                          vertical: "middle",
+                        },
                         columnCustomizations: {},
                       }));
                     }}
@@ -855,7 +1048,9 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     theme={tableCustomization.theme}
                     stickyHeader={tableCustomization.stickyHeader}
                     virtualization={tableCustomization.virtualization}
-                    virtualizationThreshold={tableCustomization.virtualizationThreshold}
+                    virtualizationThreshold={
+                      tableCustomization.virtualizationThreshold
+                    }
                     showHoverEffects={tableCustomization.showHoverEffects}
                     showShadows={tableCustomization.showShadows}
                     showStriping={tableCustomization.showStriping}
@@ -863,34 +1058,60 @@ export const TableStylesControl: React.FC<TableStylesControlProps> = ({
                     responsive={tableCustomization.responsive}
                     breakpoints={tableCustomization.breakpoints}
                     onThemeChange={(theme) =>
-                      setTableCustomization(prev => ({ ...prev, theme }))
+                      setTableCustomization((prev) => ({ ...prev, theme }))
                     }
                     onStickyHeaderChange={(stickyHeader) =>
-                      setTableCustomization(prev => ({ ...prev, stickyHeader }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        stickyHeader,
+                      }))
                     }
                     onVirtualizationChange={(virtualization) =>
-                      setTableCustomization(prev => ({ ...prev, virtualization }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        virtualization,
+                      }))
                     }
-                    onVirtualizationThresholdChange={(virtualizationThreshold) =>
-                      setTableCustomization(prev => ({ ...prev, virtualizationThreshold }))
+                    onVirtualizationThresholdChange={(
+                      virtualizationThreshold,
+                    ) =>
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        virtualizationThreshold,
+                      }))
                     }
                     onShowHoverEffectsChange={(showHoverEffects) =>
-                      setTableCustomization(prev => ({ ...prev, showHoverEffects }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showHoverEffects,
+                      }))
                     }
                     onShowShadowsChange={(showShadows) =>
-                      setTableCustomization(prev => ({ ...prev, showShadows }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showShadows,
+                      }))
                     }
                     onShowStripingChange={(showStriping) =>
-                      setTableCustomization(prev => ({ ...prev, showStriping }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        showStriping,
+                      }))
                     }
                     onStripingIntervalChange={(stripingInterval) =>
-                      setTableCustomization(prev => ({ ...prev, stripingInterval }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        stripingInterval,
+                      }))
                     }
                     onResponsiveChange={(responsive) =>
-                      setTableCustomization(prev => ({ ...prev, responsive }))
+                      setTableCustomization((prev) => ({ ...prev, responsive }))
                     }
                     onBreakpointsChange={(breakpoints) =>
-                      setTableCustomization(prev => ({ ...prev, breakpoints }))
+                      setTableCustomization((prev) => ({
+                        ...prev,
+                        breakpoints,
+                      }))
                     }
                   />
                 </TabsContent>

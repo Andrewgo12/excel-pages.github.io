@@ -31,7 +31,9 @@ interface TableCustomizationIntegrationProps {
   };
 }
 
-export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrationProps> = ({
+export const TableCustomizationIntegration: React.FC<
+  TableCustomizationIntegrationProps
+> = ({
   data,
   columns,
   selectedColumns,
@@ -44,13 +46,15 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
   onColumnFiltersChange,
   pagination,
 }) => {
-  const [tableCustomization, setTableCustomization] = useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
-  const [isCustomizationPanelOpen, setIsCustomizationPanelOpen] = useState(false);
+  const [tableCustomization, setTableCustomization] =
+    useState<TableCustomization>(DEFAULT_TABLE_CUSTOMIZATION);
+  const [isCustomizationPanelOpen, setIsCustomizationPanelOpen] =
+    useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   // Load saved customization from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('current-table-customization');
+    const saved = localStorage.getItem("current-table-customization");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -60,21 +64,24 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
           updatedAt: new Date(parsed.updatedAt || Date.now()),
         });
       } catch (e) {
-        console.error('Error loading table customization:', e);
+        console.error("Error loading table customization:", e);
       }
     }
   }, []);
 
   // Save customization to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('current-table-customization', JSON.stringify(tableCustomization));
+    localStorage.setItem(
+      "current-table-customization",
+      JSON.stringify(tableCustomization),
+    );
   }, [tableCustomization]);
 
   // Apply table styles to the global CSS
   useEffect(() => {
     const styles = generateTableStyles(tableCustomization);
-    const styleId = 'table-customization-styles';
-    
+    const styleId = "table-customization-styles";
+
     // Remove existing styles
     const existingStyle = document.getElementById(styleId);
     if (existingStyle) {
@@ -82,11 +89,13 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
     }
 
     // Add new styles
-    const styleElement = document.createElement('style');
+    const styleElement = document.createElement("style");
     styleElement.id = styleId;
     styleElement.textContent = `
       .customizable-table {
-        ${Object.entries(styles).map(([key, value]) => `${key}: ${value};`).join('\n        ')}
+        ${Object.entries(styles)
+          .map(([key, value]) => `${key}: ${value};`)
+          .join("\n        ")}
       }
       
       .customizable-table th {
@@ -121,13 +130,17 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
         background-color: var(--table-striped);
       }
       
-      ${tableCustomization.showShadows ? `
+      ${
+        tableCustomization.showShadows
+          ? `
       .customizable-table {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       }
-      ` : ''}
+      `
+          : ""
+      }
     `;
-    
+
     document.head.appendChild(styleElement);
 
     return () => {
@@ -138,8 +151,8 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
 
   const resetCustomization = () => {
     setTableCustomization(DEFAULT_TABLE_CUSTOMIZATION);
-    localStorage.removeItem('current-table-customization');
-    toast.success('Personalización restablecida');
+    localStorage.removeItem("current-table-customization");
+    toast.success("Personalización restablecida");
   };
 
   const renderCustomHeader = (column: ExcelColumn) => (
@@ -174,7 +187,11 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
     </div>
   );
 
-  const renderCustomCell = (value: any, column: ExcelColumn, row: Record<string, any>) => (
+  const renderCustomCell = (
+    value: any,
+    column: ExcelColumn,
+    row: Record<string, any>,
+  ) => (
     <div className="truncate" title={String(value || "")}>
       {column.type === "boolean" ? (
         <Badge variant={value ? "default" : "secondary"} className="text-xs">
@@ -211,22 +228,18 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
             onClick={() => setIsPreviewMode(!isPreviewMode)}
           >
             <Eye className="h-4 w-4 mr-2" />
-            {isPreviewMode ? 'Vista normal' : 'Vista previa'}
+            {isPreviewMode ? "Vista normal" : "Vista previa"}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={resetCustomization}
-          >
+          <Button variant="outline" size="sm" onClick={resetCustomization}>
             <RotateCcw className="h-4 w-4 mr-2" />
             Restablecer
           </Button>
         </div>
-        
+
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Palette className="h-4 w-4" />
           <span>Estilo: {tableCustomization.name}</span>
-          {tableCustomization.theme !== 'light' && (
+          {tableCustomization.theme !== "light" && (
             <Badge variant="outline" className="text-xs">
               {tableCustomization.theme}
             </Badge>
@@ -263,22 +276,23 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
             sortDirection={sortDirection}
             pagination={pagination}
             onRowClick={(row, index) => {
-              console.log('Row clicked:', row, index);
+              console.log("Row clicked:", row, index);
             }}
             onCellClick={(value, column, row) => {
-              console.log('Cell clicked:', value, column.label, row);
+              console.log("Cell clicked:", value, column.label, row);
             }}
             className="customizable-table"
           />
         )}
 
         {/* Virtualization indicator */}
-        {tableCustomization.virtualization && 
-         filteredAndSortedData.length > tableCustomization.virtualizationThreshold && (
-          <div className="absolute top-2 right-2 bg-primary/10 text-primary text-xs px-2 py-1 rounded">
-            Virtualización activa
-          </div>
-        )}
+        {tableCustomization.virtualization &&
+          filteredAndSortedData.length >
+            tableCustomization.virtualizationThreshold && (
+            <div className="absolute top-2 right-2 bg-primary/10 text-primary text-xs px-2 py-1 rounded">
+              Virtualización activa
+            </div>
+          )}
       </div>
 
       {/* Table Info */}
@@ -286,25 +300,35 @@ export const TableCustomizationIntegration: React.FC<TableCustomizationIntegrati
         <div className="flex items-center gap-4">
           <span>
             Mostrando {(pagination.page - 1) * pagination.pageSize + 1} a{" "}
-            {Math.min(pagination.page * pagination.pageSize, filteredAndSortedData.length)} de{" "}
-            {filteredAndSortedData.length.toLocaleString()} filas
+            {Math.min(
+              pagination.page * pagination.pageSize,
+              filteredAndSortedData.length,
+            )}{" "}
+            de {filteredAndSortedData.length.toLocaleString()} filas
           </span>
           {tableCustomization.showStriping && (
             <span>
-              Rayas cada {tableCustomization.stripingInterval} fila{tableCustomization.stripingInterval > 1 ? 's' : ''}
+              Rayas cada {tableCustomization.stripingInterval} fila
+              {tableCustomization.stripingInterval > 1 ? "s" : ""}
             </span>
           )}
         </div>
-        
+
         <div className="flex items-center gap-2">
           {tableCustomization.showShadows && (
-            <Badge variant="outline" className="text-xs">Sombras</Badge>
+            <Badge variant="outline" className="text-xs">
+              Sombras
+            </Badge>
           )}
           {tableCustomization.showHoverEffects && (
-            <Badge variant="outline" className="text-xs">Hover</Badge>
+            <Badge variant="outline" className="text-xs">
+              Hover
+            </Badge>
           )}
           {tableCustomization.stickyHeader && (
-            <Badge variant="outline" className="text-xs">Header fijo</Badge>
+            <Badge variant="outline" className="text-xs">
+              Header fijo
+            </Badge>
           )}
         </div>
       </div>

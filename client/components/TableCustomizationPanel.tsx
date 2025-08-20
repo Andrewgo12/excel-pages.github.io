@@ -70,7 +70,9 @@ interface TableCustomizationPanelProps {
   isOpen: boolean;
 }
 
-export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = ({
+export const TableCustomizationPanel: React.FC<
+  TableCustomizationPanelProps
+> = ({
   customization,
   columns,
   selectedColumns,
@@ -79,29 +81,31 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
   isOpen,
 }) => {
   const [activeTab, setActiveTab] = useState("typography");
-  const [savedCustomizations, setSavedCustomizations] = useState<TableCustomization[]>([]);
+  const [savedCustomizations, setSavedCustomizations] = useState<
+    TableCustomization[]
+  >([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [presetSearchTerm, setPresetSearchTerm] = useState("");
   const [isUnsaved, setIsUnsaved] = useState(false);
 
   // Load saved customizations from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('table-customizations');
-    const favs = localStorage.getItem('table-customization-favorites');
-    
+    const saved = localStorage.getItem("table-customizations");
+    const favs = localStorage.getItem("table-customization-favorites");
+
     if (saved) {
       try {
         setSavedCustomizations(JSON.parse(saved));
       } catch (e) {
-        console.error('Error loading saved customizations:', e);
+        console.error("Error loading saved customizations:", e);
       }
     }
-    
+
     if (favs) {
       try {
         setFavorites(JSON.parse(favs));
       } catch (e) {
-        console.error('Error loading favorites:', e);
+        console.error("Error loading favorites:", e);
       }
     }
   }, []);
@@ -112,7 +116,7 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
   }, [customization]);
 
   const saveCustomization = () => {
-    const name = prompt('Nombre para esta configuración:');
+    const name = prompt("Nombre para esta configuración:");
     if (!name) return;
 
     const newCustomization: TableCustomization = {
@@ -126,8 +130,8 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
 
     const updatedSaved = [...savedCustomizations, newCustomization];
     setSavedCustomizations(updatedSaved);
-    localStorage.setItem('table-customizations', JSON.stringify(updatedSaved));
-    
+    localStorage.setItem("table-customizations", JSON.stringify(updatedSaved));
+
     setIsUnsaved(false);
     toast.success(`Configuración "${name}" guardada correctamente`);
   };
@@ -142,36 +146,42 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
   };
 
   const deleteCustomization = (id: string) => {
-    const updatedSaved = savedCustomizations.filter(c => c.id !== id);
+    const updatedSaved = savedCustomizations.filter((c) => c.id !== id);
     setSavedCustomizations(updatedSaved);
-    localStorage.setItem('table-customizations', JSON.stringify(updatedSaved));
-    
-    const updatedFavs = favorites.filter(f => f !== id);
+    localStorage.setItem("table-customizations", JSON.stringify(updatedSaved));
+
+    const updatedFavs = favorites.filter((f) => f !== id);
     setFavorites(updatedFavs);
-    localStorage.setItem('table-customization-favorites', JSON.stringify(updatedFavs));
-    
-    toast.success('Configuración eliminada');
+    localStorage.setItem(
+      "table-customization-favorites",
+      JSON.stringify(updatedFavs),
+    );
+
+    toast.success("Configuración eliminada");
   };
 
   const toggleFavorite = (id: string) => {
     const updatedFavs = favorites.includes(id)
-      ? favorites.filter(f => f !== id)
+      ? favorites.filter((f) => f !== id)
       : [...favorites, id];
-    
+
     setFavorites(updatedFavs);
-    localStorage.setItem('table-customization-favorites', JSON.stringify(updatedFavs));
+    localStorage.setItem(
+      "table-customization-favorites",
+      JSON.stringify(updatedFavs),
+    );
   };
 
   const exportCustomization = () => {
     const dataStr = JSON.stringify(customization, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `table-customization-${customization.name.replace(/\s+/g, '-')}.json`;
+    link.download = `table-customization-${customization.name.replace(/\s+/g, "-")}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    toast.success('Configuración exportada');
+    toast.success("Configuración exportada");
   };
 
   const importCustomization = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,19 +197,23 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
           id: Date.now().toString(),
           updatedAt: new Date(),
         });
-        toast.success('Configuración importada correctamente');
+        toast.success("Configuración importada correctamente");
       } catch (error) {
-        toast.error('Error al importar la configuración');
+        toast.error("Error al importar la configuración");
       }
     };
     reader.readAsText(file);
   };
 
   const resetToDefault = () => {
-    if (confirm('¿Estás seguro de que quieres restablecer todas las configuraciones a los valores predeterminados?')) {
+    if (
+      confirm(
+        "¿Estás seguro de que quieres restablecer todas las configuraciones a los valores predeterminados?",
+      )
+    ) {
       onCustomizationChange(DEFAULT_TABLE_CUSTOMIZATION);
       setIsUnsaved(false);
-      toast.success('Configuración restablecida');
+      toast.success("Configuración restablecida");
     }
   };
 
@@ -214,15 +228,25 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
     toast.success(`Preset "${preset.name}" aplicado`);
   };
 
-  const filteredPresets = BUILT_IN_PRESETS.filter(preset =>
-    preset.name.toLowerCase().includes(presetSearchTerm.toLowerCase()) ||
-    preset.description.toLowerCase().includes(presetSearchTerm.toLowerCase()) ||
-    preset.tags.some(tag => tag.toLowerCase().includes(presetSearchTerm.toLowerCase()))
+  const filteredPresets = BUILT_IN_PRESETS.filter(
+    (preset) =>
+      preset.name.toLowerCase().includes(presetSearchTerm.toLowerCase()) ||
+      preset.description
+        .toLowerCase()
+        .includes(presetSearchTerm.toLowerCase()) ||
+      preset.tags.some((tag) =>
+        tag.toLowerCase().includes(presetSearchTerm.toLowerCase()),
+      ),
   );
 
-  const favoriteCustomizations = savedCustomizations.filter(c => favorites.includes(c.id));
+  const favoriteCustomizations = savedCustomizations.filter((c) =>
+    favorites.includes(c.id),
+  );
   const recentCustomizations = savedCustomizations
-    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )
     .slice(0, 5);
 
   if (!isOpen) return null;
@@ -281,10 +305,16 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Restablecer
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => {
-                  navigator.clipboard.writeText(JSON.stringify(customization, null, 2));
-                  toast.success('Configuración copiada');
-                }}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      JSON.stringify(customization, null, 2),
+                    );
+                    toast.success("Configuración copiada");
+                  }}
+                >
                   <Copy className="h-4 w-4 mr-2" />
                   Copiar
                 </Button>
@@ -297,7 +327,7 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                 <h3 className="font-medium">Presets</h3>
                 <Badge variant="secondary">{filteredPresets.length}</Badge>
               </div>
-              
+
               <Input
                 placeholder="Buscar presets..."
                 value={presetSearchTerm}
@@ -314,15 +344,23 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                       onClick={() => applyPreset(preset)}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium">{preset.name}</span>
+                        <span className="text-sm font-medium">
+                          {preset.name}
+                        </span>
                         <Badge variant="outline" className="text-xs">
                           {preset.category}
                         </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground">{preset.description}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {preset.description}
+                      </p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {preset.tags.slice(0, 2).map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
@@ -336,7 +374,7 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
             {/* Saved Configurations */}
             <div className="flex-1 p-4">
               <h3 className="font-medium mb-3">Configuraciones Guardadas</h3>
-              
+
               {favoriteCustomizations.length > 0 && (
                 <div className="mb-4">
                   <h4 className="text-sm font-medium mb-2 flex items-center gap-1">
@@ -354,7 +392,9 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                             className="flex-1 cursor-pointer"
                             onClick={() => loadCustomization(config)}
                           >
-                            <div className="text-sm font-medium">{config.name}</div>
+                            <div className="text-sm font-medium">
+                              {config.name}
+                            </div>
                             <div className="text-xs text-muted-foreground">
                               {new Date(config.updatedAt).toLocaleDateString()}
                             </div>
@@ -396,7 +436,9 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                             className="flex-1 cursor-pointer"
                             onClick={() => loadCustomization(config)}
                           >
-                            <div className="text-sm font-medium">{config.name}</div>
+                            <div className="text-sm font-medium">
+                              {config.name}
+                            </div>
                             <div className="text-xs text-muted-foreground">
                               {new Date(config.updatedAt).toLocaleDateString()}
                             </div>
@@ -440,9 +482,16 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
 
           {/* Main Content */}
           <div className="flex-1 flex flex-col">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="flex-1 flex flex-col"
+            >
               <TabsList className="grid w-full grid-cols-5 mx-4 mt-4">
-                <TabsTrigger value="typography" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="typography"
+                  className="flex items-center gap-2"
+                >
                   <Type className="h-4 w-4" />
                   <span className="hidden sm:inline">Tipografía</span>
                 </TabsTrigger>
@@ -450,7 +499,10 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                   <Palette className="h-4 w-4" />
                   <span className="hidden sm:inline">Colores</span>
                 </TabsTrigger>
-                <TabsTrigger value="borders" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="borders"
+                  className="flex items-center gap-2"
+                >
                   <Square className="h-4 w-4" />
                   <span className="hidden sm:inline">Bordes</span>
                 </TabsTrigger>
@@ -458,7 +510,10 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                   <Layers className="h-4 w-4" />
                   <span className="hidden sm:inline">Diseño</span>
                 </TabsTrigger>
-                <TabsTrigger value="effects" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="effects"
+                  className="flex items-center gap-2"
+                >
                   <Eye className="h-4 w-4" />
                   <span className="hidden sm:inline">Efectos</span>
                 </TabsTrigger>
@@ -474,16 +529,28 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                         cellAlignment={customization.defaultAlignment}
                         headerAlignment={customization.headerAlignment}
                         onCellFontChange={(font) =>
-                          onCustomizationChange({ ...customization, cellFont: font })
+                          onCustomizationChange({
+                            ...customization,
+                            cellFont: font,
+                          })
                         }
                         onHeaderFontChange={(font) =>
-                          onCustomizationChange({ ...customization, headerFont: font })
+                          onCustomizationChange({
+                            ...customization,
+                            headerFont: font,
+                          })
                         }
                         onCellAlignmentChange={(alignment) =>
-                          onCustomizationChange({ ...customization, defaultAlignment: alignment })
+                          onCustomizationChange({
+                            ...customization,
+                            defaultAlignment: alignment,
+                          })
                         }
                         onHeaderAlignmentChange={(alignment) =>
-                          onCustomizationChange({ ...customization, headerAlignment: alignment })
+                          onCustomizationChange({
+                            ...customization,
+                            headerAlignment: alignment,
+                          })
                         }
                       />
 
@@ -495,16 +562,24 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                         globalAlignment={customization.defaultAlignment}
                         headerAlignment={customization.headerAlignment}
                         columnAlignments={Object.fromEntries(
-                          Object.entries(customization.columnCustomizations).map(([key, config]) => [
+                          Object.entries(
+                            customization.columnCustomizations,
+                          ).map(([key, config]) => [
                             key,
                             config.alignment || customization.defaultAlignment,
-                          ])
+                          ]),
                         )}
                         onGlobalAlignmentChange={(alignment) =>
-                          onCustomizationChange({ ...customization, defaultAlignment: alignment })
+                          onCustomizationChange({
+                            ...customization,
+                            defaultAlignment: alignment,
+                          })
                         }
                         onHeaderAlignmentChange={(alignment) =>
-                          onCustomizationChange({ ...customization, headerAlignment: alignment })
+                          onCustomizationChange({
+                            ...customization,
+                            headerAlignment: alignment,
+                          })
                         }
                         onColumnAlignmentChange={(columnKey, alignment) =>
                           onCustomizationChange({
@@ -512,7 +587,9 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                             columnCustomizations: {
                               ...customization.columnCustomizations,
                               [columnKey]: {
-                                ...customization.columnCustomizations[columnKey],
+                                ...customization.columnCustomizations[
+                                  columnKey
+                                ],
                                 columnKey,
                                 alignment,
                               },
@@ -520,7 +597,9 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                           })
                         }
                         onApplyToAllColumns={(alignment) => {
-                          const newColumnCustomizations = { ...customization.columnCustomizations };
+                          const newColumnCustomizations = {
+                            ...customization.columnCustomizations,
+                          };
                           selectedColumns.forEach((columnKey) => {
                             newColumnCustomizations[columnKey] = {
                               ...newColumnCustomizations[columnKey],
@@ -536,8 +615,14 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                         onResetAlignments={() => {
                           onCustomizationChange({
                             ...customization,
-                            defaultAlignment: { horizontal: 'left', vertical: 'middle' },
-                            headerAlignment: { horizontal: 'left', vertical: 'middle' },
+                            defaultAlignment: {
+                              horizontal: "left",
+                              vertical: "middle",
+                            },
+                            headerAlignment: {
+                              horizontal: "left",
+                              vertical: "middle",
+                            },
                             columnCustomizations: {},
                           });
                         }}
@@ -559,22 +644,37 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                         onCustomizationChange({ ...customization, colorScheme })
                       }
                       onHeaderColorSchemeChange={(headerColorScheme) =>
-                        onCustomizationChange({ ...customization, headerColorScheme })
+                        onCustomizationChange({
+                          ...customization,
+                          headerColorScheme,
+                        })
                       }
                       onAlternateRowColorsChange={(alternateRowColors) =>
-                        onCustomizationChange({ ...customization, alternateRowColors })
+                        onCustomizationChange({
+                          ...customization,
+                          alternateRowColors,
+                        })
                       }
                       onShowHoverEffectsChange={(showHoverEffects) =>
-                        onCustomizationChange({ ...customization, showHoverEffects })
+                        onCustomizationChange({
+                          ...customization,
+                          showHoverEffects,
+                        })
                       }
                       onShowShadowsChange={(showShadows) =>
                         onCustomizationChange({ ...customization, showShadows })
                       }
                       onShowStripingChange={(showStriping) =>
-                        onCustomizationChange({ ...customization, showStriping })
+                        onCustomizationChange({
+                          ...customization,
+                          showStriping,
+                        })
                       }
                       onStripingIntervalChange={(stripingInterval) =>
-                        onCustomizationChange({ ...customization, stripingInterval })
+                        onCustomizationChange({
+                          ...customization,
+                          stripingInterval,
+                        })
                       }
                       onThemeChange={(theme) =>
                         onCustomizationChange({ ...customization, theme })
@@ -587,7 +687,10 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                       borderSettings={customization.borderSettings}
                       spacingSettings={customization.spacing}
                       onBorderSettingsChange={(borderSettings) =>
-                        onCustomizationChange({ ...customization, borderSettings })
+                        onCustomizationChange({
+                          ...customization,
+                          borderSettings,
+                        })
                       }
                       onSpacingSettingsChange={(spacing) =>
                         onCustomizationChange({ ...customization, spacing })
@@ -643,7 +746,9 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                       theme={customization.theme}
                       stickyHeader={customization.stickyHeader}
                       virtualization={customization.virtualization}
-                      virtualizationThreshold={customization.virtualizationThreshold}
+                      virtualizationThreshold={
+                        customization.virtualizationThreshold
+                      }
                       showHoverEffects={customization.showHoverEffects}
                       showShadows={customization.showShadows}
                       showStriping={customization.showStriping}
@@ -654,25 +759,45 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
                         onCustomizationChange({ ...customization, theme })
                       }
                       onStickyHeaderChange={(stickyHeader) =>
-                        onCustomizationChange({ ...customization, stickyHeader })
+                        onCustomizationChange({
+                          ...customization,
+                          stickyHeader,
+                        })
                       }
                       onVirtualizationChange={(virtualization) =>
-                        onCustomizationChange({ ...customization, virtualization })
+                        onCustomizationChange({
+                          ...customization,
+                          virtualization,
+                        })
                       }
-                      onVirtualizationThresholdChange={(virtualizationThreshold) =>
-                        onCustomizationChange({ ...customization, virtualizationThreshold })
+                      onVirtualizationThresholdChange={(
+                        virtualizationThreshold,
+                      ) =>
+                        onCustomizationChange({
+                          ...customization,
+                          virtualizationThreshold,
+                        })
                       }
                       onShowHoverEffectsChange={(showHoverEffects) =>
-                        onCustomizationChange({ ...customization, showHoverEffects })
+                        onCustomizationChange({
+                          ...customization,
+                          showHoverEffects,
+                        })
                       }
                       onShowShadowsChange={(showShadows) =>
                         onCustomizationChange({ ...customization, showShadows })
                       }
                       onShowStripingChange={(showStriping) =>
-                        onCustomizationChange({ ...customization, showStriping })
+                        onCustomizationChange({
+                          ...customization,
+                          showStriping,
+                        })
                       }
                       onStripingIntervalChange={(stripingInterval) =>
-                        onCustomizationChange({ ...customization, stripingInterval })
+                        onCustomizationChange({
+                          ...customization,
+                          stripingInterval,
+                        })
                       }
                       onResponsiveChange={(responsive) =>
                         onCustomizationChange({ ...customization, responsive })
@@ -692,16 +817,21 @@ export const TableCustomizationPanel: React.FC<TableCustomizationPanelProps> = (
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Sparkles className="h-4 w-4" />
-              <span>Última modificación: {new Date(customization.updatedAt).toLocaleString()}</span>
+              <span>
+                Última modificación:{" "}
+                {new Date(customization.updatedAt).toLocaleString()}
+              </span>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
-              <Button onClick={() => {
-                onClose();
-                toast.success('Configuración aplicada');
-              }}>
+              <Button
+                onClick={() => {
+                  onClose();
+                  toast.success("Configuración aplicada");
+                }}
+              >
                 Aplicar Cambios
               </Button>
             </div>

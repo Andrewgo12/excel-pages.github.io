@@ -60,12 +60,12 @@ interface ColumnConfig {
   minWidth: number;
   maxWidth: number;
   visible: boolean;
-  pinned: 'left' | 'right' | 'none';
+  pinned: "left" | "right" | "none";
   resizable: boolean;
   sortable: boolean;
   filterable: boolean;
   order: number;
-  alignment: 'left' | 'center' | 'right';
+  alignment: "left" | "center" | "right";
   headerHeight: number;
   cellHeight: number;
   frozen: boolean;
@@ -121,8 +121,12 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
   onColumnResize,
   onColumnReorder,
 }) => {
-  const [columnConfigs, setColumnConfigs] = useState<Record<string, ColumnConfig>>({});
-  const [tableSettings, setTableSettings] = useState<TableSettings>(DEFAULT_TABLE_SETTINGS);
+  const [columnConfigs, setColumnConfigs] = useState<
+    Record<string, ColumnConfig>
+  >({});
+  const [tableSettings, setTableSettings] = useState<TableSettings>(
+    DEFAULT_TABLE_SETTINGS,
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
@@ -136,17 +140,17 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         minWidth: 80,
         maxWidth: 400,
         visible: selectedColumns.includes(col.key),
-        pinned: 'none',
+        pinned: "none",
         resizable: true,
         sortable: true,
         filterable: true,
         order: index,
-        alignment: col.type === 'number' ? 'right' : 'left',
+        alignment: col.type === "number" ? "right" : "left",
         headerHeight: 40,
         cellHeight: 36,
         frozen: false,
         highlight: false,
-        groupable: col.type === 'text',
+        groupable: col.type === "text",
       };
     });
     setColumnConfigs(configs);
@@ -155,22 +159,25 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
   // Auto-size columns based on content type
   const autoSizeColumns = () => {
     const updatedConfigs = { ...columnConfigs };
-    Object.values(updatedConfigs).forEach(config => {
-      const column = columns.find(c => c.key === config.key);
+    Object.values(updatedConfigs).forEach((config) => {
+      const column = columns.find((c) => c.key === config.key);
       if (column) {
         let optimalWidth = 120;
         switch (column.type) {
-          case 'number':
+          case "number":
             optimalWidth = 100;
             break;
-          case 'boolean':
+          case "boolean":
             optimalWidth = 80;
             break;
-          case 'date':
+          case "date":
             optimalWidth = 120;
             break;
-          case 'text':
-            optimalWidth = Math.min(300, Math.max(120, column.label.length * 8 + 40));
+          case "text":
+            optimalWidth = Math.min(
+              300,
+              Math.max(120, column.label.length * 8 + 40),
+            );
             break;
         }
         config.width = optimalWidth;
@@ -178,7 +185,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
       }
     });
     setColumnConfigs(updatedConfigs);
-    toast.success('Columnas ajustadas automáticamente');
+    toast.success("Columnas ajustadas automáticamente");
   };
 
   // Smart column arrangement
@@ -186,14 +193,16 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
     const updatedConfigs = { ...columnConfigs };
     const sortedConfigs = Object.values(updatedConfigs).sort((a, b) => {
       // Pin important columns first
-      if (a.pinned === 'left' && b.pinned !== 'left') return -1;
-      if (b.pinned === 'left' && a.pinned !== 'left') return 1;
-      
+      if (a.pinned === "left" && b.pinned !== "left") return -1;
+      if (b.pinned === "left" && a.pinned !== "left") return 1;
+
       // Sort by data type priority: text, number, date, boolean
       const typePriority = { text: 0, number: 1, date: 2, boolean: 3 };
-      const aType = columns.find(c => c.key === a.key)?.type as keyof typeof typePriority;
-      const bType = columns.find(c => c.key === b.key)?.type as keyof typeof typePriority;
-      
+      const aType = columns.find((c) => c.key === a.key)
+        ?.type as keyof typeof typePriority;
+      const bType = columns.find((c) => c.key === b.key)
+        ?.type as keyof typeof typePriority;
+
       return typePriority[aType] - typePriority[bType];
     });
 
@@ -202,42 +211,50 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
     });
 
     setColumnConfigs(updatedConfigs);
-    toast.success('Columnas organizadas inteligentemente');
+    toast.success("Columnas organizadas inteligentemente");
   };
 
   // Fit columns to viewport
   const fitToViewport = () => {
     const viewportWidth = window.innerWidth - 400; // Account for sidebar
-    const visibleColumns = Object.values(columnConfigs).filter(c => c.visible);
-    const columnWidth = Math.max(100, Math.floor(viewportWidth / visibleColumns.length));
-    
+    const visibleColumns = Object.values(columnConfigs).filter(
+      (c) => c.visible,
+    );
+    const columnWidth = Math.max(
+      100,
+      Math.floor(viewportWidth / visibleColumns.length),
+    );
+
     const updatedConfigs = { ...columnConfigs };
-    visibleColumns.forEach(config => {
+    visibleColumns.forEach((config) => {
       config.width = Math.min(columnWidth, config.maxWidth);
       onColumnResize?.(config.key, config.width);
     });
-    
+
     setColumnConfigs(updatedConfigs);
-    toast.success('Columnas ajustadas al viewport');
+    toast.success("Columnas ajustadas al viewport");
   };
 
   // Bulk operations
   const bulkToggleVisibility = (visible: boolean) => {
     const updatedConfigs = { ...columnConfigs };
-    Object.values(updatedConfigs).forEach(config => {
+    Object.values(updatedConfigs).forEach((config) => {
       config.visible = visible;
     });
     setColumnConfigs(updatedConfigs);
-    
-    const newSelectedColumns = visible ? columns.map(c => c.key) : [];
+
+    const newSelectedColumns = visible ? columns.map((c) => c.key) : [];
     onColumnsChange?.(newSelectedColumns);
   };
 
   const bulkResize = (width: number) => {
     const updatedConfigs = { ...columnConfigs };
-    Object.values(updatedConfigs).forEach(config => {
+    Object.values(updatedConfigs).forEach((config) => {
       if (config.visible) {
-        config.width = Math.min(Math.max(width, config.minWidth), config.maxWidth);
+        config.width = Math.min(
+          Math.max(width, config.minWidth),
+          config.maxWidth,
+        );
         onColumnResize?.(config.key, config.width);
       }
     });
@@ -252,14 +269,14 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
       timestamp: new Date().toISOString(),
     };
     const dataStr = JSON.stringify(config, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `table-config-${Date.now()}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    toast.success('Configuración exportada');
+    toast.success("Configuración exportada");
   };
 
   const importConfig = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -272,9 +289,9 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         const config = JSON.parse(e.target?.result as string);
         if (config.columnConfigs) setColumnConfigs(config.columnConfigs);
         if (config.tableSettings) setTableSettings(config.tableSettings);
-        toast.success('Configuración importada');
+        toast.success("Configuración importada");
       } catch (error) {
-        toast.error('Error al importar configuración');
+        toast.error("Error al importar configuración");
       }
     };
     reader.readAsText(file);
@@ -283,7 +300,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
   // Apply presets
   const applyPreset = (presetName: string) => {
     switch (presetName) {
-      case 'compact':
+      case "compact":
         setTableSettings({
           ...tableSettings,
           compactMode: true,
@@ -293,7 +310,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         });
         bulkResize(100);
         break;
-      case 'comfortable':
+      case "comfortable":
         setTableSettings({
           ...tableSettings,
           compactMode: false,
@@ -303,7 +320,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         });
         bulkResize(180);
         break;
-      case 'presentation':
+      case "presentation":
         setTableSettings({
           ...tableSettings,
           shadowEffects: true,
@@ -312,7 +329,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
           cellPadding: 14,
         });
         break;
-      case 'accessibility':
+      case "accessibility":
         setTableSettings({
           ...tableSettings,
           highContrast: true,
@@ -325,33 +342,42 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
     toast.success(`Preset "${presetName}" aplicado`);
   };
 
-  const updateColumnConfig = (columnKey: string, updates: Partial<ColumnConfig>) => {
-    setColumnConfigs(prev => ({
+  const updateColumnConfig = (
+    columnKey: string,
+    updates: Partial<ColumnConfig>,
+  ) => {
+    setColumnConfigs((prev) => ({
       ...prev,
-      [columnKey]: { ...prev[columnKey], ...updates }
+      [columnKey]: { ...prev[columnKey], ...updates },
     }));
   };
 
   const updateTableSettings = (updates: Partial<TableSettings>) => {
-    setTableSettings(prev => ({ ...prev, ...updates }));
+    setTableSettings((prev) => ({ ...prev, ...updates }));
   };
 
-  const filteredColumns = columns.filter(col => {
-    const matchesSearch = col.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         col.key.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || 
-                           selectedCategory === col.type ||
-                           (selectedCategory === 'visible' && columnConfigs[col.key]?.visible) ||
-                           (selectedCategory === 'pinned' && columnConfigs[col.key]?.pinned !== 'none');
+  const filteredColumns = columns.filter((col) => {
+    const matchesSearch =
+      col.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      col.key.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" ||
+      selectedCategory === col.type ||
+      (selectedCategory === "visible" && columnConfigs[col.key]?.visible) ||
+      (selectedCategory === "pinned" &&
+        columnConfigs[col.key]?.pinned !== "none");
     return matchesSearch && matchesCategory;
   });
 
-  const moveColumn = (columnKey: string, direction: 'up' | 'down') => {
+  const moveColumn = (columnKey: string, direction: "up" | "down") => {
     const currentOrder = columnConfigs[columnKey].order;
-    const targetOrder = direction === 'up' ? currentOrder - 1 : currentOrder + 1;
+    const targetOrder =
+      direction === "up" ? currentOrder - 1 : currentOrder + 1;
 
     // Find column to swap with
-    const targetColumn = Object.values(columnConfigs).find(c => c.order === targetOrder);
+    const targetColumn = Object.values(columnConfigs).find(
+      (c) => c.order === targetOrder,
+    );
     if (!targetColumn) return;
 
     // Swap orders
@@ -400,10 +426,12 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
               <Zap className="h-5 w-5 text-blue-500" />
               <div className="text-center">
                 <div className="text-xs font-medium">Auto Ajustar</div>
-                <div className="text-xs text-muted-foreground">Tamaño óptimo</div>
+                <div className="text-xs text-muted-foreground">
+                  Tamaño óptimo
+                </div>
               </div>
             </Button>
-            
+
             <Button
               variant="outline"
               className="h-auto p-3 flex flex-col items-center gap-2"
@@ -415,7 +443,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 <div className="text-xs text-muted-foreground">Inteligente</div>
               </div>
             </Button>
-            
+
             <Button
               variant="outline"
               className="h-auto p-3 flex flex-col items-center gap-2"
@@ -427,16 +455,18 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 <div className="text-xs text-muted-foreground">A pantalla</div>
               </div>
             </Button>
-            
+
             <Button
               variant="outline"
               className="h-auto p-3 flex flex-col items-center gap-2"
-              onClick={() => applyPreset('compact')}
+              onClick={() => applyPreset("compact")}
             >
               <Minimize2 className="h-5 w-5 text-orange-500" />
               <div className="text-center">
                 <div className="text-xs font-medium">Compacto</div>
-                <div className="text-xs text-muted-foreground">Máximo espacio</div>
+                <div className="text-xs text-muted-foreground">
+                  Máximo espacio
+                </div>
               </div>
             </Button>
           </div>
@@ -451,10 +481,30 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { id: 'compact', name: 'Compacto', icon: Minimize2, color: 'text-blue-500' },
-              { id: 'comfortable', name: 'Cómodo', icon: Maximize2, color: 'text-green-500' },
-              { id: 'presentation', name: 'Presentación', icon: Layers, color: 'text-purple-500' },
-              { id: 'accessibility', name: 'Accesibilidad', icon: Accessibility, color: 'text-orange-500' },
+              {
+                id: "compact",
+                name: "Compacto",
+                icon: Minimize2,
+                color: "text-blue-500",
+              },
+              {
+                id: "comfortable",
+                name: "Cómodo",
+                icon: Maximize2,
+                color: "text-green-500",
+              },
+              {
+                id: "presentation",
+                name: "Presentación",
+                icon: Layers,
+                color: "text-purple-500",
+              },
+              {
+                id: "accessibility",
+                name: "Accesibilidad",
+                icon: Accessibility,
+                color: "text-orange-500",
+              },
             ].map((preset) => {
               const Icon = preset.icon;
               return (
@@ -485,81 +535,101 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 <Label className="text-sm">Modo compacto</Label>
                 <Switch
                   checked={tableSettings.compactMode}
-                  onCheckedChange={(checked) => updateTableSettings({ compactMode: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ compactMode: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Rayas zebra</Label>
                 <Switch
                   checked={tableSettings.zebraStripes}
-                  onCheckedChange={(checked) => updateTableSettings({ zebraStripes: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ zebraStripes: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Efectos hover</Label>
                 <Switch
                   checked={tableSettings.hoverEffects}
-                  onCheckedChange={(checked) => updateTableSettings({ hoverEffects: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ hoverEffects: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Encabezados fijos</Label>
                 <Switch
                   checked={tableSettings.stickyHeaders}
-                  onCheckedChange={(checked) => updateTableSettings({ stickyHeaders: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ stickyHeaders: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Scroll virtual</Label>
                 <Switch
                   checked={tableSettings.virtualScroll}
-                  onCheckedChange={(checked) => updateTableSettings({ virtualScroll: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ virtualScroll: checked })
+                  }
                 />
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Auto redimensionar</Label>
                 <Switch
                   checked={tableSettings.autoResize}
-                  onCheckedChange={(checked) => updateTableSettings({ autoResize: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ autoResize: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Líneas de grid</Label>
                 <Switch
                   checked={tableSettings.showGridLines}
-                  onCheckedChange={(checked) => updateTableSettings({ showGridLines: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ showGridLines: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Esquinas redondeadas</Label>
                 <Switch
                   checked={tableSettings.roundedCorners}
-                  onCheckedChange={(checked) => updateTableSettings({ roundedCorners: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ roundedCorners: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Efectos de sombra</Label>
                 <Switch
                   checked={tableSettings.shadowEffects}
-                  onCheckedChange={(checked) => updateTableSettings({ shadowEffects: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ shadowEffects: checked })
+                  }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Alto contraste</Label>
                 <Switch
                   checked={tableSettings.highContrast}
-                  onCheckedChange={(checked) => updateTableSettings({ highContrast: checked })}
+                  onCheckedChange={(checked) =>
+                    updateTableSettings({ highContrast: checked })
+                  }
                 />
               </div>
             </div>
@@ -579,14 +649,16 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 </div>
                 <Slider
                   value={[tableSettings.fontSize]}
-                  onValueChange={([value]) => updateTableSettings({ fontSize: value })}
+                  onValueChange={([value]) =>
+                    updateTableSettings({ fontSize: value })
+                  }
                   min={10}
                   max={20}
                   step={1}
                   className="w-full"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-sm">Padding de celda</Label>
@@ -596,7 +668,9 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 </div>
                 <Slider
                   value={[tableSettings.cellPadding]}
-                  onValueChange={([value]) => updateTableSettings({ cellPadding: value })}
+                  onValueChange={([value]) =>
+                    updateTableSettings({ cellPadding: value })
+                  }
                   min={4}
                   max={24}
                   step={2}
@@ -643,7 +717,10 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 className="pl-8"
               />
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue />
               </SelectTrigger>
@@ -663,7 +740,11 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
           <ScrollArea className="h-64">
             <div className="space-y-2">
               {filteredColumns
-                .sort((a, b) => (columnConfigs[a.key]?.order || 0) - (columnConfigs[b.key]?.order || 0))
+                .sort(
+                  (a, b) =>
+                    (columnConfigs[a.key]?.order || 0) -
+                    (columnConfigs[b.key]?.order || 0),
+                )
                 .map((column, index) => {
                   const config = columnConfigs[column.key];
                   if (!config) return null;
@@ -679,7 +760,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => moveColumn(column.key, 'up')}
+                              onClick={() => moveColumn(column.key, "up")}
                               disabled={config.order === 0}
                               className="h-6 w-6 p-0"
                             >
@@ -688,15 +769,19 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => moveColumn(column.key, 'down')}
-                              disabled={config.order === filteredColumns.length - 1}
+                              onClick={() => moveColumn(column.key, "down")}
+                              disabled={
+                                config.order === filteredColumns.length - 1
+                              }
                               className="h-6 w-6 p-0"
                             >
                               ↓
                             </Button>
                           </div>
                           <div>
-                            <div className="font-medium text-sm">{column.label}</div>
+                            <div className="font-medium text-sm">
+                              {column.label}
+                            </div>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className="text-xs">
                                 {column.type}
@@ -704,9 +789,9 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                               <Badge variant="secondary" className="text-xs">
                                 #{config.order + 1}
                               </Badge>
-                              {config.pinned !== 'none' && (
+                              {config.pinned !== "none" && (
                                 <Badge variant="secondary" className="text-xs">
-                                  {config.pinned === 'left' ? 'Izq' : 'Der'}
+                                  {config.pinned === "left" ? "Izq" : "Der"}
                                 </Badge>
                               )}
                             </div>
@@ -717,25 +802,42 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => updateColumnConfig(column.key, { visible: !config.visible })}
+                            onClick={() =>
+                              updateColumnConfig(column.key, {
+                                visible: !config.visible,
+                              })
+                            }
                           >
-                            {config.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                            {config.visible ? (
+                              <Eye className="h-4 w-4" />
+                            ) : (
+                              <EyeOff className="h-4 w-4" />
+                            )}
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => updateColumnConfig(column.key, {
-                              pinned: config.pinned === 'left' ? 'none' : 'left'
-                            })}
+                            onClick={() =>
+                              updateColumnConfig(column.key, {
+                                pinned:
+                                  config.pinned === "left" ? "none" : "left",
+                              })
+                            }
                           >
-                            {config.pinned === 'left' ? <Pin className="h-4 w-4 text-primary" /> : <Pin className="h-4 w-4" />}
+                            {config.pinned === "left" ? (
+                              <Pin className="h-4 w-4 text-primary" />
+                            ) : (
+                              <Pin className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
-                          <Label className="text-xs">Ancho: {config.width}px</Label>
+                          <Label className="text-xs">
+                            Ancho: {config.width}px
+                          </Label>
                           <Slider
                             value={[config.width]}
                             onValueChange={([value]) => {
@@ -753,15 +855,23 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                           <Label className="text-xs">Alineación</Label>
                           <div className="flex gap-1">
                             {[
-                              { value: 'left', icon: AlignLeft },
-                              { value: 'center', icon: AlignCenter },
-                              { value: 'right', icon: AlignRight },
+                              { value: "left", icon: AlignLeft },
+                              { value: "center", icon: AlignCenter },
+                              { value: "right", icon: AlignRight },
                             ].map(({ value, icon: Icon }) => (
                               <Button
                                 key={value}
-                                variant={config.alignment === value ? 'default' : 'outline'}
+                                variant={
+                                  config.alignment === value
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
-                                onClick={() => updateColumnConfig(column.key, { alignment: value as any })}
+                                onClick={() =>
+                                  updateColumnConfig(column.key, {
+                                    alignment: value as any,
+                                  })
+                                }
                                 className="flex-1 p-1"
                               >
                                 <Icon className="h-3 w-3" />
@@ -786,7 +896,9 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
         <CardContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-sm">Redimensionar todas las columnas visibles</Label>
+              <Label className="text-sm">
+                Redimensionar todas las columnas visibles
+              </Label>
               <div className="flex items-center gap-2">
                 <Slider
                   defaultValue={[150]}
@@ -801,7 +913,7 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
                 </Badge>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-2">
               <Button
                 variant="outline"

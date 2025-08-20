@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 
 interface VisualOptionsControlsProps {
-  theme: 'light' | 'dark' | 'auto';
+  theme: "light" | "dark" | "auto";
   stickyHeader: boolean;
   virtualization: boolean;
   virtualizationThreshold: number;
@@ -46,7 +46,7 @@ interface VisualOptionsControlsProps {
     tablet: number;
     desktop: number;
   };
-  onThemeChange: (theme: 'light' | 'dark' | 'auto') => void;
+  onThemeChange: (theme: "light" | "dark" | "auto") => void;
   onStickyHeaderChange: (enabled: boolean) => void;
   onVirtualizationChange: (enabled: boolean) => void;
   onVirtualizationThresholdChange: (threshold: number) => void;
@@ -55,37 +55,41 @@ interface VisualOptionsControlsProps {
   onShowStripingChange: (enabled: boolean) => void;
   onStripingIntervalChange: (interval: number) => void;
   onResponsiveChange: (enabled: boolean) => void;
-  onBreakpointsChange: (breakpoints: { mobile: number; tablet: number; desktop: number }) => void;
+  onBreakpointsChange: (breakpoints: {
+    mobile: number;
+    tablet: number;
+    desktop: number;
+  }) => void;
 }
 
 const THEME_OPTIONS = [
   {
-    value: 'light',
-    label: 'Claro',
+    value: "light",
+    label: "Claro",
     icon: Sun,
-    description: 'Tema claro para uso diurno',
-    preview: 'bg-white text-gray-900',
+    description: "Tema claro para uso diurno",
+    preview: "bg-white text-gray-900",
   },
   {
-    value: 'dark',
-    label: 'Oscuro',
+    value: "dark",
+    label: "Oscuro",
     icon: Moon,
-    description: 'Tema oscuro para uso nocturno',
-    preview: 'bg-gray-900 text-white',
+    description: "Tema oscuro para uso nocturno",
+    preview: "bg-gray-900 text-white",
   },
   {
-    value: 'auto',
-    label: 'Automático',
+    value: "auto",
+    label: "Automático",
     icon: Monitor,
-    description: 'Se adapta al sistema operativo',
-    preview: 'bg-gradient-to-r from-white via-gray-100 to-gray-900',
+    description: "Se adapta al sistema operativo",
+    preview: "bg-gradient-to-r from-white via-gray-100 to-gray-900",
   },
 ] as const;
 
 const VISUAL_PRESETS = [
   {
-    name: 'Minimalista',
-    description: 'Interfaz limpia y sin distracciones',
+    name: "Minimalista",
+    description: "Interfaz limpia y sin distracciones",
     settings: {
       showHoverEffects: false,
       showShadows: false,
@@ -95,8 +99,8 @@ const VISUAL_PRESETS = [
     },
   },
   {
-    name: 'Interactivo',
-    description: 'Máxima interactividad y feedback visual',
+    name: "Interactivo",
+    description: "Máxima interactividad y feedback visual",
     settings: {
       showHoverEffects: true,
       showShadows: true,
@@ -106,8 +110,8 @@ const VISUAL_PRESETS = [
     },
   },
   {
-    name: 'Presentación',
-    description: 'Optimizado para presentaciones',
+    name: "Presentación",
+    description: "Optimizado para presentaciones",
     settings: {
       showHoverEffects: true,
       showShadows: true,
@@ -117,8 +121,8 @@ const VISUAL_PRESETS = [
     },
   },
   {
-    name: 'Alto rendimiento',
-    description: 'Optimizado para grandes datasets',
+    name: "Alto rendimiento",
+    description: "Optimizado para grandes datasets",
     settings: {
       showHoverEffects: false,
       showShadows: false,
@@ -131,8 +135,8 @@ const VISUAL_PRESETS = [
 
 const ACCESSIBILITY_PRESETS = [
   {
-    name: 'Alto contraste',
-    description: 'Para usuarios con dificultades visuales',
+    name: "Alto contraste",
+    description: "Para usuarios con dificultades visuales",
     settings: {
       showHoverEffects: true,
       showShadows: false,
@@ -141,8 +145,8 @@ const ACCESSIBILITY_PRESETS = [
     },
   },
   {
-    name: 'Reducir movimiento',
-    description: 'Minimiza animaciones y transiciones',
+    name: "Reducir movimiento",
+    description: "Minimiza animaciones y transiciones",
     settings: {
       showHoverEffects: false,
       showShadows: false,
@@ -151,8 +155,8 @@ const ACCESSIBILITY_PRESETS = [
     },
   },
   {
-    name: 'Máxima legibilidad',
-    description: 'Optimizado para lectura clara',
+    name: "Máxima legibilidad",
+    description: "Optimizado para lectura clara",
     settings: {
       showHoverEffects: true,
       showShadows: false,
@@ -184,9 +188,11 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
   onResponsiveChange,
   onBreakpointsChange,
 }) => {
-  const [activeTab, setActiveTab] = React.useState<'theme' | 'behavior' | 'performance' | 'accessibility'>('theme');
+  const [activeTab, setActiveTab] = React.useState<
+    "theme" | "behavior" | "performance" | "accessibility"
+  >("theme");
 
-  const applyVisualPreset = (preset: typeof VISUAL_PRESETS[0]) => {
+  const applyVisualPreset = (preset: (typeof VISUAL_PRESETS)[0]) => {
     onShowHoverEffectsChange(preset.settings.showHoverEffects);
     onShowShadowsChange(preset.settings.showShadows);
     onShowStripingChange(preset.settings.showStriping);
@@ -194,7 +200,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
     onResponsiveChange(preset.settings.responsive);
   };
 
-  const applyAccessibilityPreset = (preset: typeof ACCESSIBILITY_PRESETS[0]) => {
+  const applyAccessibilityPreset = (
+    preset: (typeof ACCESSIBILITY_PRESETS)[0],
+  ) => {
     onShowHoverEffectsChange(preset.settings.showHoverEffects);
     onShowShadowsChange(preset.settings.showShadows);
     onShowStripingChange(preset.settings.showStriping);
@@ -202,7 +210,7 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
   };
 
   const resetToDefaults = () => {
-    onThemeChange('light');
+    onThemeChange("light");
     onStickyHeaderChange(true);
     onVirtualizationChange(false);
     onVirtualizationThresholdChange(1000);
@@ -218,15 +226,28 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
     });
   };
 
-  const updateBreakpoints = (device: keyof typeof breakpoints, value: number) => {
+  const updateBreakpoints = (
+    device: keyof typeof breakpoints,
+    value: number,
+  ) => {
     onBreakpointsChange({
       ...breakpoints,
       [device]: value,
     });
   };
 
-  const PreviewCard = ({ title, children, isActive = false }: { title: string; children: React.ReactNode; isActive?: boolean }) => (
-    <div className={`border rounded-lg p-3 ${isActive ? 'ring-2 ring-primary' : ''}`}>
+  const PreviewCard = ({
+    title,
+    children,
+    isActive = false,
+  }: {
+    title: string;
+    children: React.ReactNode;
+    isActive?: boolean;
+  }) => (
+    <div
+      className={`border rounded-lg p-3 ${isActive ? "ring-2 ring-primary" : ""}`}
+    >
       <div className="text-sm font-medium mb-2">{title}</div>
       <div className="text-xs text-muted-foreground">{children}</div>
     </div>
@@ -237,36 +258,36 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       {/* Tab Navigation */}
       <div className="flex space-x-1 bg-muted p-1 rounded-lg">
         <Button
-          variant={activeTab === 'theme' ? 'default' : 'ghost'}
+          variant={activeTab === "theme" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('theme')}
+          onClick={() => setActiveTab("theme")}
           className="flex-1"
         >
           <Palette className="h-4 w-4 mr-2" />
           Tema
         </Button>
         <Button
-          variant={activeTab === 'behavior' ? 'default' : 'ghost'}
+          variant={activeTab === "behavior" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('behavior')}
+          onClick={() => setActiveTab("behavior")}
           className="flex-1"
         >
           <MousePointer className="h-4 w-4 mr-2" />
           Comportamiento
         </Button>
         <Button
-          variant={activeTab === 'performance' ? 'default' : 'ghost'}
+          variant={activeTab === "performance" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('performance')}
+          onClick={() => setActiveTab("performance")}
           className="flex-1"
         >
           <Zap className="h-4 w-4 mr-2" />
           Rendimiento
         </Button>
         <Button
-          variant={activeTab === 'accessibility' ? 'default' : 'ghost'}
+          variant={activeTab === "accessibility" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('accessibility')}
+          onClick={() => setActiveTab("accessibility")}
           className="flex-1"
         >
           <Accessibility className="h-4 w-4 mr-2" />
@@ -275,7 +296,7 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       </div>
 
       {/* Theme Controls */}
-      {activeTab === 'theme' && (
+      {activeTab === "theme" && (
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -292,9 +313,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                     <div
                       key={option.value}
                       className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                        theme === option.value 
-                          ? 'ring-2 ring-primary bg-primary/5' 
-                          : 'hover:bg-muted/50'
+                        theme === option.value
+                          ? "ring-2 ring-primary bg-primary/5"
+                          : "hover:bg-muted/50"
                       }`}
                       onClick={() => onThemeChange(option.value)}
                     >
@@ -303,7 +324,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                         <span className="font-medium">{option.label}</span>
                       </div>
                       <div className={`h-8 rounded mb-2 ${option.preview}`} />
-                      <p className="text-xs text-muted-foreground">{option.description}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {option.description}
+                      </p>
                     </div>
                   );
                 })}
@@ -327,7 +350,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                     onClick={() => applyVisualPreset(preset)}
                   >
                     <h4 className="font-medium text-sm mb-1">{preset.name}</h4>
-                    <p className="text-xs text-muted-foreground">{preset.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {preset.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -337,7 +362,7 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       )}
 
       {/* Behavior Controls */}
-      {activeTab === 'behavior' && (
+      {activeTab === "behavior" && (
         <div className="space-y-4">
           <Card>
             <CardHeader>
@@ -389,9 +414,12 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
               {showStriping && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium">Intervalo de rayas</Label>
+                    <Label className="text-sm font-medium">
+                      Intervalo de rayas
+                    </Label>
                     <Badge variant="secondary" className="text-xs">
-                      Cada {stripingInterval} fila{stripingInterval > 1 ? 's' : ''}
+                      Cada {stripingInterval} fila
+                      {stripingInterval > 1 ? "s" : ""}
                     </Badge>
                   </div>
                   <Slider
@@ -424,7 +452,8 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
             <CardHeader>
               <CardTitle className="text-lg">Diseño Responsivo</CardTitle>
               <p className="text-sm text-muted-foreground">
-                Configura cómo se adapta la tabla a diferentes tamaños de pantalla
+                Configura cómo se adapta la tabla a diferentes tamaños de
+                pantalla
               </p>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -452,7 +481,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                     </div>
                     <Slider
                       value={[breakpoints.mobile]}
-                      onValueChange={([value]) => updateBreakpoints('mobile', value)}
+                      onValueChange={([value]) =>
+                        updateBreakpoints("mobile", value)
+                      }
                       min={320}
                       max={768}
                       step={16}
@@ -469,7 +500,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                     </div>
                     <Slider
                       value={[breakpoints.tablet]}
-                      onValueChange={([value]) => updateBreakpoints('tablet', value)}
+                      onValueChange={([value]) =>
+                        updateBreakpoints("tablet", value)
+                      }
                       min={640}
                       max={1024}
                       step={16}
@@ -479,14 +512,18 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm">Punto de quiebre escritorio</Label>
+                      <Label className="text-sm">
+                        Punto de quiebre escritorio
+                      </Label>
                       <Badge variant="outline" className="text-xs">
                         {breakpoints.desktop}px
                       </Badge>
                     </div>
                     <Slider
                       value={[breakpoints.desktop]}
-                      onValueChange={([value]) => updateBreakpoints('desktop', value)}
+                      onValueChange={([value]) =>
+                        updateBreakpoints("desktop", value)
+                      }
                       min={1024}
                       max={1920}
                       step={16}
@@ -501,12 +538,15 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       )}
 
       {/* Performance Controls */}
-      {activeTab === 'performance' && (
+      {activeTab === "performance" && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Optimización de Rendimiento</CardTitle>
+            <CardTitle className="text-lg">
+              Optimización de Rendimiento
+            </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Configura opciones para mejorar el rendimiento con grandes datasets
+              Configura opciones para mejorar el rendimiento con grandes
+              datasets
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -526,17 +566,22 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
             {virtualization && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium">Umbral de virtualización</Label>
+                  <Label className="text-sm font-medium">
+                    Umbral de virtualización
+                  </Label>
                   <Badge variant="secondary" className="text-xs">
                     {virtualizationThreshold.toLocaleString()} filas
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground mb-2">
-                  Activa la virtualización cuando el número de filas supere este valor
+                  Activa la virtualización cuando el número de filas supere este
+                  valor
                 </p>
                 <Slider
                   value={[virtualizationThreshold]}
-                  onValueChange={([value]) => onVirtualizationThresholdChange(value)}
+                  onValueChange={([value]) =>
+                    onVirtualizationThresholdChange(value)
+                  }
                   min={100}
                   max={10000}
                   step={100}
@@ -559,19 +604,29 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-start gap-2">
                   <span>•</span>
-                  <span>Desactiva efectos visuales para datasets grandes (&gt;5,000 filas)</span>
+                  <span>
+                    Desactiva efectos visuales para datasets grandes (&gt;5,000
+                    filas)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span>•</span>
-                  <span>Usa virtualización para datasets muy grandes (&gt;1,000 filas)</span>
+                  <span>
+                    Usa virtualización para datasets muy grandes (&gt;1,000
+                    filas)
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span>•</span>
-                  <span>Reduce el número de columnas visibles si es posible</span>
+                  <span>
+                    Reduce el número de columnas visibles si es posible
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <span>•</span>
-                  <span>Considera usar filtros para reducir el conjunto de datos</span>
+                  <span>
+                    Considera usar filtros para reducir el conjunto de datos
+                  </span>
                 </div>
               </div>
             </div>
@@ -580,13 +635,16 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       )}
 
       {/* Accessibility Controls */}
-      {activeTab === 'accessibility' && (
+      {activeTab === "accessibility" && (
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Presets de Accesibilidad</CardTitle>
+              <CardTitle className="text-lg">
+                Presets de Accesibilidad
+              </CardTitle>
               <p className="text-sm text-muted-foreground">
-                Configuraciones optimizadas para diferentes necesidades de accesibilidad
+                Configuraciones optimizadas para diferentes necesidades de
+                accesibilidad
               </p>
             </CardHeader>
             <CardContent>
@@ -598,7 +656,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                     onClick={() => applyAccessibilityPreset(preset)}
                   >
                     <h4 className="font-medium text-sm mb-1">{preset.name}</h4>
-                    <p className="text-xs text-muted-foreground">{preset.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {preset.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -629,7 +689,10 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
                   </div>
                   <div className="flex items-start gap-2">
                     <span>•</span>
-                    <span>Asegúrate de que los elementos interactivos sean claramente visibles</span>
+                    <span>
+                      Asegúrate de que los elementos interactivos sean
+                      claramente visibles
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <span>•</span>
@@ -641,7 +704,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-sm font-medium">Indicadores visuales mejorados</Label>
+                    <Label className="text-sm font-medium">
+                      Indicadores visuales mejorados
+                    </Label>
                     <p className="text-xs text-muted-foreground">
                       Mejora la visibilidad de estados hover y selección
                     </p>
@@ -654,7 +719,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-sm font-medium">Rayas para legibilidad</Label>
+                    <Label className="text-sm font-medium">
+                      Rayas para legibilidad
+                    </Label>
                     <p className="text-xs text-muted-foreground">
                       Facilita seguir las filas horizontalmente
                     </p>
@@ -667,7 +734,9 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-sm font-medium">Encabezados fijos</Label>
+                    <Label className="text-sm font-medium">
+                      Encabezados fijos
+                    </Label>
                     <p className="text-xs text-muted-foreground">
                       Mantiene el contexto de las columnas visible
                     </p>
@@ -686,7 +755,11 @@ export const VisualOptionsControls: React.FC<VisualOptionsControlsProps> = ({
       {/* Reset Button */}
       <Card>
         <CardContent className="pt-6">
-          <Button variant="outline" onClick={resetToDefaults} className="w-full">
+          <Button
+            variant="outline"
+            onClick={resetToDefaults}
+            className="w-full"
+          >
             <RotateCcw className="h-4 w-4 mr-2" />
             Restablecer todas las opciones visuales
           </Button>

@@ -12,7 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TextAlignment, ColumnCustomization } from "@shared/table-customization";
+import {
+  TextAlignment,
+  ColumnCustomization,
+} from "@shared/table-customization";
 import { ExcelColumn } from "@shared/excel-types";
 import {
   AlignLeft,
@@ -35,79 +38,82 @@ interface AlignmentControlsProps {
   columnAlignments: Record<string, TextAlignment>;
   onGlobalAlignmentChange: (alignment: TextAlignment) => void;
   onHeaderAlignmentChange: (alignment: TextAlignment) => void;
-  onColumnAlignmentChange: (columnKey: string, alignment: TextAlignment) => void;
+  onColumnAlignmentChange: (
+    columnKey: string,
+    alignment: TextAlignment,
+  ) => void;
   onApplyToAllColumns: (alignment: TextAlignment) => void;
   onResetAlignments: () => void;
 }
 
 const HORIZONTAL_ALIGNMENTS = [
   {
-    value: 'left',
-    label: 'Izquierda',
+    value: "left",
+    label: "Izquierda",
     icon: AlignLeft,
-    description: 'Alinear texto a la izquierda',
+    description: "Alinear texto a la izquierda",
   },
   {
-    value: 'center',
-    label: 'Centrado',
+    value: "center",
+    label: "Centrado",
     icon: AlignCenter,
-    description: 'Centrar texto horizontalmente',
+    description: "Centrar texto horizontalmente",
   },
   {
-    value: 'right',
-    label: 'Derecha',
+    value: "right",
+    label: "Derecha",
     icon: AlignRight,
-    description: 'Alinear texto a la derecha',
+    description: "Alinear texto a la derecha",
   },
   {
-    value: 'justify',
-    label: 'Justificado',
+    value: "justify",
+    label: "Justificado",
     icon: AlignJustify,
-    description: 'Justificar texto en ambos lados',
+    description: "Justificar texto en ambos lados",
   },
 ] as const;
 
 const VERTICAL_ALIGNMENTS = [
   {
-    value: 'top',
-    label: 'Arriba',
+    value: "top",
+    label: "Arriba",
     icon: AlignVerticalJustifyStart,
-    description: 'Alinear contenido en la parte superior',
+    description: "Alinear contenido en la parte superior",
   },
   {
-    value: 'middle',
-    label: 'Centro',
+    value: "middle",
+    label: "Centro",
     icon: AlignVerticalJustifyCenter,
-    description: 'Centrar contenido verticalmente',
+    description: "Centrar contenido verticalmente",
   },
   {
-    value: 'bottom',
-    label: 'Abajo',
+    value: "bottom",
+    label: "Abajo",
     icon: AlignVerticalJustifyEnd,
-    description: 'Alinear contenido en la parte inferior',
+    description: "Alinear contenido en la parte inferior",
   },
 ] as const;
 
 const ALIGNMENT_PRESETS = [
   {
-    name: 'Estándar',
-    description: 'Texto a la izquierda, centrado verticalmente',
-    alignment: { horizontal: 'left' as const, vertical: 'middle' as const },
+    name: "Estándar",
+    description: "Texto a la izquierda, centrado verticalmente",
+    alignment: { horizontal: "left" as const, vertical: "middle" as const },
   },
   {
-    name: 'Centrado',
-    description: 'Centrado horizontal y vertical',
-    alignment: { horizontal: 'center' as const, vertical: 'middle' as const },
+    name: "Centrado",
+    description: "Centrado horizontal y vertical",
+    alignment: { horizontal: "center" as const, vertical: "middle" as const },
   },
   {
-    name: 'Números',
-    description: 'Números alineados a la derecha',
-    alignment: { horizontal: 'right' as const, vertical: 'middle' as const },
+    name: "Números",
+    description: "Números alineados a la derecha",
+    alignment: { horizontal: "right" as const, vertical: "middle" as const },
   },
   {
-    name: 'Títulos',
-    description: 'Centrado para títulos destacados',
-    alignment: { horizontal: 'center' as const, vertical: 'top' as const },
+    name: "Títulos",
+    description: "Centrado para títulos destacados",
+    alignment: { horizontal: "center" as const, vertical: "top" as const },
   },
 ];
 
@@ -123,8 +129,10 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
   onApplyToAllColumns,
   onResetAlignments,
 }) => {
-  const [activeTab, setActiveTab] = React.useState<'global' | 'headers' | 'columns'>('global');
-  const [selectedColumn, setSelectedColumn] = React.useState<string>('');
+  const [activeTab, setActiveTab] = React.useState<
+    "global" | "headers" | "columns"
+  >("global");
+  const [selectedColumn, setSelectedColumn] = React.useState<string>("");
   const [bulkMode, setBulkMode] = React.useState(false);
 
   // Get alignment for selected column
@@ -143,7 +151,7 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
 
   const applyPresetToSelected = (alignment: TextAlignment) => {
     if (bulkMode) {
-      selectedColumns.forEach(columnKey => {
+      selectedColumns.forEach((columnKey) => {
         onColumnAlignmentChange(columnKey, alignment);
       });
     } else if (selectedColumn) {
@@ -153,20 +161,20 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
 
   const getColumnTypeRecommendation = (column: ExcelColumn): TextAlignment => {
     switch (column.type) {
-      case 'number':
-        return { horizontal: 'right', vertical: 'middle' };
-      case 'boolean':
-        return { horizontal: 'center', vertical: 'middle' };
-      case 'date':
-        return { horizontal: 'center', vertical: 'middle' };
-      case 'text':
+      case "number":
+        return { horizontal: "right", vertical: "middle" };
+      case "boolean":
+        return { horizontal: "center", vertical: "middle" };
+      case "date":
+        return { horizontal: "center", vertical: "middle" };
+      case "text":
       default:
-        return { horizontal: 'left', vertical: 'middle' };
+        return { horizontal: "left", vertical: "middle" };
     }
   };
 
   const applyTypeBasedAlignment = () => {
-    columns.forEach(column => {
+    columns.forEach((column) => {
       if (selectedColumns.includes(column.key)) {
         const recommended = getColumnTypeRecommendation(column);
         onColumnAlignmentChange(column.key, recommended);
@@ -176,8 +184,10 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
 
   const renderAlignmentButtons = (
     currentAlignment: TextAlignment,
-    onHorizontalChange: (value: 'left' | 'center' | 'right' | 'justify') => void,
-    onVerticalChange: (value: 'top' | 'middle' | 'bottom') => void
+    onHorizontalChange: (
+      value: "left" | "center" | "right" | "justify",
+    ) => void,
+    onVerticalChange: (value: "top" | "middle" | "bottom") => void,
   ) => (
     <div className="space-y-4">
       {/* Horizontal Alignment */}
@@ -190,7 +200,9 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
               <Button
                 key={align.value}
                 variant={
-                  currentAlignment.horizontal === align.value ? 'default' : 'outline'
+                  currentAlignment.horizontal === align.value
+                    ? "default"
+                    : "outline"
                 }
                 size="sm"
                 onClick={() => onHorizontalChange(align.value)}
@@ -215,7 +227,9 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
               <Button
                 key={align.value}
                 variant={
-                  currentAlignment.vertical === align.value ? 'default' : 'outline'
+                  currentAlignment.vertical === align.value
+                    ? "default"
+                    : "outline"
                 }
                 size="sm"
                 onClick={() => onVerticalChange(align.value)}
@@ -237,27 +251,27 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
       {/* Tab Navigation */}
       <div className="flex space-x-1 bg-muted p-1 rounded-lg">
         <Button
-          variant={activeTab === 'global' ? 'default' : 'ghost'}
+          variant={activeTab === "global" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('global')}
+          onClick={() => setActiveTab("global")}
           className="flex-1"
         >
           <Table className="h-4 w-4 mr-2" />
           Global
         </Button>
         <Button
-          variant={activeTab === 'headers' ? 'default' : 'ghost'}
+          variant={activeTab === "headers" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('headers')}
+          onClick={() => setActiveTab("headers")}
           className="flex-1"
         >
           <Settings className="h-4 w-4 mr-2" />
           Encabezados
         </Button>
         <Button
-          variant={activeTab === 'columns' ? 'default' : 'ghost'}
+          variant={activeTab === "columns" ? "default" : "ghost"}
           size="sm"
-          onClick={() => setActiveTab('columns')}
+          onClick={() => setActiveTab("columns")}
           className="flex-1"
         >
           <Columns3 className="h-4 w-4 mr-2" />
@@ -266,7 +280,7 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
       </div>
 
       {/* Global Alignment */}
-      {activeTab === 'global' && (
+      {activeTab === "global" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Alineación Global</CardTitle>
@@ -277,8 +291,10 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
           <CardContent className="space-y-4">
             {renderAlignmentButtons(
               globalAlignment,
-              (horizontal) => onGlobalAlignmentChange({ ...globalAlignment, horizontal }),
-              (vertical) => onGlobalAlignmentChange({ ...globalAlignment, vertical })
+              (horizontal) =>
+                onGlobalAlignmentChange({ ...globalAlignment, horizontal }),
+              (vertical) =>
+                onGlobalAlignmentChange({ ...globalAlignment, vertical }),
             )}
 
             <Separator />
@@ -316,7 +332,7 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
       )}
 
       {/* Header Alignment */}
-      {activeTab === 'headers' && (
+      {activeTab === "headers" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Alineación de Encabezados</CardTitle>
@@ -327,26 +343,40 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
           <CardContent className="space-y-4">
             {renderAlignmentButtons(
               headerAlignment,
-              (horizontal) => onHeaderAlignmentChange({ ...headerAlignment, horizontal }),
-              (vertical) => onHeaderAlignmentChange({ ...headerAlignment, vertical })
+              (horizontal) =>
+                onHeaderAlignmentChange({ ...headerAlignment, horizontal }),
+              (vertical) =>
+                onHeaderAlignmentChange({ ...headerAlignment, vertical }),
             )}
 
             <Separator />
 
             <div className="space-y-2">
-              <Label className="text-sm font-medium">Presets para encabezados</Label>
+              <Label className="text-sm font-medium">
+                Presets para encabezados
+              </Label>
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onHeaderAlignmentChange({ horizontal: 'left', vertical: 'middle' })}
+                  onClick={() =>
+                    onHeaderAlignmentChange({
+                      horizontal: "left",
+                      vertical: "middle",
+                    })
+                  }
                 >
                   Estándar
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onHeaderAlignmentChange({ horizontal: 'center', vertical: 'middle' })}
+                  onClick={() =>
+                    onHeaderAlignmentChange({
+                      horizontal: "center",
+                      vertical: "middle",
+                    })
+                  }
                 >
                   Centrado
                 </Button>
@@ -357,7 +387,7 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
       )}
 
       {/* Column-Specific Alignment */}
-      {activeTab === 'columns' && (
+      {activeTab === "columns" && (
         <div className="space-y-4">
           {/* Column Selector */}
           <Card>
@@ -371,7 +401,7 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
                 </SelectTrigger>
                 <SelectContent>
                   {columns
-                    .filter(col => selectedColumns.includes(col.key))
+                    .filter((col) => selectedColumns.includes(col.key))
                     .map((column) => (
                       <SelectItem key={column.key} value={column.key}>
                         <div className="flex items-center justify-between w-full">
@@ -398,7 +428,8 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
 
               {bulkMode && (
                 <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
-                  Los cambios se aplicarán a las {selectedColumns.length} columnas visibles
+                  Los cambios se aplicarán a las {selectedColumns.length}{" "}
+                  columnas visibles
                 </div>
               )}
             </CardContent>
@@ -409,15 +440,14 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">
-                  {bulkMode 
-                    ? `Alineación para ${selectedColumns.length} columnas` 
-                    : `Alineación: ${columns.find(c => c.key === selectedColumn)?.label}`
-                  }
+                  {bulkMode
+                    ? `Alineación para ${selectedColumns.length} columnas`
+                    : `Alineación: ${columns.find((c) => c.key === selectedColumn)?.label}`}
                 </CardTitle>
                 {selectedColumn && !bulkMode && (
                   <div className="flex items-center gap-2">
                     <Badge variant="outline">
-                      {columns.find(c => c.key === selectedColumn)?.type}
+                      {columns.find((c) => c.key === selectedColumn)?.type}
                     </Badge>
                   </div>
                 )}
@@ -425,16 +455,24 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
               <CardContent className="space-y-4">
                 {renderAlignmentButtons(
                   selectedColumnAlignment,
-                  (horizontal) => bulkMode 
-                    ? selectedColumns.forEach(col => 
-                        onColumnAlignmentChange(col, { ...selectedColumnAlignment, horizontal })
-                      )
-                    : updateSelectedColumnAlignment({ horizontal }),
-                  (vertical) => bulkMode
-                    ? selectedColumns.forEach(col => 
-                        onColumnAlignmentChange(col, { ...selectedColumnAlignment, vertical })
-                      )
-                    : updateSelectedColumnAlignment({ vertical })
+                  (horizontal) =>
+                    bulkMode
+                      ? selectedColumns.forEach((col) =>
+                          onColumnAlignmentChange(col, {
+                            ...selectedColumnAlignment,
+                            horizontal,
+                          }),
+                        )
+                      : updateSelectedColumnAlignment({ horizontal }),
+                  (vertical) =>
+                    bulkMode
+                      ? selectedColumns.forEach((col) =>
+                          onColumnAlignmentChange(col, {
+                            ...selectedColumnAlignment,
+                            vertical,
+                          }),
+                        )
+                      : updateSelectedColumnAlignment({ vertical }),
                 )}
 
                 <Separator />
@@ -473,20 +511,25 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
           {/* Column Overview */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Vista general de columnas</CardTitle>
+              <CardTitle className="text-sm">
+                Vista general de columnas
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {columns
-                  .filter(col => selectedColumns.includes(col.key))
+                  .filter((col) => selectedColumns.includes(col.key))
                   .map((column) => {
-                    const alignment = columnAlignments[column.key] || globalAlignment;
-                    const HorizontalIcon = HORIZONTAL_ALIGNMENTS.find(
-                      a => a.value === alignment.horizontal
-                    )?.icon || AlignLeft;
-                    const VerticalIcon = VERTICAL_ALIGNMENTS.find(
-                      a => a.value === alignment.vertical
-                    )?.icon || AlignVerticalJustifyCenter;
+                    const alignment =
+                      columnAlignments[column.key] || globalAlignment;
+                    const HorizontalIcon =
+                      HORIZONTAL_ALIGNMENTS.find(
+                        (a) => a.value === alignment.horizontal,
+                      )?.icon || AlignLeft;
+                    const VerticalIcon =
+                      VERTICAL_ALIGNMENTS.find(
+                        (a) => a.value === alignment.vertical,
+                      )?.icon || AlignVerticalJustifyCenter;
 
                     return (
                       <div
@@ -495,7 +538,9 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
                         onClick={() => setSelectedColumn(column.key)}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">{column.label}</span>
+                          <span className="text-sm font-medium">
+                            {column.label}
+                          </span>
                           <Badge variant="secondary" className="text-xs">
                             {column.type}
                           </Badge>
