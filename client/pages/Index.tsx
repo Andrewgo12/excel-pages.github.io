@@ -179,6 +179,7 @@ export default function Index() {
   const isAdvancedAnalyticsOpen = activePanel === "advancedAnalytics";
   const isMachineLearningOpen = activePanel === "machineLearning";
   const isDataCleaningOpen = activePanel === "dataCleaning";
+  const isFontSettingsOpen = activePanel === "fontSettings";
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
