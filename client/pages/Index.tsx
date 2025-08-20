@@ -704,6 +704,18 @@ export default function Index() {
                   <Plus className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Agregaciones</span>
                 </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsBulkOperationsOpen(!isBulkOperationsOpen)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Operaciones</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsEnhancedExportOpen(!isEnhancedExportOpen)}>
+                  <Download className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Exportar</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setIsDataValidationOpen(!isDataValidationOpen)}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Validación</span>
+                </Button>
                 <Button variant="outline" size="sm" onClick={() => setIsConfigurationOpen(!isConfigurationOpen)}>
                   <Settings className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Configuración</span>
@@ -1077,7 +1089,7 @@ export default function Index() {
                             <div>• "^[A-Z]" - Comienza con mayúscula</div>
                             <div>• "\d{4}" - Exactamente 4 dígitos</div>
                             <div>• "(gmail|hotmail)" - Contiene gmail o hotmail</div>
-                            <div>• "\w+@\w+\.\w+" - Formato de email</div>
+                            <div>��� "\w+@\w+\.\w+" - Formato de email</div>
                           </div>
                         </div>
                       </div>
