@@ -113,6 +113,11 @@ const DataCleaning = lazy(() =>
     default: m.DataCleaning,
   })),
 );
+const FontSettings = lazy(() =>
+  import("@/components/FontSettings").then((m) => ({
+    default: m.FontSettings,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { FontScaleControl } from "@/components/FontScaleControl";
