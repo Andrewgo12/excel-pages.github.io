@@ -201,6 +201,12 @@ export default function Index() {
   const [regexError, setRegexError] = useState<string | null>(null);
   const [datasetStats, setDatasetStats] = useState<DatasetStats | null>(null);
 
+  // Multi-sheet management
+  const [multiSheetAnalysis, setMultiSheetAnalysis] = useState<MultiSheetAnalysis | null>(null);
+  const [isFileLoading, setIsFileLoading] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [sheetNavigatorOpen, setSheetNavigatorOpen] = useState(false);
+
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
