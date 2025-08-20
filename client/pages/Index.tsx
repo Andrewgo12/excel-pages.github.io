@@ -1135,6 +1135,27 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Data Aggregation Panel */}
+            {isAggregationOpen && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                    Agregación de Datos
+                    <Button variant="ghost" size="sm" onClick={() => setIsAggregationOpen(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <DataAggregation
+                    data={filteredAndSortedData}
+                    columns={excelData.columns}
+                    selectedColumns={selectedColumns}
+                  />
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Main Content */}
