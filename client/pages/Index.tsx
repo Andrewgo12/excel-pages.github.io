@@ -780,14 +780,14 @@ export default function Index() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
-        <div className="container mx-auto px-3 py-3">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="container mx-auto px-responsive py-responsive">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-responsive">
             <div>
-              <h1 className="text-lg lg:text-xl font-bold text-foreground flex items-center gap-2">
-                <FileSpreadsheet className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
+              <h1 className="text-responsive-2xl font-bold text-foreground flex items-center gap-responsive-sm">
+                <FileSpreadsheet className="h-responsive-input w-responsive-input text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-xs lg:text-sm text-muted-foreground mt-1">
+              <p className="text-responsive-sm text-muted-foreground mt-1">
                 {excelData.rows.length.toLocaleString()} filas •{" "}
                 {excelData.columns.length} columnas • Hoja:{" "}
                 {excelData.activeSheet}
