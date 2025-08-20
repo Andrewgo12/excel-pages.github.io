@@ -108,6 +108,11 @@ const MachineLearning = lazy(() =>
     default: m.MachineLearning,
   })),
 );
+const DataCleaning = lazy(() =>
+  import("@/components/DataCleaning").then((m) => ({
+    default: m.DataCleaning,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { FontScaleControl } from "@/components/FontScaleControl";
@@ -1568,7 +1573,7 @@ export default function Index() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-base lg:text-lg flex items-center justify-between">
-                    Visualizaci��n de Datos
+                    Visualización de Datos
                     <Button
                       variant="ghost"
                       size="sm"
@@ -1977,7 +1982,7 @@ export default function Index() {
                                           <span className="text-responsive-xs text-primary">
                                             {sortDirection === "asc"
                                               ? "↑"
-                                              : "��"}
+                                              : "↓"}
                                           </span>
                                         )}
                                       </div>
