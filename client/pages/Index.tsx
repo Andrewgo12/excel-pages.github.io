@@ -689,94 +689,25 @@ export default function Index() {
             </h1>
             <p className="text-muted-foreground mt-1">
               Herramienta interactiva para visualización y exploración de datos
-              Excel
             </p>
           </div>
         </div>
 
         <div className="container mx-auto px-4 py-12">
-          <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl mb-2">
-                  Cargar Archivo Excel
-                </CardTitle>
-                <p className="text-muted-foreground">
-                  Arrastra y suelta tu archivo Excel (.xlsx) aquí o haz clic
-                  para seleccionar
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div
-                  {...getRootProps()}
-                  className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
-                    ${
-                      isDragActive
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                    } ${isFileLoading ? "pointer-events-none opacity-50" : ""}`}
-                >
-                  <input {...getInputProps()} disabled={isFileLoading} />
-                  <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  {isFileLoading ? (
-                    <div>
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-primary font-medium mb-2">
-                        Procesando archivo Excel...
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Analizando hojas y detectando relaciones
-                      </p>
-                    </div>
-                  ) : isDragActive ? (
-                    <p className="text-primary font-medium">
-                      Suelta el archivo aquí...
-                    </p>
-                  ) : (
-                    <div>
-                      <p className="font-medium mb-2">
-                        Haz clic para seleccionar o arrastra el archivo
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Soporta archivos .xlsx y .xls (incluye archivos
-                        complejos con múltiples hojas)
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {fileError && (
-                  <Alert variant="destructive" className="mt-4">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{fileError}</AlertDescription>
-                  </Alert>
-                )}
-
-                <div className="mt-6 text-center">
-                  <div className="text-sm text-muted-foreground mb-3">
-                    ¿Quieres ver todas las funcionalidades?
-                  </div>
-                  <div className="flex gap-3 justify-center">
-                    <Button
-                      onClick={loadSampleData}
-                      variant="outline"
-                      className="gap-2"
-                    >
-                      <Database className="h-4 w-4" />
-                      Datos Básicos
-                    </Button>
-                    <Button onClick={loadMultiSheetData} className="gap-2">
-                      <Database className="h-4 w-4" />
-                      Demo Completo
-                    </Button>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-2">
-                    Básicos: 80 columnas • 500 filas | Completo: 4 hojas • Datos
-                    empresariales
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="max-w-4xl mx-auto">
+            <Suspense fallback={
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Cargando interfaz...</p>
+                </CardContent>
+              </Card>
+            }>
+              <UnifiedFileUploader
+                onDataLoaded={handleDataLoaded}
+                onError={handleFileError}
+              />
+            </Suspense>
           </div>
         </div>
       </div>
