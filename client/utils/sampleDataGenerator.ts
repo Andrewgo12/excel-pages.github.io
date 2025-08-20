@@ -1,0 +1,166 @@
+import { ExcelData, ExcelColumn } from '@shared/excel-types';
+
+// Sample data for different fields
+const FIRST_NAMES = ['Ana', 'Carlos', 'Mar��a', 'José', 'Lucía', 'Miguel', 'Carmen', 'Antonio', 'Isabel', 'Francisco', 'Laura', 'Manuel', 'Pilar', 'Rafael', 'Elena', 'David', 'Rosa', 'Pablo', 'Dolores', 'Javier', 'Concepción', 'Daniel', 'Teresa', 'Jesús', 'Sara'];
+
+const LAST_NAMES = ['García', 'Rodríguez', 'González', 'Fernández', 'López', 'Martínez', 'Sánchez', 'Pérez', 'Gómez', 'Martín', 'Jiménez', 'Ruiz', 'Hernández', 'Díaz', 'Moreno', 'Muñoz', 'Álvarez', 'Romero', 'Alonso', 'Gutiérrez', 'Navarro', 'Torres', 'Domínguez', 'Vázquez', 'Ramos'];
+
+const CITIES = ['Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Zaragoza', 'Málaga', 'Murcia', 'Palma', 'Las Palmas', 'Bilbao', 'Alicante', 'Córdoba', 'Valladolid', 'Vigo', 'Gijón', 'Hospitalet', 'Vitoria', 'Coruña', 'Granada', 'Elche', 'Oviedo', 'Santa Cruz', 'Badalona', 'Cartagena', 'Terrassa'];
+
+const DEPARTMENTS = ['Ventas', 'Marketing', 'IT', 'Recursos Humanos', 'Finanzas', 'Operaciones', 'Legal', 'Investigación', 'Calidad', 'Logística'];
+
+const PRODUCTS = ['Laptop', 'Smartphone', 'Tablet', 'Monitor', 'Teclado', 'Mouse', 'Auriculares', 'Webcam', 'Impresora', 'Disco Duro', 'Router', 'Switch', 'Cable HDMI', 'Adaptador', 'Cargador'];
+
+const STATUSES = ['Activo', 'Inactivo', 'Pendiente', 'Completado', 'En Progreso', 'Cancelado', 'Suspendido'];
+
+const PRIORITIES = ['Baja', 'Media', 'Alta', 'Crítica', 'Urgente'];
+
+const CATEGORIES = ['Tecnología', 'Salud', 'Educación', 'Finanzas', 'Comercio', 'Manufactura', 'Servicios', 'Agricultura', 'Construcción', 'Transporte'];
+
+const REGIONS = ['Norte', 'Sur', 'Este', 'Oeste', 'Centro', 'Noreste', 'Noroeste', 'Sureste', 'Suroeste'];
+
+const COUNTRIES = ['España', 'Francia', 'Italia', 'Alemania', 'Portugal', 'Reino Unido', 'Países Bajos', 'Bélgica', 'Suiza', 'Austria'];
+
+// Helper functions
+const randomInt = (min: number, max: number): number => 
+  Math.floor(Math.random() * (max - min + 1)) + min;
+
+const randomFloat = (min: number, max: number, decimals: number = 2): number => 
+  parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+
+const randomElement = <T>(array: T[]): T => 
+  array[Math.floor(Math.random() * array.length)];
+
+const randomDate = (start: Date, end: Date): Date => {
+  const startTime = start.getTime();
+  const endTime = end.getTime();
+  const randomTime = startTime + Math.random() * (endTime - startTime);
+  return new Date(randomTime);
+};
+
+const randomBoolean = (): boolean => Math.random() > 0.5;
+
+const generateEmail = (firstName: string, lastName: string): string => 
+  `${firstName.toLowerCase()}.${lastName.toLowerCase()}@empresa.com`;
+
+const generatePhone = (): string => {
+  const prefix = randomElement(['6', '7', '9']);
+  const number = Array.from({ length: 8 }, () => randomInt(0, 9)).join('');
+  return `${prefix}${number}`;
+};
+
+const formatDate = (date: Date): string => {
+  return date.toLocaleDateString('es-ES');
+};
+
+const formatDateTime = (date: Date): string => {
+  return date.toLocaleString('es-ES');
+};
+
+export const generateSampleData = (): ExcelData => {
+  // Define all 40 columns with different data types
+  const columns: ExcelColumn[] = [
+    { key: 'id', label: 'ID', type: 'number' },
+    { key: 'nombre', label: 'Nombre', type: 'text' },
+    { key: 'apellido', label: 'Apellido', type: 'text' },
+    { key: 'nombre_completo', label: 'Nombre Completo', type: 'text' },
+    { key: 'email', label: 'Email', type: 'text' },
+    { key: 'telefono', label: 'Teléfono', type: 'text' },
+    { key: 'edad', label: 'Edad', type: 'number' },
+    { key: 'fecha_nacimiento', label: 'Fecha de Nacimiento', type: 'date' },
+    { key: 'salario', label: 'Salario (€)', type: 'number' },
+    { key: 'activo', label: 'Activo', type: 'boolean' },
+    { key: 'departamento', label: 'Departamento', type: 'text' },
+    { key: 'ciudad', label: 'Ciudad', type: 'text' },
+    { key: 'pais', label: 'País', type: 'text' },
+    { key: 'codigo_postal', label: 'Código Postal', type: 'text' },
+    { key: 'fecha_contratacion', label: 'Fecha de Contratación', type: 'date' },
+    { key: 'experiencia_años', label: 'Años de Experiencia', type: 'number' },
+    { key: 'puntuacion', label: 'Puntuación (1-10)', type: 'number' },
+    { key: 'producto_favorito', label: 'Producto Favorito', type: 'text' },
+    { key: 'ventas_ultimo_mes', label: 'Ventas Último Mes (€)', type: 'number' },
+    { key: 'comision', label: 'Comisión (%)', type: 'number' },
+    { key: 'estado', label: 'Estado', type: 'text' },
+    { key: 'prioridad', label: 'Prioridad', type: 'text' },
+    { key: 'categoria', label: 'Categoría', type: 'text' },
+    { key: 'region', label: 'Región', type: 'text' },
+    { key: 'fecha_ultima_actividad', label: 'Última Actividad', type: 'date' },
+    { key: 'horas_trabajadas', label: 'Horas Trabajadas/Semana', type: 'number' },
+    { key: 'tiene_coche', label: 'Tiene Coche', type: 'boolean' },
+    { key: 'estudios_superiores', label: 'Estudios Superiores', type: 'boolean' },
+    { key: 'idiomas', label: 'Número de Idiomas', type: 'number' },
+    { key: 'certificaciones', label: 'Certificaciones', type: 'number' },
+    { key: 'proyectos_activos', label: 'Proyectos Activos', type: 'number' },
+    { key: 'satisfaccion_cliente', label: 'Satisfacción Cliente (%)', type: 'number' },
+    { key: 'fecha_evaluacion', label: 'Fecha Última Evaluación', type: 'date' },
+    { key: 'meta_anual', label: 'Meta Anual (€)', type: 'number' },
+    { key: 'progreso_meta', label: 'Progreso Meta (%)', type: 'number' },
+    { key: 'vacaciones_dias', label: 'Días de Vacaciones', type: 'number' },
+    { key: 'formacion_horas', label: 'Horas de Formación', type: 'number' },
+    { key: 'es_manager', label: 'Es Manager', type: 'boolean' },
+    { key: 'fecha_promocion', label: 'Fecha Última Promoción', type: 'date' },
+    { key: 'notas', label: 'Notas', type: 'text' }
+  ];
+
+  // Generate 100 rows of data
+  const rows = Array.from({ length: 100 }, (_, index) => {
+    const firstName = randomElement(FIRST_NAMES);
+    const lastName = randomElement(LAST_NAMES);
+    const birthDate = randomDate(new Date('1970-01-01'), new Date('2000-12-31'));
+    const hireDate = randomDate(new Date('2015-01-01'), new Date('2024-01-01'));
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - birthDate.getFullYear();
+    const experienceYears = Math.max(0, currentYear - hireDate.getFullYear());
+    
+    return {
+      _id: index,
+      id: index + 1,
+      nombre: firstName,
+      apellido: lastName,
+      nombre_completo: `${firstName} ${lastName}`,
+      email: generateEmail(firstName, lastName),
+      telefono: generatePhone(),
+      edad: age,
+      fecha_nacimiento: formatDate(birthDate),
+      salario: randomInt(25000, 120000),
+      activo: randomBoolean(),
+      departamento: randomElement(DEPARTMENTS),
+      ciudad: randomElement(CITIES),
+      pais: randomElement(COUNTRIES),
+      codigo_postal: randomInt(10000, 99999).toString(),
+      fecha_contratacion: formatDate(hireDate),
+      experiencia_años: experienceYears,
+      puntuacion: randomFloat(1, 10, 1),
+      producto_favorito: randomElement(PRODUCTS),
+      ventas_ultimo_mes: randomInt(1000, 50000),
+      comision: randomFloat(0, 15, 1),
+      estado: randomElement(STATUSES),
+      prioridad: randomElement(PRIORITIES),
+      categoria: randomElement(CATEGORIES),
+      region: randomElement(REGIONS),
+      fecha_ultima_actividad: formatDate(randomDate(new Date('2024-01-01'), new Date())),
+      horas_trabajadas: randomInt(20, 50),
+      tiene_coche: randomBoolean(),
+      estudios_superiores: randomBoolean(),
+      idiomas: randomInt(1, 5),
+      certificaciones: randomInt(0, 8),
+      proyectos_activos: randomInt(0, 15),
+      satisfaccion_cliente: randomInt(60, 100),
+      fecha_evaluacion: formatDate(randomDate(new Date('2023-01-01'), new Date())),
+      meta_anual: randomInt(50000, 500000),
+      progreso_meta: randomInt(0, 150),
+      vacaciones_dias: randomInt(15, 35),
+      formacion_horas: randomInt(10, 120),
+      es_manager: randomBoolean(),
+      fecha_promocion: formatDate(randomDate(new Date('2020-01-01'), new Date())),
+      notas: `Empleado ${index + 1} - ${randomElement(['Excelente rendimiento', 'Buen colaborador', 'En desarrollo', 'Potencial de crecimiento', 'Necesita apoyo', 'Líder natural', 'Muy motivado', 'Orientado a resultados'])}`
+    };
+  });
+
+  return {
+    columns,
+    rows,
+    sheetNames: ['Datos de Empleados'],
+    activeSheet: 'Datos de Empleados'
+  };
+};
