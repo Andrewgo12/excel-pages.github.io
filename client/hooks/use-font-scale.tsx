@@ -26,7 +26,7 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
 
   const applyScale = (element?: HTMLElement) => {
     const target = element || document.documentElement;
-    const scaleValue = FONT_SCALE_VALUES[fontScale];
+    const scaleValue = FONT_SCALE_VALUES[fontScale] || FONT_SCALE_VALUES.base;
     const spacingScale = scaleValue;
 
     target.style.setProperty("--font-scale", scaleValue.toString());
@@ -37,7 +37,7 @@ export function FontScaleProvider({ children }: { children: React.ReactNode }) {
       /font-scale-\w+/g,
       "",
     );
-    document.body.classList.add(`font-scale-${fontScale}`);
+    document.body.classList.add(`font-scale-${fontScale || 'base'}`);
   };
 
   const setFontScale = (scale: FontScale) => {
