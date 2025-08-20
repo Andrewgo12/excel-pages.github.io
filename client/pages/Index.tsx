@@ -824,11 +824,36 @@ export default function Index() {
                 <FileSpreadsheet className="h-responsive-input w-responsive-input text-primary" />
                 Excel Data Explorer
               </h1>
-              <p className="text-responsive-sm text-muted-foreground mt-1">
-                {excelData.rows.length.toLocaleString()} filas •{" "}
-                {excelData.columns.length} columnas • Hoja:{" "}
-                {excelData.activeSheet}
-              </p>
+              <div className="flex items-center gap-responsive-sm mt-1">
+                <p className="text-responsive-sm text-muted-foreground">
+                  {excelData.rows.length.toLocaleString()} filas •{" "}
+                  {excelData.columns.length} columnas
+                </p>
+                {multiSheetAnalysis && (
+                  <>
+                    <Separator orientation="vertical" className="h-4" />
+                    <div className="flex items-center gap-responsive-sm">
+                      <SheetNavigator
+                        excelData={excelData}
+                        analysis={multiSheetAnalysis}
+                        currentSheet={excelData.activeSheet}
+                        onSheetChange={switchSheet}
+                        onClose={() => {}}
+                        compact={true}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => togglePanel("sheetNavigator")}
+                        className="button-responsive text-responsive-xs gap-1"
+                      >
+                        <Grid className="h-responsive-input w-responsive-input" />
+                        Explorar
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
 
               {/* Sheet Tabs */}
               {excelData.sheetsData && excelData.sheetNames.length > 1 && (
