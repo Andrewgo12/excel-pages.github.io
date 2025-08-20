@@ -36,7 +36,6 @@ import {
   AlignCenter,
   AlignRight,
   Pin,
-  PinOff,
   ArrowUpDown,
   Filter,
   Search,
