@@ -1507,19 +1507,21 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsVisualizationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataVisualization
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    stats={currentStats.columnStats}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando visualización...</div>}>
+                    <DataVisualization
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      stats={currentStats.columnStats}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1533,18 +1535,20 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsAggregationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataAggregation
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando agregaciones...</div>}>
+                    <DataAggregation
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1558,19 +1562,21 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsBulkOperationsOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <BulkOperations
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                    onDataChange={handleDataChange}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando operaciones...</div>}>
+                    <BulkOperations
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                      onDataChange={handleDataChange}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1584,19 +1590,21 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsEnhancedExportOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <EnhancedExport
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                    filename={`${excelData.activeSheet}-export`}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando exportación...</div>}>
+                    <EnhancedExport
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                      filename={`${excelData.activeSheet}-export`}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1610,18 +1618,20 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsDataValidationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <DataValidation
-                    data={filteredAndSortedData}
-                    columns={excelData.columns}
-                    selectedColumns={selectedColumns}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando validación...</div>}>
+                    <DataValidation
+                      data={filteredAndSortedData}
+                      columns={excelData.columns}
+                      selectedColumns={selectedColumns}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
@@ -1635,18 +1645,20 @@ export default function Index() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsConfigurationOpen(false)}
+                      onClick={() => setActivePanel(null)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ConfigurationManager
-                    currentConfig={getCurrentConfiguration()}
-                    onLoadConfiguration={loadConfiguration}
-                    onPreferencesChange={handlePreferencesChange}
-                  />
+                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando configuración...</div>}>
+                    <ConfigurationManager
+                      currentConfig={getCurrentConfiguration()}
+                      onLoadConfiguration={loadConfiguration}
+                      onPreferencesChange={handlePreferencesChange}
+                    />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}
