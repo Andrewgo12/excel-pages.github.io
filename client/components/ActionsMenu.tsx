@@ -236,6 +236,10 @@ export function ActionsMenu({
             ⚙️ Configuración
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-48">
+            <DropdownMenuItem onClick={onTableCustomizationOpen} className="text-xs">
+              <Sparkles className="h-3 w-3 mr-2" />
+              Personalizar Tabla
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={onFontSettingsOpen} className="text-xs">
               <Type className="h-3 w-3 mr-2" />
               Configuración de Fuentes
