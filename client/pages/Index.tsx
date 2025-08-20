@@ -139,24 +139,98 @@ export default function Index() {
           const results = group.conditions.map(condition => {
             const value = row[condition.column];
             const filterValue = condition.value;
-            
+            const valueStr = String(value || '').toLowerCase();
+            const filterStr = String(filterValue || '').toLowerCase();
+
+            // Date parsing helper
+            const parseDate = (dateStr: string): Date | null => {
+              if (!dateStr) return null;
+              // Try different date formats
+              const formats = [
+                () => new Date(dateStr),
+                () => {
+                  const parts = dateStr.split('/');
+                  if (parts.length === 3) {
+                    return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+                  }
+                  return null;
+                }
+              ];
+
+              for (const format of formats) {
+                try {
+                  const date = format();
+                  if (date && !isNaN(date.getTime())) return date;
+                } catch (e) {
+                  continue;
+                }
+              }
+              return null;
+            };
+
+            const now = new Date();
+            const valueDate = parseDate(valueStr);
+            const filterDate = parseDate(filterStr);
+
             switch (condition.operator) {
               case 'equals':
-                return String(value).toLowerCase() === String(filterValue).toLowerCase();
+                return valueStr === filterStr;
               case 'not_equals':
-                return String(value).toLowerCase() !== String(filterValue).toLowerCase();
+                return valueStr !== filterStr;
               case 'contains':
-                return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
+                return valueStr.includes(filterStr);
+              case 'not_contains':
+                return !valueStr.includes(filterStr);
               case 'starts_with':
-                return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
+                return valueStr.startsWith(filterStr);
               case 'ends_with':
-                return String(value).toLowerCase().endsWith(String(filterValue).toLowerCase());
+                return valueStr.endsWith(filterStr);
               case 'greater':
                 return Number(value) > Number(filterValue);
+              case 'greater_equal':
+                return Number(value) >= Number(filterValue);
               case 'less':
                 return Number(value) < Number(filterValue);
+              case 'less_equal':
+                return Number(value) <= Number(filterValue);
               case 'between':
                 return Number(value) >= Number(filterValue) && Number(value) <= Number(condition.secondValue || filterValue);
+              case 'is_empty':
+                return !value || valueStr === '';
+              case 'is_not_empty':
+                return value && valueStr !== '';
+
+              // Date-specific filters
+              case 'date_today':
+                if (!valueDate) return false;
+                return valueDate.toDateString() === now.toDateString();
+              case 'date_yesterday':
+                if (!valueDate) return false;
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                return valueDate.toDateString() === yesterday.toDateString();
+              case 'date_this_week':
+                if (!valueDate) return false;
+                const weekStart = new Date(now);
+                weekStart.setDate(now.getDate() - now.getDay());
+                weekStart.setHours(0, 0, 0, 0);
+                return valueDate >= weekStart && valueDate <= now;
+              case 'date_this_month':
+                if (!valueDate) return false;
+                return valueDate.getMonth() === now.getMonth() && valueDate.getFullYear() === now.getFullYear();
+              case 'date_this_year':
+                if (!valueDate) return false;
+                return valueDate.getFullYear() === now.getFullYear();
+              case 'date_last_7_days':
+                if (!valueDate) return false;
+                const sevenDaysAgo = new Date(now);
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                return valueDate >= sevenDaysAgo && valueDate <= now;
+              case 'date_last_30_days':
+                if (!valueDate) return false;
+                const thirtyDaysAgo = new Date(now);
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return valueDate >= thirtyDaysAgo && valueDate <= now;
               default:
                 return true;
             }
