@@ -699,7 +699,7 @@ export default function Index() {
               Excel Data Explorer
             </h1>
             <p className="text-muted-foreground mt-1">
-              Herramienta interactiva para visualizaci��n y exploración de datos
+              Herramienta interactiva para visualización y exploración de datos
               Excel
             </p>
           </div>
@@ -970,20 +970,21 @@ export default function Index() {
             {/* Column Selector */}
             {isColumnSelectorOpen && (
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-base lg:text-lg flex items-center justify-between">
+                <CardHeader className="p-responsive">
+                  <CardTitle className="text-responsive-lg flex items-center justify-between">
                     Seleccionar Columnas
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setActivePanel(null)}
+                      className="button-responsive"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-responsive-input w-responsive-input" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2 mb-4">
+                <CardContent className="p-responsive">
+                  <div className="flex gap-responsive-sm mb-responsive">
                     <Button
                       variant="outline"
                       size="sm"
