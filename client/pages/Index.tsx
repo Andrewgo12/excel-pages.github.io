@@ -1838,6 +1838,28 @@ export default function Index() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Advanced Analytics Panel */}
+            {isAdvancedAnalyticsOpen && (
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardContent className="p-responsive">
+                      <div className="text-center text-muted-foreground text-responsive-sm">
+                        Cargando análisis avanzado...
+                      </div>
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <AdvancedAnalytics
+                  data={excelData!}
+                  filteredData={filteredAndSortedData}
+                  selectedColumns={selectedColumns}
+                  onClose={() => setActivePanel(null)}
+                />
+              </Suspense>
+            )}
           </div>
 
           {/* Main Content */}
