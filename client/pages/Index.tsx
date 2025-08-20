@@ -782,12 +782,33 @@ export default function Index() {
                         </TableHeader>
                         <TableBody>
                           {paginatedData.map((row, index) => (
-                            <TableRow key={row._id || index}>
-                              {selectedColumns.map(columnKey => (
-                                <TableCell key={columnKey} className="max-w-48 truncate">
-                                  {String(row[columnKey] || '')}
-                                </TableCell>
-                              ))}
+                            <TableRow key={row._id || index} className="hover:bg-muted/50">
+                              {selectedColumns.map(columnKey => {
+                                const column = excelData.columns.find(c => c.key === columnKey);
+                                const value = row[columnKey];
+
+                                return (
+                                  <TableCell key={columnKey} className="max-w-48">
+                                    <div className="truncate">
+                                      {column?.type === 'boolean' ? (
+                                        <Badge variant={value ? 'default' : 'secondary'}>
+                                          {value ? 'Sí' : 'No'}
+                                        </Badge>
+                                      ) : column?.type === 'number' ? (
+                                        <span className="font-mono">
+                                          {typeof value === 'number' ? value.toLocaleString('es-ES') : value}
+                                        </span>
+                                      ) : column?.type === 'date' ? (
+                                        <span className="text-sm">
+                                          {value || ''}
+                                        </span>
+                                      ) : (
+                                        <span>{String(value || '')}</span>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                );
+                              })}
                             </TableRow>
                           ))}
                         </TableBody>
