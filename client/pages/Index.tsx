@@ -953,6 +953,7 @@ export default function Index() {
                   onCloudSyncOpen={() => togglePanel("enhancedExport")}
                   onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
                   onAdvancedAnalyticsOpen={() => togglePanel("advancedAnalytics")}
+                  onMachineLearningOpen={() => togglePanel("machineLearning")}
                 />
                 <Button
                   variant="outline"
