@@ -8,6 +8,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
   DropdownMenuGroup,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import {
   Menu,
@@ -32,6 +35,9 @@ import {
   Lock,
   Cloud,
   Cpu,
+  Type,
+  Sparkles,
+  ChevronRight,
 } from "lucide-react";
 
 interface ActionsMenuProps {
