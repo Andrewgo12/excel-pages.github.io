@@ -128,6 +128,11 @@ const SheetNavigator = lazy(() =>
     default: m.SheetNavigator,
   })),
 );
+const UnifiedFileUploader = lazy(() =>
+  import("@/components/UnifiedFileUploader").then((m) => ({
+    default: m.default,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 import { TableStylesControl } from "@/components/TableStylesControl";
