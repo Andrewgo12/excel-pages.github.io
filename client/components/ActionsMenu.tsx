@@ -80,9 +80,14 @@ export function ActionsMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="text-xs font-semibold">📊 Análisis de Datos</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          📊 Análisis de Datos
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={onRealTimeAnalyticsOpen} className="text-xs">
+          <DropdownMenuItem
+            onClick={onRealTimeAnalyticsOpen}
+            className="text-xs"
+          >
             <Activity className="h-3 w-3 mr-2" />
             Análisis en Tiempo Real
           </DropdownMenuItem>
@@ -101,7 +106,9 @@ export function ActionsMenu({
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs font-semibold">✏️ Gestión de Datos</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          ✏️ Gestión de Datos
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={onDataFormOpen} className="text-xs">
             <FileSpreadsheet className="h-3 w-3 mr-2" />
@@ -122,7 +129,9 @@ export function ActionsMenu({
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs font-semibold">🔍 Búsqueda y Filtros</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          🔍 Búsqueda y Filtros
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={onAdvancedSearchOpen} className="text-xs">
             <Search className="h-3 w-3 mr-2" />
@@ -143,7 +152,9 @@ export function ActionsMenu({
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs font-semibold">📤 Exportación y Reportes</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          📤 Exportación y Reportes
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={onExportOpen} className="text-xs">
             <Download className="h-3 w-3 mr-2" />
@@ -160,7 +171,9 @@ export function ActionsMenu({
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs font-semibold">⚙️ Productividad</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          ⚙️ Productividad
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={onPerformanceOpen} className="text-xs">
             <Cpu className="h-3 w-3 mr-2" />
@@ -181,7 +194,9 @@ export function ActionsMenu({
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
-        <DropdownMenuLabel className="text-xs font-semibold">🔒 Seguridad</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs font-semibold">
+          🔒 Seguridad
+        </DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={onSecurityOpen} className="text-xs">
             <Lock className="h-3 w-3 mr-2" />

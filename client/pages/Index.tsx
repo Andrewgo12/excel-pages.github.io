@@ -58,14 +58,46 @@ import {
   ColumnStats,
 } from "@/utils/statisticalAnalysis";
 // Lazy loaded components for performance optimization
-const DataVisualization = lazy(() => import("@/components/DataVisualization").then(m => ({ default: m.DataVisualization })));
-const DataAggregation = lazy(() => import("@/components/DataAggregation").then(m => ({ default: m.DataAggregation })));
-const ConfigurationManager = lazy(() => import("@/components/ConfigurationManager").then(m => ({ default: m.ConfigurationManager })));
-const BulkOperations = lazy(() => import("@/components/BulkOperations").then(m => ({ default: m.BulkOperations })));
-const EnhancedExport = lazy(() => import("@/components/EnhancedExport").then(m => ({ default: m.EnhancedExport })));
-const DataValidation = lazy(() => import("@/components/DataValidation").then(m => ({ default: m.DataValidation })));
-const DynamicDataForm = lazy(() => import("@/components/DynamicDataForm").then(m => ({ default: m.DynamicDataForm })));
-const RealTimeAnalytics = lazy(() => import("@/components/RealTimeAnalytics").then(m => ({ default: m.RealTimeAnalytics })));
+const DataVisualization = lazy(() =>
+  import("@/components/DataVisualization").then((m) => ({
+    default: m.DataVisualization,
+  })),
+);
+const DataAggregation = lazy(() =>
+  import("@/components/DataAggregation").then((m) => ({
+    default: m.DataAggregation,
+  })),
+);
+const ConfigurationManager = lazy(() =>
+  import("@/components/ConfigurationManager").then((m) => ({
+    default: m.ConfigurationManager,
+  })),
+);
+const BulkOperations = lazy(() =>
+  import("@/components/BulkOperations").then((m) => ({
+    default: m.BulkOperations,
+  })),
+);
+const EnhancedExport = lazy(() =>
+  import("@/components/EnhancedExport").then((m) => ({
+    default: m.EnhancedExport,
+  })),
+);
+const DataValidation = lazy(() =>
+  import("@/components/DataValidation").then((m) => ({
+    default: m.DataValidation,
+  })),
+);
+const DynamicDataForm = lazy(() =>
+  import("@/components/DynamicDataForm").then((m) => ({
+    default: m.DynamicDataForm,
+  })),
+);
+const RealTimeAnalytics = lazy(() =>
+  import("@/components/RealTimeAnalytics").then((m) => ({
+    default: m.RealTimeAnalytics,
+  })),
+);
 
 import { ActionsMenu } from "@/components/ActionsMenu";
 
@@ -111,18 +143,18 @@ export default function Index() {
   );
 
   // Derived states for panel visibility
-  const isColumnSelectorOpen = activePanel === 'columnSelector';
-  const isFilterOpen = activePanel === 'filter';
-  const isStatsOpen = activePanel === 'stats';
-  const isVisualizationOpen = activePanel === 'visualization';
-  const isAggregationOpen = activePanel === 'aggregation';
-  const isConfigurationOpen = activePanel === 'configuration';
-  const isBulkOperationsOpen = activePanel === 'bulkOperations';
-  const isEnhancedExportOpen = activePanel === 'enhancedExport';
-  const isDataValidationOpen = activePanel === 'dataValidation';
-  const isAdvancedSearchOpen = activePanel === 'advancedSearch';
-  const isDataFormOpen = activePanel === 'dataForm';
-  const isRealTimeAnalyticsOpen = activePanel === 'realTimeAnalytics';
+  const isColumnSelectorOpen = activePanel === "columnSelector";
+  const isFilterOpen = activePanel === "filter";
+  const isStatsOpen = activePanel === "stats";
+  const isVisualizationOpen = activePanel === "visualization";
+  const isAggregationOpen = activePanel === "aggregation";
+  const isConfigurationOpen = activePanel === "configuration";
+  const isBulkOperationsOpen = activePanel === "bulkOperations";
+  const isEnhancedExportOpen = activePanel === "enhancedExport";
+  const isDataValidationOpen = activePanel === "dataValidation";
+  const isAdvancedSearchOpen = activePanel === "advancedSearch";
+  const isDataFormOpen = activePanel === "dataForm";
+  const isRealTimeAnalyticsOpen = activePanel === "realTimeAnalytics";
 
   // Helper function to toggle panels
   const togglePanel = (panelName: string) => {
@@ -855,7 +887,7 @@ export default function Index() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => togglePanel('advancedSearch')}
+                  onClick={() => togglePanel("advancedSearch")}
                   className="h-7 text-xs"
                 >
                   <Settings className="h-3 w-3 mr-1" />
@@ -866,7 +898,7 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => togglePanel('columnSelector')}
+                  onClick={() => togglePanel("columnSelector")}
                 >
                   <Columns className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Columnas</span> (
@@ -875,7 +907,7 @@ export default function Index() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => togglePanel('filter')}
+                  onClick={() => togglePanel("filter")}
                 >
                   <Filter className="h-4 w-4 mr-2" />
                   <span className="hidden sm:inline">Filtros</span> (
@@ -886,22 +918,24 @@ export default function Index() {
                   )
                 </Button>
                 <ActionsMenu
-                  onValidationOpen={() => togglePanel('dataValidation')}
-                  onConfigurationOpen={() => togglePanel('configuration')}
-                  onAggregationOpen={() => togglePanel('aggregation')}
-                  onBulkOperationsOpen={() => togglePanel('bulkOperations')}
-                  onExportOpen={() => togglePanel('enhancedExport')}
-                  onStatsOpen={() => togglePanel('stats')}
-                  onVisualizationOpen={() => togglePanel('visualization')}
-                  onDataFormOpen={() => togglePanel('dataForm')}
-                  onRealTimeAnalyticsOpen={() => togglePanel('realTimeAnalytics')}
-                  onAdvancedSearchOpen={() => togglePanel('advancedSearch')}
-                  onDataCleaningOpen={() => togglePanel('bulkOperations')}
-                  onPerformanceOpen={() => togglePanel('stats')}
-                  onCollaborationOpen={() => togglePanel('configuration')}
-                  onSecurityOpen={() => togglePanel('dataValidation')}
-                  onCloudSyncOpen={() => togglePanel('enhancedExport')}
-                  onAIInsightsOpen={() => togglePanel('realTimeAnalytics')}
+                  onValidationOpen={() => togglePanel("dataValidation")}
+                  onConfigurationOpen={() => togglePanel("configuration")}
+                  onAggregationOpen={() => togglePanel("aggregation")}
+                  onBulkOperationsOpen={() => togglePanel("bulkOperations")}
+                  onExportOpen={() => togglePanel("enhancedExport")}
+                  onStatsOpen={() => togglePanel("stats")}
+                  onVisualizationOpen={() => togglePanel("visualization")}
+                  onDataFormOpen={() => togglePanel("dataForm")}
+                  onRealTimeAnalyticsOpen={() =>
+                    togglePanel("realTimeAnalytics")
+                  }
+                  onAdvancedSearchOpen={() => togglePanel("advancedSearch")}
+                  onDataCleaningOpen={() => togglePanel("bulkOperations")}
+                  onPerformanceOpen={() => togglePanel("stats")}
+                  onCollaborationOpen={() => togglePanel("configuration")}
+                  onSecurityOpen={() => togglePanel("dataValidation")}
+                  onCloudSyncOpen={() => togglePanel("enhancedExport")}
+                  onAIInsightsOpen={() => togglePanel("realTimeAnalytics")}
                 />
                 <Button
                   variant="outline"
@@ -1526,7 +1560,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando visualización...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando visualización...
+                      </div>
+                    }
+                  >
                     <DataVisualization
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1554,7 +1594,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando agregaciones...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando agregaciones...
+                      </div>
+                    }
+                  >
                     <DataAggregation
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1581,7 +1627,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando operaciones...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando operaciones...
+                      </div>
+                    }
+                  >
                     <BulkOperations
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1609,7 +1661,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando exportación...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando exportación...
+                      </div>
+                    }
+                  >
                     <EnhancedExport
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1637,7 +1695,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando validación...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando validación...
+                      </div>
+                    }
+                  >
                     <DataValidation
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1664,7 +1728,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando configuración...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando configuración...
+                      </div>
+                    }
+                  >
                     <ConfigurationManager
                       currentConfig={getCurrentConfiguration()}
                       onLoadConfiguration={loadConfiguration}
@@ -1691,15 +1761,31 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando formulario...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando formulario...
+                      </div>
+                    }
+                  >
                     <DynamicDataForm
                       columns={excelData.columns}
-                      onAddData={handleDataChange ? (newRow) => {
-                        const updatedData = [...filteredAndSortedData, newRow];
-                        handleDataChange(updatedData);
-                      } : () => {}}
+                      onAddData={
+                        handleDataChange
+                          ? (newRow) => {
+                              const updatedData = [
+                                ...filteredAndSortedData,
+                                newRow,
+                              ];
+                              handleDataChange(updatedData);
+                            }
+                          : () => {}
+                      }
                       onBulkAdd={(newRows) => {
-                        const updatedData = [...filteredAndSortedData, ...newRows];
+                        const updatedData = [
+                          ...filteredAndSortedData,
+                          ...newRows,
+                        ];
                         handleDataChange && handleDataChange(updatedData);
                       }}
                     />
@@ -1724,7 +1810,13 @@ export default function Index() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Suspense fallback={<div className="p-4 text-center text-muted-foreground">Cargando análisis...</div>}>
+                  <Suspense
+                    fallback={
+                      <div className="p-4 text-center text-muted-foreground">
+                        Cargando análisis...
+                      </div>
+                    }
+                  >
                     <RealTimeAnalytics
                       data={filteredAndSortedData}
                       columns={excelData.columns}
@@ -1800,7 +1892,11 @@ export default function Index() {
                                   (c) => c.key === columnKey,
                                 );
                                 return (
-                                  <TableHead key={columnKey} className="p-0" style={{ minWidth: '200px' }}>
+                                  <TableHead
+                                    key={columnKey}
+                                    className="p-0"
+                                    style={{ minWidth: "200px" }}
+                                  >
                                     <div className="p-3">
                                       <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-primary"
@@ -1858,7 +1954,7 @@ export default function Index() {
                                     <TableCell
                                       key={columnKey}
                                       className="max-w-48"
-                                      style={{ minWidth: '200px' }}
+                                      style={{ minWidth: "200px" }}
                                     >
                                       <div className="truncate">
                                         {column?.type === "boolean" ? (
