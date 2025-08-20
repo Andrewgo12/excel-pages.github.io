@@ -75,6 +75,7 @@ export function ActionsMenu({
   onAIInsightsOpen,
   onAdvancedAnalyticsOpen,
   onMachineLearningOpen,
+  onFontSettingsOpen,
 }: ActionsMenuProps) {
   return (
     <DropdownMenu>
