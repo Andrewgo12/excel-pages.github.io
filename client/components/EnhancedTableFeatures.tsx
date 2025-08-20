@@ -353,28 +353,21 @@ export const EnhancedTableFeatures: React.FC<EnhancedTableFeaturesProps> = ({
     return matchesSearch && matchesCategory;
   });
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-    
-    const sourceIndex = result.source.index;
-    const destIndex = result.destination.index;
-    
-    onColumnReorder?.(sourceIndex, destIndex);
-    
-    // Update order in configs
+  const moveColumn = (columnKey: string, direction: 'up' | 'down') => {
+    const currentOrder = columnConfigs[columnKey].order;
+    const targetOrder = direction === 'up' ? currentOrder - 1 : currentOrder + 1;
+
+    // Find column to swap with
+    const targetColumn = Object.values(columnConfigs).find(c => c.order === targetOrder);
+    if (!targetColumn) return;
+
+    // Swap orders
     const updatedConfigs = { ...columnConfigs };
-    const sortedKeys = Object.keys(updatedConfigs).sort((a, b) => 
-      updatedConfigs[a].order - updatedConfigs[b].order
-    );
-    
-    const [removed] = sortedKeys.splice(sourceIndex, 1);
-    sortedKeys.splice(destIndex, 0, removed);
-    
-    sortedKeys.forEach((key, index) => {
-      updatedConfigs[key].order = index;
-    });
-    
+    updatedConfigs[columnKey].order = targetOrder;
+    updatedConfigs[targetColumn.key].order = currentOrder;
+
     setColumnConfigs(updatedConfigs);
+    onColumnReorder?.(currentOrder, targetOrder);
   };
 
   return (
